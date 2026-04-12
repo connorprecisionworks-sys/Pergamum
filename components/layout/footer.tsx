@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BookOpen } from "lucide-react";
+import { Logo } from "@/components/brand/logo";
 
 export function Footer() {
   return (
@@ -7,12 +7,9 @@ export function Footer() {
       <div className="container py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 font-semibold">
-              <BookOpen className="h-4 w-4 text-violet-600" />
-              <span>Pergamum</span>
-            </div>
+            <Logo variant="full" size="sm" />
             <p className="text-sm text-muted-foreground leading-relaxed">
-              A free, community-driven library of high-quality AI prompts.
+              Pergamum — Built for the AI builder community.
             </p>
           </div>
           <div className="space-y-3">
@@ -90,7 +87,7 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Pergamum. Community-powered, forever free.</p>
           <p>
             Built with Next.js, Supabase, and{" "}
-            <span className="text-violet-600">♥</span>
+            <span className="text-pergamum-500">♥</span>
           </p>
         </div>
       </div>

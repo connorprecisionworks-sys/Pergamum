@@ -41,7 +41,7 @@ export function CopyButton({ text, promptId, className }: CopyButtonProps) {
     <Button
       onClick={handleCopy}
       variant={copied ? "secondary" : "default"}
-      className={`${copied ? "" : "bg-violet-600 hover:bg-violet-700"} ${className ?? ""}`}
+      className={className}
       aria-label={copied ? "Copied!" : "Copy prompt to clipboard"}
     >
       {copied ? (

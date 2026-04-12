@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Search, BookOpen, Menu, X, Zap } from "lucide-react";
+import { Search, Menu, X, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Logo } from "@/components/brand/logo";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types/database";
 
@@ -47,12 +48,11 @@ export function Header({ profile }: HeaderProps) {
     : profile?.username?.slice(0, 2).toUpperCase() ?? "??";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-shadow duration-200">
       <div className="container flex h-16 items-center gap-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <BookOpen className="h-5 w-5 text-violet-600" />
-          <span className="text-lg tracking-tight">Pergamum</span>
+        <Link href="/" className="shrink-0">
+          <Logo variant="full" size="sm" />
         </Link>
 
         {/* Nav links — desktop */}
@@ -79,7 +79,7 @@ export function Header({ profile }: HeaderProps) {
           <Input
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search prompts…"
+            placeholder="Search the library…"
             className="pl-9 pr-4"
             aria-label="Search prompts"
           />
@@ -94,7 +94,7 @@ export function Header({ profile }: HeaderProps) {
               <Button
                 variant="default"
                 size="sm"
-                className="hidden md:flex bg-violet-600 hover:bg-violet-700"
+                className="hidden md:flex"
                 asChild
               >
                 <Link href="/submit">
@@ -113,7 +113,7 @@ export function Header({ profile }: HeaderProps) {
                         src={profile.avatar_url ?? undefined}
                         alt={profile.display_name ?? profile.username}
                       />
-                      <AvatarFallback className="bg-violet-100 text-violet-700 text-xs">
+                      <AvatarFallback className="bg-pergamum-100 text-pergamum-700 text-xs">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
@@ -155,11 +155,7 @@ export function Header({ profile }: HeaderProps) {
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/auth/login">Sign in</Link>
               </Button>
-              <Button
-                size="sm"
-                className="bg-violet-600 hover:bg-violet-700"
-                asChild
-              >
+              <Button size="sm" asChild>
                 <Link href="/auth/signup">Sign up</Link>
               </Button>
             </>
@@ -188,7 +184,7 @@ export function Header({ profile }: HeaderProps) {
             <Input
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search prompts…"
+              placeholder="Search the library…"
               className="pl-9"
               aria-label="Search prompts"
             />

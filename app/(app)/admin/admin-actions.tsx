@@ -31,24 +31,8 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         return;
       }
 
-      // Increment author's contribution count
-      if (authorId) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("contribution_count")
-          .eq("id", authorId)
-          .single();
-
-        if (profile) {
-          await supabase
-            .from("profiles")
-            .update({
-              contribution_count: (profile.contribution_count ?? 0) + 1,
-            })
-            .eq("id", authorId);
-        }
-      }
-
+      // contribution_count is incremented automatically by the
+      // prompts_contribution_count trigger (migration 0002).
       toast.success("Prompt approved and published.");
       router.refresh();
     });

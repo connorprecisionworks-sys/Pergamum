@@ -55,13 +55,21 @@ export function AuthForm({ mode }: AuthFormProps) {
           "Check your email! We've sent you a confirmation link."
         );
       } else {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: values.email,
           password: values.password,
         });
         if (error) throw error;
-        // Redirect handled by middleware
-        window.location.href = "/dashboard";
+        // Route new users to onboarding, returning users to dashboard
+        if (data.user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("onboarding_complete")
+            .eq("id", data.user.id)
+            .single();
+          window.location.href =
+            profile && !profile.onboarding_complete ? "/onboarding" : "/dashboard";
+        }
       }
     } catch (err) {
       const message =
@@ -195,7 +203,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         <Button
           type="submit"
-          className="w-full bg-violet-600 hover:bg-violet-700"
+          className="w-full"
           disabled={loading || oauthLoading !== null}
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}

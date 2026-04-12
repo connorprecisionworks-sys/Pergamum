@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { JetBrains_Mono } from "next/font/google";
+import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -8,6 +7,13 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
+});
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+  axes: ["SOFT", "WONK"],
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -18,11 +24,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Pergamum — Community Prompt Library",
+    default: "Pergamum — A living library of prompts.",
     template: "%s | Pergamum",
   },
   description:
-    "A free, community-driven library of high-quality AI prompts. Browse, contribute, and vote on prompts for Claude, GPT-4, Gemini, and more.",
+    "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   keywords: [
     "AI prompts",
     "prompt library",
@@ -30,11 +36,15 @@ export const metadata: Metadata = {
     "Claude prompts",
     "prompt engineering",
     "LLM prompts",
+    "community prompts",
   ],
   openGraph: {
     type: "website",
     locale: "en_US",
     siteName: "Pergamum",
+    title: "Pergamum — A living library of prompts.",
+    description:
+      "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   },
 };
 
@@ -44,7 +54,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}
+    >
       <body className="min-h-screen font-sans antialiased">
         {children}
         <Toaster richColors position="top-right" />

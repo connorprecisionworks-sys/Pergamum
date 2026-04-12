@@ -127,7 +127,7 @@ export function SubmitForm({
       // Determine publish status
       // First 2 prompts from new users go to review queue
       const needsReview = !isAdmin && contributionCount < 2;
-      const status = needsReview ? "draft" : "published";
+      const status = needsReview ? "pending" : "published";
       const published_at = needsReview ? null : new Date().toISOString();
 
       const { data, error } = await supabase
@@ -249,8 +249,8 @@ export function SubmitForm({
                 aria-pressed={selectedModels.includes(model)}
               >
                 <Badge
-                  variant={selectedModels.includes(model) ? "violet" : "outline"}
-                  className="cursor-pointer capitalize hover:bg-violet-50 dark:hover:bg-violet-950/20 transition-colors"
+                  variant={selectedModels.includes(model) ? "pergamum" : "outline"}
+                  className="cursor-pointer capitalize hover:bg-pergamum-50 dark:hover:bg-pergamum-900/20 transition-colors"
                 >
                   {model}
                 </Badge>
@@ -413,7 +413,7 @@ export function SubmitForm({
         <Button
           type="submit"
           disabled={loading}
-          className="bg-violet-600 hover:bg-violet-700"
+          className=""
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           Submit prompt

@@ -37,7 +37,7 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
           src={author?.avatar_url ?? undefined}
           alt={author?.display_name ?? author?.username ?? ""}
         />
-        <AvatarFallback className="text-xs bg-violet-100 text-violet-700">
+        <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
           {initials}
         </AvatarFallback>
       </Avatar>
@@ -45,7 +45,7 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
         <div className="flex items-baseline gap-2">
           <Link
             href={`/u/${author?.username}`}
-            className="text-sm font-medium hover:text-violet-600 transition-colors"
+            className="text-sm font-medium hover:text-pergamum-600 transition-colors"
           >
             {author?.display_name ?? author?.username}
           </Link>
@@ -99,7 +99,7 @@ export function CommentSection({
           body: body.trim(),
           parent_id: parentId ?? null,
         })
-        .select(`*, profiles(id, username, display_name, avatar_url)`)
+        .select(`*, profiles:profiles!comments_user_id_fkey(id, username, display_name, avatar_url)`)
         .single();
 
       if (error) {
@@ -159,7 +159,7 @@ export function CommentSection({
               size="sm"
               onClick={() => submitComment(replyText, replyingTo.id)}
               disabled={!replyText.trim() || isPending}
-              className="bg-violet-600 hover:bg-violet-700"
+              className=""
             >
               {isPending && <Loader2 className="h-3 w-3 animate-spin mr-1" />}
               Post reply
@@ -188,7 +188,7 @@ export function CommentSection({
           <Button
             onClick={() => submitComment(newComment, null)}
             disabled={!newComment.trim() || isPending}
-            className="bg-violet-600 hover:bg-violet-700"
+            className=""
           >
             {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
             Post comment
@@ -198,7 +198,7 @@ export function CommentSection({
         <p className="text-sm text-muted-foreground bg-muted rounded-lg p-4">
           <Link
             href="/auth/login"
-            className="text-violet-600 hover:text-violet-700 font-medium"
+            className="text-pergamum-600 hover:text-pergamum-700 font-medium"
           >
             Sign in
           </Link>{" "}

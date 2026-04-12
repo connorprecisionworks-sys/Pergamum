@@ -37,7 +37,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const { data: prompts } = await supabase
     .from("prompts")
     .select(
-      `*, profiles(id, username, display_name, avatar_url), categories(id, name, slug, icon)`
+      `*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`
     )
     .eq("author_id", profile.id)
     .eq("status", "published")
@@ -59,7 +59,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
               src={profile.avatar_url ?? undefined}
               alt={profile.display_name ?? profile.username}
             />
-            <AvatarFallback className="text-2xl bg-violet-100 text-violet-700">
+            <AvatarFallback className="text-2xl bg-pergamum-100 text-pergamum-700">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -70,7 +70,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                 {profile.display_name ?? profile.username}
               </h1>
               {profile.is_admin && (
-                <Badge variant="violet" className="text-xs">
+                <Badge variant="pergamum" className="text-xs">
                   Admin
                 </Badge>
               )}

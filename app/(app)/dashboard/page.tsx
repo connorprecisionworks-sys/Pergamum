@@ -22,9 +22,13 @@ const STATUS_BADGE: Record<
     label: "Published",
     className: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
   },
-  draft: {
+  pending: {
     label: "In review",
     className: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  },
+  draft: {
+    label: "Draft",
+    className: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400",
   },
   flagged: {
     label: "Flagged",
@@ -60,7 +64,7 @@ export default async function DashboardPage() {
 
   const published = (prompts ?? []).filter((p) => p.status === "published");
   const drafts = (prompts ?? []).filter(
-    (p) => p.status === "draft" || p.status === "flagged"
+    (p) => p.status === "pending" || p.status === "draft" || p.status === "flagged"
   );
 
   const totalUpvotes = published.reduce((acc, p) => acc + p.upvotes, 0);
@@ -75,7 +79,7 @@ export default async function DashboardPage() {
             Welcome back, {profile?.display_name ?? profile?.username}
           </p>
         </div>
-        <Button className="bg-violet-600 hover:bg-violet-700" asChild>
+        <Button asChild>
           <Link href="/submit">
             <Plus className="h-4 w-4 mr-2" />
             New prompt
@@ -181,7 +185,7 @@ function PromptTable({ prompts }: { prompts: Prompt[] }) {
                 )}
                 <Link
                   href={`/prompts/${prompt.slug}`}
-                  className="font-medium text-sm hover:text-violet-600 transition-colors truncate"
+                  className="font-medium text-sm hover:text-pergamum-600 transition-colors truncate"
                 >
                   {prompt.title}
                 </Link>

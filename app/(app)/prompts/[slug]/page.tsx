@@ -47,7 +47,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
   const { data: prompt } = await supabase
     .from("prompts")
     .select(
-      `*, profiles(id, username, display_name, avatar_url), categories(id, name, slug, icon)`
+      `*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`
     )
     .eq("slug", slug)
     .single();
@@ -71,7 +71,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
   // Fetch comments with authors (top-level only, replies fetched via nesting)
   const { data: comments } = await supabase
     .from("comments")
-    .select(`*, profiles(id, username, display_name, avatar_url)`)
+    .select(`*, profiles:profiles!comments_user_id_fkey(id, username, display_name, avatar_url)`)
     .eq("prompt_id", prompt.id)
     .is("parent_id", null)
     .order("created_at", { ascending: true });

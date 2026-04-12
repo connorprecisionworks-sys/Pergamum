@@ -41,7 +41,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   let query = supabase
     .from("prompts")
     .select(
-      `*, profiles(id, username, display_name, avatar_url), categories(id, name, slug, icon)`,
+      `*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`,
       { count: "exact" }
     )
     .eq("status", "published");

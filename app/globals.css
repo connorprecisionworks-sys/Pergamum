@@ -4,14 +4,27 @@
 
 @layer base {
   :root {
+    /* ── Pergamum brand palette ── */
+    --pergamum-50:  245 93% 97%;    /* #f5f3ff */
+    --pergamum-100: 240 63% 94%;   /* #e6e6fa */
+    --pergamum-200: 250 52% 88%;   /* #d4ccf5 */
+    --pergamum-300: 242 51% 82%;   /* #bbbbf1 */
+    --pergamum-400: 270 47% 74%;   /* #b299e5 */
+    --pergamum-500: 270 58% 65%;   /* #9370db  — primary */
+    --pergamum-600: 261 62% 55%;   /* #7447d1  — hover */
+    --pergamum-700: 258 56% 45%;   /* #5c33b5  — active */
+    --pergamum-800: 260 56% 32%;   /* #432580  — deep */
+    --pergamum-900: 261 56% 22%;   /* #2d1959  — darkest */
+
+    /* ── shadcn/ui tokens ── */
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
-    --primary: 262.1 83.3% 57.8%;
-    --primary-foreground: 210 20% 98%;
+    --primary: var(--pergamum-500);         /* 270 58% 65% */
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
@@ -22,7 +35,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 262.1 83.3% 57.8%;
+    --ring: var(--pergamum-500);
     --radius: 0.5rem;
   }
 
@@ -33,8 +46,8 @@
     --card-foreground: 0 0% 98%;
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 263.4 70% 50.4%;
-    --primary-foreground: 210 20% 98%;
+    --primary: var(--pergamum-600);
+    --primary-foreground: 0 0% 100%;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
@@ -45,7 +58,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 263.4 70% 50.4%;
+    --ring: var(--pergamum-500);
   }
 }
 
@@ -56,6 +69,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ── Typography ── */
+.font-serif {
+  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
 }
 
 /* JetBrains Mono for prompt bodies */
@@ -71,4 +89,15 @@ html {
 /* Prompt body pre-formatting */
 .prompt-body {
   @apply font-mono text-sm leading-relaxed whitespace-pre-wrap break-words;
+}
+
+/* ── Input transitions ── */
+input:focus-visible,
+textarea:focus-visible {
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+/* ── Button active press ── */
+button:active:not(:disabled) {
+  transform: scale(0.98);
 }

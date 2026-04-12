@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { Upload } from "lucide-react";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/utils";
 import { AdminActions } from "./admin-actions";
 
@@ -28,15 +30,18 @@ export default async function AdminPage() {
 
   if (!profile?.is_admin) notFound();
 
-  // Pending prompts (drafts from users with < 2 approved)
-  const { data: pending } = await supabase
+  // Use service client for admin data queries — bypasses RLS (safe because
+  // is_admin is already verified above).
+  const serviceClient = await createServiceClient();
+  // Pending prompts (submitted by new users, awaiting review)
+  const { data: pending } = await serviceClient
     .from("prompts")
-    .select(`*, profiles(id, username, display_name, contribution_count)`)
-    .eq("status", "draft")
+    .select(`*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, contribution_count)`)
+    .eq("status", "pending")
     .order("created_at", { ascending: true });
 
   // Open reports
-  const { data: reports } = await supabase
+  const { data: reports } = await serviceClient
     .from("reports")
     .select(
       `*, reporter:profiles!reports_reporter_id_fkey(username), prompts(title, slug)`
@@ -45,19 +50,27 @@ export default async function AdminPage() {
     .order("created_at", { ascending: true });
 
   // Pending tools
-  const { data: pendingTools } = await supabase
+  const { data: pendingTools } = await serviceClient
     .from("tools")
-    .select(`*, profiles(username)`)
+    .select(`*, profiles:profiles!tools_submitted_by_fkey(username)`)
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
   return (
     <div className="container py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Moderation Queue</h1>
-        <p className="text-muted-foreground mt-1">
-          Review prompts, reports, and tool submissions.
-        </p>
+      <div className="flex items-start justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Moderation Queue</h1>
+          <p className="text-muted-foreground mt-1">
+            Review prompts, reports, and tool submissions.
+          </p>
+        </div>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/admin/import">
+            <Upload className="h-4 w-4 mr-2" />
+            Bulk import
+          </Link>
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
@@ -112,7 +125,7 @@ export default async function AdminPage() {
                       <div className="flex items-center gap-2 mb-1">
                         <Link
                           href={`/prompts/${prompt.slug}`}
-                          className="font-medium text-sm hover:text-violet-600 transition-colors"
+                          className="font-medium text-sm hover:text-pergamum-600 transition-colors"
                           target="_blank"
                         >
                           {prompt.title}

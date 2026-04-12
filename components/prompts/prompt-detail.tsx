@@ -71,7 +71,7 @@ export function PromptDetail({
           {category && (
             <Link
               href={`/prompts?category=${category.slug}`}
-              className="text-sm font-medium text-violet-600 hover:text-violet-700"
+              className="text-sm font-medium text-pergamum-600 hover:text-pergamum-700"
             >
               {category.name}
             </Link>
@@ -97,14 +97,14 @@ export function PromptDetail({
                 src={author?.avatar_url ?? undefined}
                 alt={author?.display_name ?? author?.username ?? ""}
               />
-              <AvatarFallback className="text-xs bg-violet-100 text-violet-700">
+              <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="text-sm">
               <Link
                 href={`/u/${author?.username}`}
-                className="font-medium hover:text-violet-600 transition-colors"
+                className="font-medium hover:text-pergamum-600 transition-colors"
               >
                 {author?.display_name ?? author?.username}
               </Link>
@@ -157,7 +157,7 @@ export function PromptDetail({
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             Prompt
             {Array.isArray(prompt.variables) && prompt.variables.length > 0 && (
-              <span className="ml-2 text-violet-500 font-normal lowercase">
+              <span className="ml-2 text-pergamum-500 font-normal lowercase">
                 (live preview)
               </span>
             )}

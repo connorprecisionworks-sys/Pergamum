@@ -66,7 +66,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
           </span>
           <button
             onClick={clearAll}
-            className="text-xs text-violet-600 hover:text-violet-700 flex items-center gap-1"
+            className="text-xs text-pergamum-600 hover:text-pergamum-700 flex items-center gap-1"
           >
             <X className="h-3 w-3" />
             Clear all
@@ -87,7 +87,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
               className={cn(
                 "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
                 currentSort === opt.value
-                  ? "bg-violet-100 text-violet-800 font-medium dark:bg-violet-900/30 dark:text-violet-300"
+                  ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
               aria-pressed={currentSort === opt.value}
@@ -109,7 +109,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
             className={cn(
               "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
               !currentCategory
-                ? "bg-violet-100 text-violet-800 font-medium dark:bg-violet-900/30 dark:text-violet-300"
+                ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             )}
             aria-pressed={!currentCategory}
@@ -128,7 +128,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
               className={cn(
                 "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
                 currentCategory === cat.slug
-                  ? "bg-violet-100 text-violet-800 font-medium dark:bg-violet-900/30 dark:text-violet-300"
+                  ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
               aria-pressed={currentCategory === cat.slug}
@@ -154,8 +154,8 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
               aria-pressed={currentModel === model}
             >
               <Badge
-                variant={currentModel === model ? "violet" : "outline"}
-                className="cursor-pointer capitalize hover:bg-violet-50 dark:hover:bg-violet-950/20 transition-colors"
+                variant={currentModel === model ? "pergamum" : "outline"}
+                className="cursor-pointer capitalize hover:bg-pergamum-50 dark:hover:bg-pergamum-900/20 transition-colors"
               >
                 {model}
               </Badge>

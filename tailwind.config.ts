@@ -20,6 +20,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        serif: ["var(--font-fraunces)", "Georgia", "serif"],
         mono: ["var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
       },
       colors: {
@@ -56,18 +57,18 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        violet: {
-          50: "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95",
-          950: "#2e1065",
+        // Pergamum brand palette — available as bg-pergamum-500, text-pergamum-700, etc.
+        pergamum: {
+          50:  "#f5f3ff",
+          100: "#e6e6fa",
+          200: "#d4ccf5",
+          300: "#bbbbf1",
+          400: "#b299e5",
+          500: "#9370db",
+          600: "#7447d1",
+          700: "#5c33b5",
+          800: "#432580",
+          900: "#2d1959",
         },
       },
       borderRadius: {
@@ -85,14 +86,22 @@ const config: Config = {
           to: { height: "0" },
         },
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(4px)" },
+          from: { opacity: "0", transform: "translateY(6px)" },
           to: { opacity: "1", transform: "translateY(0)" },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%": { transform: "translateX(-4px)" },
+          "40%": { transform: "translateX(4px)" },
+          "60%": { transform: "translateX(-4px)" },
+          "80%": { transform: "translateX(4px)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
+        "fade-in": "fade-in 0.35s ease-out both",
+        shake: "shake 0.3s ease-in-out",
       },
     },
   },

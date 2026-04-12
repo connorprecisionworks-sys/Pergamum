@@ -64,7 +64,7 @@ INSERT INTO categories (name, slug, icon, description, sort_order) VALUES
   ('Data Analysis',     'data-analysis',     'BarChart2',     'Data cleaning, visualization, SQL queries, and statistical analysis.',         9),
   ('Education',         'education',         'GraduationCap', 'Lesson plans, tutoring prompts, quiz generation, and learning resources.',    10),
   ('Productivity',      'productivity',      'Zap',           'Task management, time-boxing, summarization, and workflow optimization.',      11),
-  ('Other',             'other',             'Sparkles',      'Prompts that don\'t fit neatly elsewhere.',                                    12);
+  ('Other',             'other',             'Sparkles',      'Prompts that don''t fit neatly elsewhere.',                                    12);
 
 -- ============================================================
 -- PROMPTS
@@ -86,12 +86,7 @@ CREATE TABLE prompts (
   status           TEXT NOT NULL DEFAULT 'draft'
                      CHECK (status IN ('draft', 'published', 'flagged', 'removed')),
   trending_score   FLOAT NOT NULL DEFAULT 0,
-  search_vector    TSVECTOR GENERATED ALWAYS AS (
-    setweight(to_tsvector('english', coalesce(title, '')), 'A') ||
-    setweight(to_tsvector('english', coalesce(description, '')), 'B') ||
-    setweight(to_tsvector('english', coalesce(body, '')), 'C') ||
-    setweight(to_tsvector('english', coalesce(array_to_string(tags, ' '), '')), 'B')
-  ) STORED,
+  search_vector    TSVECTOR,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   published_at     TIMESTAMPTZ
@@ -100,6 +95,24 @@ CREATE TABLE prompts (
 CREATE TRIGGER prompts_updated_at
   BEFORE UPDATE ON prompts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- Trigger to keep search_vector in sync on insert/update
+CREATE OR REPLACE FUNCTION update_search_vector()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.search_vector :=
+    setweight(to_tsvector('english'::regconfig, coalesce(NEW.title, '')), 'A') ||
+    setweight(to_tsvector('english'::regconfig, coalesce(NEW.description, '')), 'B') ||
+    setweight(to_tsvector('english'::regconfig, coalesce(NEW.body, '')), 'C') ||
+    setweight(to_tsvector('english'::regconfig, coalesce(array_to_string(NEW.tags, ' '), '')), 'B');
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER prompts_search_vector_sync
+  BEFORE INSERT OR UPDATE OF title, description, body, tags
+  ON prompts
+  FOR EACH ROW EXECUTE FUNCTION update_search_vector();
 
 -- Indexes
 CREATE INDEX idx_prompts_search_vector    ON prompts USING GIN (search_vector);

@@ -83,7 +83,7 @@ export function VoteButtons({
         className={cn(
           "gap-1.5",
           vote === 1 &&
-            "border-violet-400 bg-violet-50 text-violet-700 hover:bg-violet-100 dark:border-violet-700 dark:bg-violet-950/30 dark:text-violet-400"
+            "border-pergamum-400 bg-pergamum-50 text-pergamum-700 hover:bg-pergamum-100 dark:border-pergamum-700 dark:bg-pergamum-900/30 dark:text-pergamum-400"
         )}
       >
         <ThumbsUp className="h-4 w-4" />
