@@ -1,470 +1,757 @@
-# Buddy System — Concept Proposals
+# Buddy Concepts — Animal Roster
 
-Three creature concepts for the Pergamum buddy system. Each is designed as layered SVG, dark-mode first, literary in theme, and scalable from a 48px badge to a 300px profile display. No emojis. No cartoon faces. Each concept is intended to feel like a sigil, a mark, or a familiar in the older sense of the word.
+Five characters, one per rarity tier. All rendered in medieval bestiary style: line-work first, warm ink palette on the Pergamum dark background, ornamental marginalia flourishes, dignified posture. No gradients on the creatures; gradients allowed only for glow effects and background elements.
+
+Palette used throughout:
+- Outline ink: `#1a1208`
+- Faded cream: `#e8dbb0`
+- Aged parchment: `#c4b5a0`
+- Deep red: `#8a3a3a`
+- Manuscript gold: `#c9a227`
+- Violet accent (glow only, Phoenix tier): `#9370db`
 
 ---
 
-## Concept A — The Palimpsest
+## Silhouette Test
 
-### Description
+Five adult silhouettes, pure black fill on white. Verify all five are distinct before reviewing the full art. Each slot is 110px wide in a 550×120 container.
 
-The Palimpsest is a living manuscript seal — a geometric spirit that takes form when a scribe's intent crystallizes across layers of erased and rewritten text. It begins as a single circle with a barely-visible latent glyph at center, and grows through four stages into a complete instrument: concentric rings annotated like an astrolabe, a hexagram inscribed between them, and a central rune unique to its owner. It does not have eyes or limbs. It rotates slowly when idle. It feels less like a pet and more like a hallmark — a sigil that marks the quality of your work.
+<svg viewBox="0 0 550 120" width="550" height="120" xmlns="http://www.w3.org/2000/svg" style="background:white;display:block;">
 
-The name is a deliberate reference. Pergamum (the ancient city this app is named for) is the origin of parchment — pergamon — the very material that made palimpsests possible: manuscripts scraped and rewritten, the old text bleeding through beneath the new. This creature *is* that material, made animate.
+  <!-- CAT — slot 0–110 -->
+  <g transform="translate(5,5)">
+    <ellipse cx="50" cy="68" rx="18" ry="19" fill="black"/>
+    <circle cx="50" cy="34" r="16" fill="black"/>
+    <polygon points="35,27 33,7 47,23" fill="black"/>
+    <polygon points="65,27 67,7 53,23" fill="black"/>
+    <!-- tail -->
+    <path d="M67,70 C88,57 93,78 77,88 C67,93 57,89 58,85 Q62,83 68,77 Q80,65 68,68 Z" fill="black"/>
+    <ellipse cx="42" cy="87" rx="6.5" ry="3.5" fill="black"/>
+    <ellipse cx="58" cy="87" rx="6.5" ry="3.5" fill="black"/>
+    <!-- label -->
+    <text x="50" y="112" font-family="monospace" font-size="8" fill="#555" text-anchor="middle">CAT</text>
+  </g>
 
-### SVG Sketch — Adult, Common Rarity
+  <!-- FENNEC — slot 110–220 -->
+  <g transform="translate(115,5)">
+    <ellipse cx="50" cy="74" rx="14" ry="13" fill="black"/>
+    <circle cx="50" cy="54" r="12" fill="black"/>
+    <!-- huge left ear -->
+    <path d="M38,48 C30,34 20,10 28,4 C36,-1 48,28 50,46 Z" fill="black"/>
+    <!-- huge right ear -->
+    <path d="M62,48 C70,34 80,10 72,4 C64,-1 52,28 50,46 Z" fill="black"/>
+    <!-- tail tip -->
+    <ellipse cx="68" cy="80" rx="7" ry="5" fill="black"/>
+    <ellipse cx="42" cy="86" rx="5" ry="3" fill="black"/>
+    <ellipse cx="58" cy="86" rx="5" ry="3" fill="black"/>
+    <text x="50" y="112" font-family="monospace" font-size="8" fill="#555" text-anchor="middle">FENNEC</text>
+  </g>
+
+  <!-- OWL — slot 220–330 -->
+  <g transform="translate(225,5)">
+    <rect x="14" y="84" width="72" height="6" rx="3" fill="black"/>
+    <ellipse cx="50" cy="63" rx="18" ry="22" fill="black"/>
+    <!-- wing bumps -->
+    <path d="M32,58 C27,62 27,74 32,78 Z" fill="black"/>
+    <path d="M68,58 C73,62 73,74 68,78 Z" fill="black"/>
+    <circle cx="50" cy="30" r="21" fill="black"/>
+    <!-- talons -->
+    <path d="M34,84 L30,79 L34,74 M34,84 L30,84" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M66,84 L70,79 L66,74 M66,84 L70,84" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <text x="50" y="112" font-family="monospace" font-size="8" fill="#555" text-anchor="middle">OWL</text>
+  </g>
+
+  <!-- AXOLOTL — slot 330–440 -->
+  <g transform="translate(335,5)">
+    <ellipse cx="50" cy="70" rx="15" ry="17" fill="black"/>
+    <!-- tail fin -->
+    <path d="M35,82 C30,88 32,96 38,95 L50,88 L62,95 C68,96 70,88 65,82 Z" fill="black"/>
+    <!-- wide flat head -->
+    <ellipse cx="50" cy="50" rx="26" ry="14" fill="black"/>
+    <!-- front legs -->
+    <path d="M26,68 C19,72 18,78 22,80 C26,79 28,74 34,70 Z" fill="black"/>
+    <path d="M74,68 C81,72 82,78 78,80 C74,79 72,74 66,70 Z" fill="black"/>
+    <!-- LEFT gill frills (3 stalks with branches) -->
+    <path d="M24,46 C18,36 14,22 16,10 M20,40 C12,36 6,28 7,20 M17,30 C10,26 5,20 6,14" stroke="black" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- RIGHT gill frills (mirror) -->
+    <path d="M76,46 C82,36 86,22 84,10 M80,40 C88,36 94,28 93,20 M83,30 C90,26 95,20 94,14" stroke="black" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <text x="50" y="112" font-family="monospace" font-size="8" fill="#555" text-anchor="middle">AXOLOTL</text>
+  </g>
+
+  <!-- PHOENIX — slot 440–550 -->
+  <g transform="translate(445,5)">
+    <rect x="20" y="88" width="60" height="5" rx="2" fill="black"/>
+    <!-- left wing -->
+    <path d="M36,65 C18,52 6,36 10,20 C16,12 26,22 32,32 C36,22 34,10 40,7 C44,14 42,28 44,38" fill="black"/>
+    <!-- right wing -->
+    <path d="M64,65 C82,52 94,36 90,20 C84,12 74,22 68,32 C64,22 66,10 60,7 C56,14 58,28 56,38" fill="black"/>
+    <ellipse cx="50" cy="62" rx="13" ry="15" fill="black"/>
+    <circle cx="50" cy="30" r="12" fill="black"/>
+    <!-- crest plumes -->
+    <path d="M50,18 C50,12 50,6 50,2 M46,19 C42,12 38,6 36,3 M54,19 C58,12 62,6 64,3" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <!-- tail plumes -->
+    <path d="M44,78 C38,86 28,94 22,99 M47,79 C44,88 40,95 37,99 M50,80 C50,88 50,96 50,100 M53,79 C56,88 60,95 63,99 M56,78 C62,86 72,94 78,99" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <text x="50" y="112" font-family="monospace" font-size="8" fill="#555" text-anchor="middle">PHOENIX</text>
+  </g>
+
+</svg>
+
+If the five silhouettes above are visually indistinguishable, the designs are failing. Expected read: cat = sitting quad with small triangular ears and side-swept tail; fennec = same body shape but ears consume half the total height; owl = no ears, perfectly round head, barrel body on a branch; axolotl = wide flat head with candelabra frills erupting from both sides; phoenix = spread wings, swept crest plumes above, tail plumes below.
+
+---
+
+## Concept A — Library Cat
+
+**Slug:** `cat` | **Tier:** Common
+
+**Why this animal:** The library cat is the mascot of every bookish space in history — from the cats of the British Library to the famous feline residents of the New York Public Library stacks. Common because everyone begins here; beloved because no one is disappointed to receive one.
+
+**Description:** A medium-sized cat seated upright in the formal posture of Egyptian statuary — weight centered, tail coiled around the base, forepaws together. Coloration is a warm aged-parchment tabby, with three arcing stripe marks drawn across the flank in deep red ink, as if the stripes themselves were ruled with a quill. The forehead carries the faint M-mark of the tabby in the same manuscript hand. The eyes are rendered as simple dark ovals with a single cream highlight dot — no whites, no sparkle, no expression lines beyond the closed-curve mouth. At 48px the silhouette reads instantly: sitting cat, two pointed ears, curl of tail to the right.
+
+**Adult SVG:**
 
 ```svg
-<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Outer decorative ring -->
-  <circle cx="50" cy="50" r="43" stroke="#2d1959" stroke-width="0.75"/>
-  <!-- 12 tick marks at 30° intervals, straddling the outer ring -->
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(0,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(30,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(60,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(90,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(120,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(150,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(180,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(210,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(240,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(270,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(300,50,50)"/>
-  <line x1="50" y1="5" x2="50" y2="11" stroke="#c4b5e8" stroke-width="1.25" transform="rotate(330,50,50)"/>
-  <!-- Middle ring -->
-  <circle cx="50" cy="50" r="34" stroke="#9370db" stroke-width="0.75" opacity="0.7"/>
-  <!-- Hexagram: outer r=26, inner r=13, 12 alternating points -->
-  <polygon
-    points="50,24 56.5,38.7 72.5,37 63,50 72.5,63 56.5,61.3 50,76 43.5,61.3 27.5,63 37,50 27.5,37 43.5,38.7"
-    stroke="#9370db" stroke-width="1" fill="none"/>
-  <!-- Inner hexagon from the star's 6 inner vertices -->
-  <polygon
-    points="56.5,38.7 63,50 56.5,61.3 43.5,61.3 37,50 43.5,38.7"
-    stroke="#c4b5e8" stroke-width="0.75" fill="none" opacity="0.45"/>
-  <!-- Central rune: vertical stroke -->
-  <line x1="50" y1="40" x2="50" y2="58" stroke="#c4b5e8" stroke-width="1.75" stroke-linecap="round"/>
-  <!-- Central rune: right arc (D-form) -->
-  <path d="M50,40 C59,40 61,45 61,49 C61,53 59,57 50,57"
-        stroke="#c4b5e8" stroke-width="1.75" fill="none" stroke-linecap="round"/>
-  <!-- Accent binding dot below rune -->
-  <circle cx="50" cy="61.5" r="1.75" fill="#9370db"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- BODY -->
+  <ellipse cx="50" cy="67" rx="18" ry="19" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- NECK FILL -->
+  <path d="M38,51 Q50,47 62,51 L60,57 Q50,54 40,57 Z" fill="#c4b5a0" stroke="#1a1208" stroke-width="1"/>
+
+  <!-- HEAD -->
+  <circle cx="50" cy="34" r="16" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5"/>
+
+  <!-- LEFT EAR outer -->
+  <polygon points="35,26 33,7 47,22" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- LEFT EAR inner -->
+  <polygon points="36,24 35,11 45,21" fill="#8a3a3a" stroke="none"/>
+
+  <!-- RIGHT EAR outer -->
+  <polygon points="65,26 67,7 53,22" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- RIGHT EAR inner -->
+  <polygon points="64,24 65,11 55,21" fill="#8a3a3a" stroke="none"/>
+
+  <!-- FOREHEAD TABBY M -->
+  <path d="M42,23 Q44,20 46,23" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.6"/>
+  <path d="M47,22 L50,19 L53,22" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.6"/>
+  <path d="M54,23 Q56,20 58,23" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.6"/>
+
+  <!-- LEFT EYE -->
+  <ellipse cx="42" cy="33" rx="3.5" ry="3" fill="#1a1208" stroke="none"/>
+  <circle cx="43.2" cy="31.8" r="1.1" fill="#e8dbb0" stroke="none"/>
+
+  <!-- RIGHT EYE -->
+  <ellipse cx="58" cy="33" rx="3.5" ry="3" fill="#1a1208" stroke="none"/>
+  <circle cx="59.2" cy="31.8" r="1.1" fill="#e8dbb0" stroke="none"/>
+
+  <!-- NOSE -->
+  <polygon points="50,41 47.5,44 52.5,44" fill="#8a3a3a" stroke="none"/>
+
+  <!-- PHILTRUM -->
+  <line x1="50" y1="44" x2="50" y2="46" stroke="#1a1208" stroke-width="0.8"/>
+
+  <!-- MOUTH -->
+  <path d="M47,46.5 Q50,49.5 53,46.5" fill="none" stroke="#1a1208" stroke-width="0.9" stroke-linecap="round"/>
+
+  <!-- WHISKERS LEFT -->
+  <line x1="20" y1="41" x2="41" y2="43" stroke="#1a1208" stroke-width="0.75" opacity="0.65"/>
+  <line x1="20" y1="44.5" x2="41" y2="44.5" stroke="#1a1208" stroke-width="0.75" opacity="0.65"/>
+  <line x1="20" y1="48" x2="41" y2="46.5" stroke="#1a1208" stroke-width="0.75" opacity="0.55"/>
+
+  <!-- WHISKERS RIGHT -->
+  <line x1="80" y1="41" x2="59" y2="43" stroke="#1a1208" stroke-width="0.75" opacity="0.65"/>
+  <line x1="80" y1="44.5" x2="59" y2="44.5" stroke="#1a1208" stroke-width="0.75" opacity="0.65"/>
+  <line x1="80" y1="48" x2="59" y2="46.5" stroke="#1a1208" stroke-width="0.75" opacity="0.55"/>
+
+  <!-- CHEST TUFT -->
+  <path d="M43,56 Q50,52 57,56" fill="none" stroke="#1a1208" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- BODY STRIPE MARKS (3 arcing quill lines) -->
+  <path d="M35,62 Q50,57 65,62" fill="none" stroke="#8a3a3a" stroke-width="1.1" opacity="0.5"/>
+  <path d="M33,69 Q50,64 67,69" fill="none" stroke="#8a3a3a" stroke-width="1" opacity="0.4"/>
+  <path d="M35,76 Q50,71 65,76" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.3"/>
+
+  <!-- TAIL main fill stroke -->
+  <path d="M67,70 C86,58 92,78 77,88 C68,93 57,89 58,85"
+        fill="none" stroke="#c4b5a0" stroke-width="6" stroke-linecap="round"/>
+  <!-- TAIL outline -->
+  <path d="M67,70 C86,58 92,78 77,88 C68,93 57,89 58,85"
+        fill="none" stroke="#1a1208" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- TAIL ring marks -->
+  <path d="M80,70 C85,68 89,72 87,77" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.45"/>
+  <path d="M74,84 C72,87 67,90 64,88" fill="none" stroke="#8a3a3a" stroke-width="0.9" opacity="0.35"/>
+
+  <!-- LEFT PAW -->
+  <ellipse cx="42" cy="86" rx="6.5" ry="4" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2"/>
+  <line x1="38.5" y1="85" x2="39" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="42" y1="84.5" x2="42" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="45.5" y1="85" x2="45" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+
+  <!-- RIGHT PAW -->
+  <ellipse cx="58" cy="86" rx="6.5" ry="4" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2"/>
+  <line x1="54.5" y1="85" x2="55" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="58" y1="84.5" x2="58" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="61.5" y1="85" x2="61" y2="88.5" stroke="#1a1208" stroke-width="0.8"/>
+
+  <!-- ORNAMENTAL DOTS — manuscript gold, top corners -->
+  <circle cx="7" cy="8" r="1.8" fill="#c9a227" stroke="none"/>
+  <circle cx="11" cy="5" r="1.2" fill="#c9a227" stroke="none"/>
+  <circle cx="5" cy="12" r="1" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="8" r="1.8" fill="#c9a227" stroke="none"/>
+  <circle cx="89" cy="5" r="1.2" fill="#c9a227" stroke="none"/>
+  <circle cx="95" cy="12" r="1" fill="#c9a227" stroke="none"/>
+  <!-- bottom side dots -->
+  <circle cx="8" cy="85" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="92" cy="85" r="1.4" fill="#c9a227" stroke="none"/>
+  <!-- leaf curl ornaments at shoulders -->
+  <path d="M8,28 C6,22 12,20 10,26" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.7"/>
+  <path d="M92,28 C94,22 88,20 90,26" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.7"/>
+
 </svg>
 ```
 
-### Growth Stages
-- **Egg**: A single circle (r=43), dim, with only the center accent dot visible. No tick marks, no inner geometry. Feels like a dormant seal.
-- **Nestling**: The middle ring appears. The central rune gains its vertical stroke — one line, no arc yet. 4 tick marks at 90° intervals.
-- **Juvenile**: The hexagram appears between the two rings. The central rune gains the D-arc. 8 tick marks.
-- **Adult**: Full form. 12 tick marks, complete hexagram, inner hexagon, complete rune, accent dot. The outer ring at this stage gains a very subtle rotation animation (CSS transform, 120s cycle, reduced-motion respecting).
+**Growth Stages:**
 
-### Rarity Tiers
-- **Common**: Monochrome. All strokes in muted lavender (#c4b5e8). No fill anywhere. Accent dot in #9370db.
-- **Uncommon**: Warm sepia shift. Tick marks and rune in #e8c98a (manuscript ink amber). Inner hexagon faintly filled with #14100f.
-- **Rare**: Silver-white primary strokes (#e8e8f4). Inner hexagon has a subtle radial gradient fill (center: #1e1a30 → edge: transparent). Tick marks slightly longer.
-- **Epic**: Full Pergamum violet (#9370db) on all strokes. Central rune filled solid. The outer ring has a faint ambient radial glow (SVG filter: feGaussianBlur + feComposite).
-- **Legendary**: Gold primary strokes (#c9a227). A second 12-pointed star layer appears behind the hexagram at 15° rotation. Inner hexagon has a warm gold radial glow. Outer ring tick marks alternate gold/silver. The rotation animation runs at 60s (twice as fast).
+- **Egg:** A smooth oval egg the color of aged parchment (#c4b5a0). Three dark-red ink dots arranged on the top forming a paw-pad shape — two small upper dots, one larger lower dot — as if pressed there by a tiny foot. No other markings.
+- **Nestling:** A tiny round head with enormous ears relative to the body, set on a bead-shaped torso with no visible neck. Eyes are wide dark circles. No stripes yet. Tail is a thin wisp. Looks freshly emerged and uncertain.
+- **Juvenile:** Recognizable as a young cat but with proportions still slightly off — head slightly too large, tail slightly too thin. Two of the three body stripes are visible. Paws are blocky, not yet refined. Whiskers present but sparse.
+- **Adult:** Full sitting posture, three stripe marks, complete tail curl, all six whiskers, ornamental margin dots. The M-mark on the forehead is now clear.
+
+**Ornamental Flourish Notes:** Four gold dot clusters at the corners and two small leaf-curl strokes at mid-height on each side. Restrained. The cat earns no elaborate border — the simplicity is the point for Common tier.
 
 ---
 
-## Concept B — The Vellum Wyrm
+## Concept B — Fennec Fox
 
-### Description
+**Slug:** `fennec` | **Tier:** Uncommon
 
-The Vellum Wyrm is a small serpentine dragon whose scales are individual manuscript leaves — thin vellum pages, each one a different size, overlapping like shingles on a roof. The body is sinuous and grows longer with each stage. At the egg stage it is a simple ovoid with faint scale-lines pressed against the inside of the shell. At adult stage it is a fully-realized serpent coiled around an invisible manuscript, its head crowned with a small horn made from a rolled quill, its tail tapering into a fraying scroll edge. The scales closest to the head bear fine text; the ones toward the tail are blank — the unwritten pages of work yet to come.
+**Why this animal:** The fennec fox's ears are so disproportionately large they read as a silhouette from across a room. Desert creature, nocturnal hunter, feels exotic without requiring mythology. One tier above the cat in rarity; one tier above in visual complexity.
 
-This concept has the strongest heraldic quality. A wyrm in medieval manuscripts was the simplest form of dragon — no legs, no wings, pure serpent — and they appear in the margins of illuminated texts as decorative guardians. The Vellum Wyrm is that creature, miniaturized and made personal.
+**Description:** A small fennec seated upright, weight back on haunches, ears erect and angled slightly outward. The ears consume approximately half the total vertical height of the drawing — they are the character. Each ear interior is rendered with three radiating vein-lines in deep red, giving the impression of manuscript marginalia leaf veins. The body is the warm cream of bleached papyrus. A thick, bushy tail curves behind and to the right, its tip a slightly paler oval. The muzzle projects slightly — more pointed than the cat, less extreme than a full fox — with the nose rendered as a small dark ellipse at the tip. Two gold dot-clusters flank the ear bases; a small curl ornament hangs below each ear like a punctuation mark.
 
-### SVG Sketch — Adult, Common Rarity
+**Adult SVG:**
 
 ```svg
-<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Body shadow/outline (slightly thicker, darker) -->
-  <path d="M16,82 C24,60 30,52 50,50 C70,48 76,40 84,18"
-        stroke="#1a0f35" stroke-width="12" stroke-linecap="round" fill="none"/>
-  <!-- Body fill -->
-  <path d="M16,82 C24,60 30,52 50,50 C70,48 76,40 84,18"
-        stroke="#b8a0d8" stroke-width="9" stroke-linecap="round" fill="none"/>
-  <!-- Scale marks: perpendicular lines along the body at 7 intervals -->
-  <!-- Near tail (body dir ≈ -70°, mark at +20°) -->
-  <line x1="22" y1="67" x2="22" y2="77" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(-70,22,72)" opacity="0.7"/>
-  <line x1="31" y1="57" x2="31" y2="67" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(-55,31,62)" opacity="0.7"/>
-  <!-- Near mid-body (body dir ≈ -30°) -->
-  <line x1="40" y1="48" x2="40" y2="58" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(-25,40,53)" opacity="0.7"/>
-  <!-- At midpoint (body dir ≈ 0°, mark is vertical) -->
-  <line x1="50" y1="45" x2="50" y2="55" stroke="#e0d8f0" stroke-width="1" opacity="0.7"/>
-  <!-- Near head (body dir ≈ +30°) -->
-  <line x1="62" y1="43" x2="62" y2="53" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(30,62,48)" opacity="0.7"/>
-  <line x1="72" y1="33" x2="72" y2="43" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(55,72,38)" opacity="0.7"/>
-  <line x1="80" y1="22" x2="80" y2="32" stroke="#e0d8f0" stroke-width="1"
-        transform="rotate(70,80,27)" opacity="0.7"/>
-  <!-- Head: angular wedge (body ends at ~85,18, pointing upper-right) -->
-  <polygon points="80,16 90,16 86,28 78,24" fill="#b8a0d8"/>
-  <!-- Head: back-swept frill/horn -->
-  <path d="M80,16 C76,11 73,9 76,7" stroke="#9370db" stroke-width="1.5"
-        fill="none" stroke-linecap="round"/>
-  <!-- Head: eye slit -->
-  <line x1="83" y1="19" x2="87" y2="18" stroke="#0a0a0f" stroke-width="1.5"
-        stroke-linecap="round"/>
-  <!-- Tail spiral -->
-  <path d="M16,82 C13,87 10,90 13,91 C16,92 19,89 17,86"
-        stroke="#9370db" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Belly line (central spine suggestion) -->
-  <path d="M18,80 C26,60 32,52 50,50 C68,48 74,40 82,20"
-        stroke="#2d1959" stroke-width="1" fill="none" opacity="0.6"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- LEFT EAR outer shape (tall, sweeping) -->
+  <path d="M38,48 C30,36 20,14 26,5 C31,-1 46,26 48,44 Z"
+        fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- LEFT EAR inner fill -->
+  <path d="M39,46 C33,36 26,18 30,8 C34,4 44,28 46,42 Z"
+        fill="#c4b5a0" stroke="none"/>
+  <!-- LEFT EAR vein lines -->
+  <path d="M39,44 C35,34 30,20 30,10" fill="none" stroke="#8a3a3a" stroke-width="0.75" opacity="0.55"/>
+  <path d="M41,43 C38,33 36,22 34,14" fill="none" stroke="#8a3a3a" stroke-width="0.65" opacity="0.45"/>
+  <path d="M43,42 C41,33 40,24 38,17" fill="none" stroke="#8a3a3a" stroke-width="0.6" opacity="0.4"/>
+
+  <!-- RIGHT EAR outer shape -->
+  <path d="M62,48 C70,36 80,14 74,5 C69,-1 54,26 52,44 Z"
+        fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- RIGHT EAR inner fill -->
+  <path d="M61,46 C67,36 74,18 70,8 C66,4 56,28 54,42 Z"
+        fill="#c4b5a0" stroke="none"/>
+  <!-- RIGHT EAR vein lines -->
+  <path d="M61,44 C65,34 70,20 70,10" fill="none" stroke="#8a3a3a" stroke-width="0.75" opacity="0.55"/>
+  <path d="M59,43 C62,33 64,22 66,14" fill="none" stroke="#8a3a3a" stroke-width="0.65" opacity="0.45"/>
+  <path d="M57,42 C59,33 60,24 62,17" fill="none" stroke="#8a3a3a" stroke-width="0.6" opacity="0.4"/>
+
+  <!-- BODY -->
+  <ellipse cx="50" cy="74" rx="15" ry="14" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- HEAD -->
+  <circle cx="50" cy="53" r="13" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5"/>
+
+  <!-- MUZZLE protrusion -->
+  <ellipse cx="50" cy="59" rx="5.5" ry="4" fill="#e8dbb0" stroke="#1a1208" stroke-width="1"/>
+
+  <!-- LEFT EYE -->
+  <ellipse cx="43" cy="51" rx="4" ry="3.5" fill="#1a1208" stroke="none"/>
+  <circle cx="44.4" cy="49.6" r="1.2" fill="#e8dbb0" stroke="none"/>
+
+  <!-- RIGHT EYE -->
+  <ellipse cx="57" cy="51" rx="4" ry="3.5" fill="#1a1208" stroke="none"/>
+  <circle cx="58.4" cy="49.6" r="1.2" fill="#e8dbb0" stroke="none"/>
+
+  <!-- NOSE -->
+  <ellipse cx="50" cy="61" rx="2.5" ry="1.6" fill="#8a3a3a" stroke="none"/>
+
+  <!-- WHISKERS LEFT -->
+  <line x1="20" y1="58" x2="42" y2="59" stroke="#1a1208" stroke-width="0.75" opacity="0.6"/>
+  <line x1="20" y1="61.5" x2="42" y2="61" stroke="#1a1208" stroke-width="0.75" opacity="0.6"/>
+  <line x1="20" y1="65" x2="42" y2="63" stroke="#1a1208" stroke-width="0.7" opacity="0.5"/>
+
+  <!-- WHISKERS RIGHT -->
+  <line x1="80" y1="58" x2="58" y2="59" stroke="#1a1208" stroke-width="0.75" opacity="0.6"/>
+  <line x1="80" y1="61.5" x2="58" y2="61" stroke="#1a1208" stroke-width="0.75" opacity="0.6"/>
+  <line x1="80" y1="65" x2="58" y2="63" stroke="#1a1208" stroke-width="0.7" opacity="0.5"/>
+
+  <!-- CHEST FUR LINES -->
+  <path d="M39,65 Q50,61 61,65" fill="none" stroke="#8a3a3a" stroke-width="0.7" opacity="0.4"/>
+  <path d="M40,69 Q50,66 60,69" fill="none" stroke="#8a3a3a" stroke-width="0.7" opacity="0.35"/>
+
+  <!-- TAIL (fluffy, right side) — fill layers -->
+  <path d="M63,76 C79,68 90,74 87,83 C84,90 73,90 68,85"
+        fill="none" stroke="#e8dbb0" stroke-width="9" stroke-linecap="round"/>
+  <path d="M63,76 C79,68 90,74 87,83 C84,90 73,90 68,85"
+        fill="none" stroke="#c4b5a0" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M63,76 C79,68 90,74 87,83 C84,90 73,90 68,85"
+        fill="none" stroke="#1a1208" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- TAIL white tip -->
+  <circle cx="68" cy="85" r="4" fill="#e8dbb0" stroke="#1a1208" stroke-width="1"/>
+
+  <!-- LEFT PAW -->
+  <ellipse cx="42" cy="87" rx="5.5" ry="3.5" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.2"/>
+  <line x1="39" y1="86" x2="39.5" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="42" y1="85.5" x2="42" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="45" y1="86" x2="44.5" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+
+  <!-- RIGHT PAW -->
+  <ellipse cx="58" cy="87" rx="5.5" ry="3.5" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.2"/>
+  <line x1="55" y1="86" x2="55.5" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="58" y1="85.5" x2="58" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+  <line x1="61" y1="86" x2="60.5" y2="89" stroke="#1a1208" stroke-width="0.8"/>
+
+  <!-- ORNAMENTAL FLOURISHES -->
+  <!-- corner dot clusters -->
+  <circle cx="7" cy="6" r="2" fill="#c9a227" stroke="none"/>
+  <circle cx="11" cy="4" r="1.2" fill="#c9a227" stroke="none"/>
+  <circle cx="4" cy="10" r="1" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="6" r="2" fill="#c9a227" stroke="none"/>
+  <circle cx="89" cy="4" r="1.2" fill="#c9a227" stroke="none"/>
+  <circle cx="96" cy="10" r="1" fill="#c9a227" stroke="none"/>
+  <!-- ear base dots -->
+  <circle cx="29" cy="48" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="71" cy="48" r="1.6" fill="#c9a227" stroke="none"/>
+  <!-- small curl below each ear -->
+  <path d="M24,50 C21,55 26,59 30,56" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.65"/>
+  <path d="M76,50 C79,55 74,59 70,56" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.65"/>
+  <!-- bottom corner dots -->
+  <circle cx="8" cy="88" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="92" cy="88" r="1.4" fill="#c9a227" stroke="none"/>
+
 </svg>
 ```
 
-### Growth Stages
-- **Egg**: A rounded ovoid (tall ellipse). Scale-lines faintly pressed against the inside of the shell visible as a texture. A single curved line through the center suggests the coiled body within.
-- **Nestling**: The wyrm is small, coiled tightly in a spiral — only about 2 full turns visible. Head barely distinguishable. Scales present but undetailed.
-- **Juvenile**: The body is a clear S-curve, 3/4 of the adult length. Head clearly formed with basic frill. Tail has begun to spiral. 5-6 scale marks.
-- **Adult**: Full S-curve from lower-left to upper-right. 7 scale marks. Complete head with horn and eye. Tail fully spiraled. Belly line detail.
+**Growth Stages:**
 
-### Rarity Tiers
-- **Common**: Lavender-grey body (#b8a0d8). White-grey scale marks (#e0d8f0). Dark purple accents.
-- **Uncommon**: Warm parchment body color (#d4bc8a). Scale marks in aged vellum (#ecdbb0). Eye rendered as an amber slit.
-- **Rare**: Body in cool silver (#c8d4e0). Scales have a light blue-white sheen. Eye becomes a small diamond shape.
-- **Epic**: Body in deep violet (#7447d1) with lavender scale marks. Faint glow on scale marks (feGaussianBlur filter). The horn/frill gains a second parallel spike.
-- **Legendary**: Body in burnished gold (#c9a227) with bright gold scale marks. A fine line of text (lorem-ipsum-style path text) runs along the belly. Tail spiral gains an extra turn. Eye glows amber.
+- **Egg:** A sandy-cream egg with two large rounded teardrop markings on opposite sides of the upper half — silhouette hints of the oversized ears. The markings are outlined in faint deep red.
+- **Nestling:** A tiny round-bodied kit with ears already at adult proportion — comically oversized relative to the body, flopped slightly outward. Eyes are large dark circles. No vein detail in ears yet.
+- **Juvenile:** Ears have straightened and grown, inner vein lines appear but are faint. Muzzle beginning to project. Tail visible but not yet fluffy. Proportions still a little soft.
+- **Adult:** Full ear height, three inner vein lines per ear, complete muzzle projection, full fluffy tail with pale tip, all six whiskers. Ornamental flourishes at ear base.
+
+**Ornamental Flourish Notes:** Gold dot at the base of each ear, a small scroll-curl below each ear, corner clusters at all four corners, and two dots at the bottom edge. More elements than the cat; the ears themselves function as the dominant decorative feature.
 
 ---
 
-## Concept C — The Codex
+## Concept C — Snowy Owl
 
-### Description
+**Slug:** `owl` | **Tier:** Rare
 
-The Codex is an ink sprite: a small entity that condensed out of the accumulated intent of a library's worth of writing. Its body is a ribbon of flowing ink that has hardened into a coherent form — torso and trailing lower body, no legs, no wings. The head is an ink drop: a rounded dome above, narrowing to a point below, which connects directly to the ribbon body. Faint lines of manuscript text run across the ribbon, like rulings on parchment. Below the ribbon, three trailing wisps fade into nothing — the evaporating excess of every draft ever abandoned.
+**Description:** A snowy owl perched on a simple branch bar, facing directly forward. Round head — no ear tufts, which is correct for the species and crucial for the silhouette's distinctiveness from other tier characters. The body is a compact barrel, almost as wide as it is tall, suggesting the owl's dense arctic plumage. The plumage is rendered in the faded cream of old vellum, marked across both head and body with small dark chevrons (V-shapes pointing upward) and scattered elliptical spots in deep red — the standard snowy owl barring, reinterpreted as manuscript ink marks. The most striking feature at 96px and above: the eyes. Each is rendered with three concentric rings — an outer gold ring, a dark iris, and a cream highlight dot — giving them unusual weight for so small a face. A short hooked beak juts downward between them. The facial disc is implied by a subtle arc of fine dashed marks on each side.
 
-The Codex is the most figurative of the three concepts. It reads immediately as a small person or sprite when seen at full size, but at 48px it collapses to a clean silhouette: drop head, narrow ribbon body, trailing wisps. It has minimal facial marks — two short dashes where eyes would be — just enough to imply awareness without cartoon expression.
-
-### SVG Sketch — Adult, Common Rarity
+**Adult SVG:**
 
 ```svg
-<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Head: ink-drop shape (dome top, pointed bottom) -->
-  <path d="M40,22 C38,16 42,10 50,10 C58,10 62,16 60,22 L50,36 Z"
-        fill="#c4b5e8"/>
-  <!-- Eye marks: two short dashes (not circles) -->
-  <line x1="43" y1="19" x2="46" y2="19" stroke="#0a0a0f" stroke-width="1.75"
-        stroke-linecap="round"/>
-  <line x1="54" y1="19" x2="57" y2="19" stroke="#0a0a0f" stroke-width="1.75"
-        stroke-linecap="round"/>
-  <!-- Ribbon body: filled path between two curved edges -->
-  <path d="M44,36 C40,52 42,66 44,82 L56,82 C58,66 60,52 56,36 Z"
-        fill="#1e1330" stroke="#9370db" stroke-width="0.75" opacity="0.9"/>
-  <!-- Ribbon left highlight edge -->
-  <path d="M44,36 C40,52 42,66 44,82"
-        stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <!-- Manuscript text lines across the ribbon body -->
-  <line x1="44" y1="42" x2="56" y2="42" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.6"/>
-  <line x1="43" y1="48" x2="57" y2="48" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.6"/>
-  <line x1="43" y1="54" x2="57" y2="54" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.6"/>
-  <line x1="43" y1="60" x2="57" y2="60" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.5"/>
-  <line x1="43" y1="66" x2="57" y2="66" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.4"/>
-  <line x1="44" y1="72" x2="56" y2="72" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.3"/>
-  <line x1="44" y1="78" x2="56" y2="78" stroke="#6b4fa3" stroke-width="0.5"
-        stroke-dasharray="1.5 2" opacity="0.2"/>
-  <!-- Trailing wisps below ribbon -->
-  <path d="M44,82 C41,88 38,93 35,97"
-        stroke="#9370db" stroke-width="0.75" fill="none" opacity="0.55"
-        stroke-linecap="round"/>
-  <path d="M50,82 C50,88 49,93 50,97"
-        stroke="#9370db" stroke-width="0.75" fill="none" opacity="0.4"
-        stroke-linecap="round"/>
-  <path d="M56,82 C59,88 62,93 65,97"
-        stroke="#9370db" stroke-width="0.75" fill="none" opacity="0.25"
-        stroke-linecap="round"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- BRANCH -->
+  <rect x="12" y="87" width="76" height="4" rx="2" fill="#8a3a3a" stroke="#1a1208" stroke-width="1"/>
+  <!-- bark texture -->
+  <line x1="22" y1="87" x2="25" y2="91" stroke="#1a1208" stroke-width="0.7" opacity="0.4"/>
+  <line x1="36" y1="87" x2="39" y2="91" stroke="#1a1208" stroke-width="0.7" opacity="0.4"/>
+  <line x1="50" y1="87" x2="53" y2="91" stroke="#1a1208" stroke-width="0.7" opacity="0.4"/>
+  <line x1="64" y1="87" x2="67" y2="91" stroke="#1a1208" stroke-width="0.7" opacity="0.4"/>
+  <line x1="78" y1="87" x2="81" y2="91" stroke="#1a1208" stroke-width="0.7" opacity="0.4"/>
+
+  <!-- LEFT TALON -->
+  <path d="M34,87 L29,82 M34,87 L30,87 M34,87 L34,83 L32,79"
+        fill="none" stroke="#1a1208" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- RIGHT TALON -->
+  <path d="M66,87 L71,82 M66,87 L70,87 M66,87 L66,83 L68,79"
+        fill="none" stroke="#1a1208" stroke-width="1.3" stroke-linecap="round"/>
+
+  <!-- BODY -->
+  <ellipse cx="50" cy="64" rx="18" ry="21" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- LEFT WING EDGE (folded, feather tips peeking) -->
+  <path d="M33,60 C28,65 27,74 32,80 C34,75 34,66 36,62 Z"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1" stroke-linejoin="round"/>
+  <!-- RIGHT WING EDGE -->
+  <path d="M67,60 C72,65 73,74 68,80 C66,75 66,66 64,62 Z"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1" stroke-linejoin="round"/>
+
+  <!-- BODY CHEVRONS — 12 chevrons across 4 rows -->
+  <path d="M37,54 L41,50 L45,54" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.7"/>
+  <path d="M45,54 L49,50 L53,54" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.7"/>
+  <path d="M53,54 L57,50 L61,54" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.65"/>
+  <path d="M36,62 L40,58 L44,62" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M44,62 L48,58 L52,62" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.6"/>
+  <path d="M52,62 L56,58 L60,62" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linejoin="round" opacity="0.55"/>
+  <path d="M37,70 L41,66 L45,70" fill="none" stroke="#8a3a3a" stroke-width="0.8" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M45,70 L49,66 L53,70" fill="none" stroke="#8a3a3a" stroke-width="0.8" stroke-linejoin="round" opacity="0.5"/>
+  <path d="M53,70 L57,66 L61,70" fill="none" stroke="#8a3a3a" stroke-width="0.8" stroke-linejoin="round" opacity="0.45"/>
+  <path d="M38,78 L42,74 L46,78" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linejoin="round" opacity="0.4"/>
+  <path d="M46,78 L50,74 L54,78" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linejoin="round" opacity="0.4"/>
+  <path d="M54,78 L58,74 L62,78" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linejoin="round" opacity="0.35"/>
+
+  <!-- HEAD (large, perfectly round) -->
+  <circle cx="50" cy="31" r="21" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5"/>
+
+  <!-- HEAD SPOTS (snowy owl barring) -->
+  <ellipse cx="38" cy="20" rx="2.2" ry="1.3" fill="#8a3a3a" opacity="0.5" transform="rotate(-20,38,20)"/>
+  <ellipse cx="44" cy="16" rx="2" ry="1.2" fill="#8a3a3a" opacity="0.45" transform="rotate(-10,44,16)"/>
+  <ellipse cx="50" cy="14" rx="2.2" ry="1.3" fill="#8a3a3a" opacity="0.4"/>
+  <ellipse cx="56" cy="16" rx="2" ry="1.2" fill="#8a3a3a" opacity="0.45" transform="rotate(10,56,16)"/>
+  <ellipse cx="62" cy="20" rx="2.2" ry="1.3" fill="#8a3a3a" opacity="0.5" transform="rotate(20,62,20)"/>
+  <ellipse cx="33" cy="28" rx="1.7" ry="1" fill="#8a3a3a" opacity="0.4"/>
+  <ellipse cx="67" cy="28" rx="1.7" ry="1" fill="#8a3a3a" opacity="0.4"/>
+  <ellipse cx="35" cy="38" rx="1.5" ry="0.9" fill="#8a3a3a" opacity="0.35"/>
+  <ellipse cx="65" cy="38" rx="1.5" ry="0.9" fill="#8a3a3a" opacity="0.35"/>
+
+  <!-- FACIAL DISC arcs (dashed) -->
+  <path d="M36,22 Q24,31 36,42" fill="none" stroke="#8a3a3a" stroke-width="0.7" stroke-dasharray="1.5,2.2" opacity="0.5"/>
+  <path d="M64,22 Q76,31 64,42" fill="none" stroke="#8a3a3a" stroke-width="0.7" stroke-dasharray="1.5,2.2" opacity="0.5"/>
+
+  <!-- LEFT EYE (three rings: gold outer, dark iris, cream dot) -->
+  <circle cx="42" cy="33" r="5.5" fill="#c9a227" stroke="#1a1208" stroke-width="1.2"/>
+  <circle cx="42" cy="33" r="3.8" fill="#1a1208" stroke="none"/>
+  <circle cx="43.4" cy="31.6" r="1.3" fill="#e8dbb0" stroke="none"/>
+
+  <!-- RIGHT EYE -->
+  <circle cx="58" cy="33" r="5.5" fill="#c9a227" stroke="#1a1208" stroke-width="1.2"/>
+  <circle cx="58" cy="33" r="3.8" fill="#1a1208" stroke="none"/>
+  <circle cx="59.4" cy="31.6" r="1.3" fill="#e8dbb0" stroke="none"/>
+
+  <!-- BEAK (short hooked triangle) -->
+  <path d="M47,40 L50,37 L53,40 L50,45 Z" fill="#c9a227" stroke="#1a1208" stroke-width="0.9" stroke-linejoin="round"/>
+
+  <!-- ORNAMENTAL FLOURISHES -->
+  <circle cx="5" cy="5" r="2.2" fill="#c9a227" stroke="none"/>
+  <circle cx="9" cy="3" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="3" cy="9" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="7" cy="13" r="0.9" fill="#c9a227" stroke="none"/>
+  <circle cx="95" cy="5" r="2.2" fill="#c9a227" stroke="none"/>
+  <circle cx="91" cy="3" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="97" cy="9" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="13" r="0.9" fill="#c9a227" stroke="none"/>
+  <!-- mid-side leaf curls -->
+  <path d="M5,44 C3,38 9,34 8,40" fill="none" stroke="#c9a227" stroke-width="1.1" opacity="0.65"/>
+  <path d="M95,44 C97,38 91,34 92,40" fill="none" stroke="#c9a227" stroke-width="1.1" opacity="0.65"/>
+  <!-- bottom dots -->
+  <circle cx="7" cy="94" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="11" cy="96" r="1" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="94" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="89" cy="96" r="1" fill="#c9a227" stroke="none"/>
+
 </svg>
 ```
 
-### Growth Stages
-- **Egg**: A simple vertical oval (tall ellipse) with three faint horizontal lines inside — manuscript rulings visible through the shell. The pointed bottom of the egg already hints at the drop-head shape to come.
-- **Nestling**: The head emerges from the top of the egg but the ribbon body is very short (extends only to y≈55). No trailing wisps yet. Eyes visible. 3 text lines.
-- **Juvenile**: Full head. Ribbon body extends to y≈70. One trailing wisp, faint. 5 text lines. The ribbon is narrower than the adult.
-- **Adult**: Full form. Complete ink-drop head. Ribbon to y=82. Three trailing wisps at decreasing opacity. 7 text lines, fading toward the bottom.
+**Growth Stages:**
 
-### Rarity Tiers
-- **Common**: Head in muted lavender (#c4b5e8). Ribbon outline in Pergamum violet (#9370db). Text lines in #6b4fa3. Wisps in #9370db at low opacity.
-- **Uncommon**: Head in warm amber-white (#e8dbb0). Ribbon outline in amber (#c8a050). Text lines visible as actual glyph-like dashes (longer, more structured). Wisps in warm amber.
-- **Rare**: Head in cool silver (#e0e8f4). Ribbon has a second, fainter parallel edge (double-outline effect). Text lines are brighter. A small glint mark on the top of the head.
-- **Epic**: Head in deep violet (#9370db), filled. Ribbon fill is a radial gradient: center #3d2880 → edge #1e1330. Text lines in bright lavender. Wisps are longer (extend to y=105). A faint halo ring around the head.
-- **Legendary**: Head in gold (#c9a227). Ribbon outline in gold. Text lines are golden ink. Wisps extend off-canvas and have a feathered glow effect (SVG filter). A second pair of shorter wisps at the head (upward), suggesting bidirectional flow — the creature reads and writes simultaneously.
+- **Egg:** A rounded egg with scattered brown-ink speckles — a loose pattern replicating the actual appearance of a snowy owl egg. The speckles are denser around the equator, sparser at the poles.
+- **Nestling:** A white powder-puff ball, almost entirely head, with two enormous dark eye-circles that take up a third of the face. The beak is a tiny hooked bump. No chevron markings yet; pure white-cream.
+- **Juvenile:** Body beginning to elongate into the barrel shape. First chevron rows appearing on upper body. Eyes still prominent but more in proportion. Talons visible, branch beginning to show.
+- **Adult:** Full barrel body, complete chevron pattern, golden-ringed eyes, full branch with talon grip, facial disc arcs, all ornamental elements.
+
+**Ornamental Flourish Notes:** Four-dot corner clusters plus a tenth dot below, mid-side leaf curls, and bottom edge dots. More elements than the fennec, establishing the escalating richness toward the upper tiers.
 
 ---
 
-## How to Decide
+## Concept D — Axolotl
 
-| Criterion | Palimpsest | Vellum Wyrm | Codex |
-|---|---|---|---|
-| Reads as "familiar / sigil" | Strongest | Good (heraldic) | Moderate (more sprite) |
-| Works at 48px | Good (concentric rings + dot) | Moderate (head + body) | Good (drop + wisp silhouette) |
-| Literary reference depth | Very deep (palimpsest, parchment, Pergamum) | Deep (illuminated margins) | Moderate (ink, manuscript) |
-| Rarity tier differentiability | Excellent (color + geometry layers) | Excellent (scale detail + color) | Excellent (color + wisp length) |
-| Build complexity (SVG) | Lowest (pure geometry) | Medium | Medium |
-| Animation potential | High (rotation, pulsing rings) | Medium (idle sway) | High (wisp drift, text scroll) |
+**Slug:** `axolotl` | **Tier:** Epic
 
-The three above are now locked to Common / Uncommon / Rare respectively. Phase 1a below adds Epic and Legendary.
+**Why this animal:** The axolotl's external gill frills are unlike any other vertebrate feature in the animal kingdom — branching tree-like structures erupting from the sides of the head, biologically remarkable (they retain juvenile traits into adulthood, they can regenerate limbs), and visually extraordinary. At manuscript scale, three branching gill stalks on each side look exactly like filigree candelabra ornamentation. Critically endangered in the wild; mythologically present in Aztec culture as the avatar of Xolotl. Earns Epic tier by being genuinely singular.
 
----
+**Description:** A wide-headed axolotl seen from directly in front, floating. The defining feature is the gill frills: three branching stalks erupting from each side of the head, each main stalk rendered in manuscript gold with two or three side branches terminating in small dot florettes in deep red and gold. The frills suggest ornate candlestick holders or illuminated manuscript border trees. The head itself is wide and flat, the characteristic axolotl shape — so broad relative to the body that it seems to extend beyond the body's edge. The famous upward-curving mouth is rendered as a single ink arc, giving the impression of a calm, permanent half-smile. Four stubby legs are visible, two at each side, each with three short toe lines. The tail is a paddle fin. The body carries a scatter of dark-red circular spots.
 
-## Concept D — The Illuminator (Epic)
-
-### Description
-
-The Illuminator is a moth whose wings are illuminated manuscript folios — divided into panels like the pages of a medieval book of hours, each panel bearing a miniature scene in the tradition of historiated initials: a rosette window, a pointed arch, a block of ruled text. The wing veins are the column rules of the manuscript; the body is the spine. Its antennae end in split quill feathers — the forked tip of a freshly cut pen nib. At rest with wings folded, it looks like a small closed book. At full display, it opens into something that should be behind glass in a scriptorium.
-
-The Illuminator sits above the Palimpsest precisely because it contains the Palimpsest's logic — compartmentalized geometry, sacred form — but set within a living creature. The Palimpsest is pure mathematics; the Illuminator is what happens when a master illuminator spends a lifetime making mathematics beautiful. Its wing panels are the direct heir to the Palimpsest's inner hexagon, but now inhabited, figurative, warm. Where Rare is achieved through discipline, Epic is achieved through that discipline flowering into something else.
-
-### SVG Sketch — Adult Form
+**Adult SVG:**
 
 ```svg
-<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Abdomen: tapered, three visible segments -->
-  <path d="M47,45 C46,54 46,64 47,74 Q50,78 53,74 C54,64 54,54 53,45 Z" fill="#c4b5e8"/>
-  <line x1="47" y1="52" x2="53" y2="52" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
-  <line x1="46.5" y1="60" x2="53.5" y2="60" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
-  <line x1="47" y1="68" x2="53" y2="68" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
-  <!-- Thorax: slightly wider than abdomen, wing-attachment segment -->
-  <ellipse cx="50" cy="37" rx="4.5" ry="8" fill="#c4b5e8"/>
-  <!-- Head -->
-  <circle cx="50" cy="27" r="4.5" fill="#c4b5e8"/>
-  <!-- Upper right wing -->
-  <path d="M51,37 C55,29 72,22 84,27 C92,32 90,50 80,57 C72,62 61,58 53,51 C52,49 51,46 51,37 Z"
-        fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Upper left wing (mirrored) -->
-  <path d="M49,37 C45,29 28,22 16,27 C8,32 10,50 20,57 C28,62 39,58 47,51 C48,49 49,46 49,37 Z"
-        fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Panel division lines — right wing (follow wing curvature) -->
-  <path d="M64,27 C64,40 63,50 63,57" stroke="#6b4fa3" stroke-width="0.6"/>
-  <path d="M75,25 C76,35 76,48 76,57" stroke="#6b4fa3" stroke-width="0.6"/>
-  <!-- Panel division lines — left wing (mirrored) -->
-  <path d="M36,27 C36,40 37,50 37,57" stroke="#6b4fa3" stroke-width="0.6"/>
-  <path d="M25,25 C24,35 24,48 24,57" stroke="#6b4fa3" stroke-width="0.6"/>
-  <!-- RIGHT WING — Panel 1: 8-spoke Gothic rosette window -->
-  <circle cx="57" cy="45" r="4.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
-  <circle cx="57" cy="45" r="2" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.5"/>
-  <circle cx="57" cy="45" r="0.7" fill="#c4b5e8" opacity="0.65"/>
-  <line x1="57" y1="40.5" x2="57" y2="49.5" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
-  <line x1="52.5" y1="45" x2="61.5" y2="45" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
-  <line x1="53.8" y1="41.8" x2="60.2" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
-  <line x1="60.2" y1="41.8" x2="53.8" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
-  <!-- RIGHT WING — Panel 2: Gothic pointed arch with columns + capitals -->
-  <line x1="66" y1="51" x2="66" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
-  <line x1="72" y1="51" x2="72" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
-  <line x1="64" y1="51" x2="68" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <line x1="70" y1="51" x2="74" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <path d="M66,36 Q69,31 72,36" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
-  <line x1="64" y1="36" x2="68" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="70" y1="36" x2="74" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <!-- RIGHT WING — Panel 3: branching cross / tree of life -->
-  <line x1="80" y1="33" x2="80" y2="52" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
-  <line x1="76" y1="41" x2="84" y2="41" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
-  <line x1="80" y1="33" x2="78" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="80" y1="33" x2="82" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="76" y1="41" x2="74" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="84" y1="41" x2="86" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <!-- LEFT WING — Panel 1: 8-spoke rosette (mirrored) -->
-  <circle cx="43" cy="45" r="4.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
-  <circle cx="43" cy="45" r="2" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.5"/>
-  <circle cx="43" cy="45" r="0.7" fill="#c4b5e8" opacity="0.65"/>
-  <line x1="43" y1="40.5" x2="43" y2="49.5" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
-  <line x1="38.5" y1="45" x2="47.5" y2="45" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
-  <line x1="39.8" y1="41.8" x2="46.2" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
-  <line x1="46.2" y1="41.8" x2="39.8" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
-  <!-- LEFT WING — Panel 2: Gothic arch (mirrored) -->
-  <line x1="34" y1="51" x2="34" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
-  <line x1="28" y1="51" x2="28" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
-  <line x1="32" y1="51" x2="36" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <line x1="26" y1="51" x2="30" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <path d="M34,36 Q31,31 28,36" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
-  <line x1="32" y1="36" x2="36" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="26" y1="36" x2="30" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <!-- LEFT WING — Panel 3: branching cross (mirrored) -->
-  <line x1="20" y1="33" x2="20" y2="52" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
-  <line x1="16" y1="41" x2="24" y2="41" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
-  <line x1="20" y1="33" x2="18" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="20" y1="33" x2="22" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="16" y1="41" x2="14" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <line x1="24" y1="41" x2="26" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <!-- Wing veins radiating from thorax -->
-  <path d="M51,40 L80,30" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
-  <path d="M51,44 L83,46" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
-  <path d="M49,40 L20,30" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
-  <path d="M49,44 L17,46" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
-  <!-- Trailing-edge margin dots: right wing -->
-  <circle cx="75" cy="58" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <circle cx="68" cy="59" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <circle cx="61" cy="57" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <!-- Trailing-edge margin dots: left wing -->
-  <circle cx="25" cy="58" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <circle cx="32" cy="59" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <circle cx="39" cy="57" r="0.8" fill="#c4b5e8" opacity="0.3"/>
-  <!-- Lower right wing -->
-  <path d="M51,53 C55,57 68,63 71,71 C73,77 65,80 57,77 C52,75 51,68 51,60 Z"
-        fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Lower left wing -->
-  <path d="M49,53 C45,57 32,63 29,71 C27,77 35,80 43,77 C48,75 49,68 49,60 Z"
-        fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Lower wing eyespot right: 3 concentric rings -->
-  <circle cx="62" cy="68" r="4" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <circle cx="62" cy="68" r="2.5" stroke="#9370db" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <circle cx="62" cy="68" r="1" fill="#9370db" opacity="0.45"/>
-  <!-- Lower wing eyespot left: 3 concentric rings -->
-  <circle cx="38" cy="68" r="4" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <circle cx="38" cy="68" r="2.5" stroke="#9370db" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <circle cx="38" cy="68" r="1" fill="#9370db" opacity="0.45"/>
-  <!-- Right antenna with 3-part split quill tip -->
-  <path d="M52,23 C56,18 62,14 67,11" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
-  <line x1="67" y1="11" x2="65" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
-  <line x1="67" y1="11" x2="68" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
-  <line x1="67" y1="11" x2="70" y2="9" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
-  <!-- Left antenna with 3-part split quill tip -->
-  <path d="M48,23 C44,18 38,14 33,11" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
-  <line x1="33" y1="11" x2="31" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
-  <line x1="33" y1="11" x2="32" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
-  <line x1="33" y1="11" x2="30" y2="9" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- TAIL FIN (behind body) -->
+  <path d="M36,86 C30,92 32,98 38,97 L50,90 L62,97 C68,98 70,92 64,86 Z"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2" stroke-linejoin="round"/>
+
+  <!-- BODY -->
+  <ellipse cx="50" cy="72" rx="16" ry="17" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- BODY SPOTS -->
+  <circle cx="44" cy="66" r="2.5" fill="#8a3a3a" opacity="0.35" stroke="none"/>
+  <circle cx="56" cy="66" r="2.5" fill="#8a3a3a" opacity="0.35" stroke="none"/>
+  <circle cx="42" cy="74" r="2" fill="#8a3a3a" opacity="0.3" stroke="none"/>
+  <circle cx="58" cy="74" r="2" fill="#8a3a3a" opacity="0.3" stroke="none"/>
+  <circle cx="50" cy="70" r="2.5" fill="#8a3a3a" opacity="0.25" stroke="none"/>
+  <circle cx="45" cy="80" r="1.8" fill="#8a3a3a" opacity="0.28" stroke="none"/>
+  <circle cx="55" cy="80" r="1.8" fill="#8a3a3a" opacity="0.28" stroke="none"/>
+
+  <!-- HEAD (wide and flat) -->
+  <ellipse cx="50" cy="50" rx="27" ry="15" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- LEFT EYE -->
+  <circle cx="30" cy="47" r="3.2" fill="#1a1208" stroke="#1a1208" stroke-width="0.8"/>
+  <circle cx="31.2" cy="45.8" r="1" fill="#e8dbb0" stroke="none"/>
+
+  <!-- RIGHT EYE -->
+  <circle cx="70" cy="47" r="3.2" fill="#1a1208" stroke="#1a1208" stroke-width="0.8"/>
+  <circle cx="71.2" cy="45.8" r="1" fill="#e8dbb0" stroke="none"/>
+
+  <!-- NOSTRIL DOTS -->
+  <circle cx="47" cy="52" r="1.3" fill="#8a3a3a" opacity="0.6" stroke="none"/>
+  <circle cx="53" cy="52" r="1.3" fill="#8a3a3a" opacity="0.6" stroke="none"/>
+
+  <!-- SMILE (axolotl upward curve) -->
+  <path d="M42,58 Q50,64 58,58" fill="none" stroke="#1a1208" stroke-width="1.3" stroke-linecap="round"/>
+
+  <!-- FRONT LEGS -->
+  <path d="M34,67 C26,69 22,74 24,78 C27,80 30,78 33,73 L35,70"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M22,79 L20,84 M24,78 L23,84 M27,79 L27,84"
+        fill="none" stroke="#1a1208" stroke-width="0.9" stroke-linecap="round"/>
+  <path d="M66,67 C74,69 78,74 76,78 C73,80 70,78 67,73 L65,70"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M78,79 L80,84 M76,78 L77,84 M73,79 L73,84"
+        fill="none" stroke="#1a1208" stroke-width="0.9" stroke-linecap="round"/>
+
+  <!-- LEFT GILL FRILLS (3 filigree stalks) -->
+
+  <!-- L-Frill 1 (forward, short-medium) -->
+  <path d="M24,44 C20,34 18,24 20,14" fill="none" stroke="#c9a227" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M22,38 C16,34 10,30 9,25" fill="none" stroke="#c9a227" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M20,28 C14,26 8,23 8,17" fill="none" stroke="#c9a227" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="20" cy="14" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="9" cy="25" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="8" cy="17" r="1.2" fill="#8a3a3a" stroke="none"/>
+
+  <!-- L-Frill 2 (center, tallest) -->
+  <path d="M19,44 C15,32 12,18 13,7" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M17,36 C10,32 4,26 4,20" fill="none" stroke="#c9a227" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M15,26 C8,22 3,16 4,10" fill="none" stroke="#c9a227" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M14,17 C10,12 9,6 11,3" fill="none" stroke="#c9a227" stroke-width="0.9" stroke-linecap="round"/>
+  <circle cx="13" cy="7" r="1.9" fill="#c9a227" stroke="none"/>
+  <circle cx="4" cy="20" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="4" cy="10" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="11" cy="3" r="1.5" fill="#c9a227" stroke="none"/>
+
+  <!-- L-Frill 3 (rear, medium) -->
+  <path d="M21,48 C18,38 17,26 19,16" fill="none" stroke="#c9a227" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M19,40 C13,36 7,32 7,26" fill="none" stroke="#c9a227" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M19,30 C13,28 8,24 9,18" fill="none" stroke="#c9a227" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="19" cy="16" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="7" cy="26" r="1.1" fill="#8a3a3a" stroke="none"/>
+  <circle cx="9" cy="18" r="1.1" fill="#8a3a3a" stroke="none"/>
+
+  <!-- RIGHT GILL FRILLS (mirror) -->
+
+  <!-- R-Frill 1 -->
+  <path d="M76,44 C80,34 82,24 80,14" fill="none" stroke="#c9a227" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M78,38 C84,34 90,30 91,25" fill="none" stroke="#c9a227" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M80,28 C86,26 92,23 92,17" fill="none" stroke="#c9a227" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="80" cy="14" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="91" cy="25" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="92" cy="17" r="1.2" fill="#8a3a3a" stroke="none"/>
+
+  <!-- R-Frill 2 -->
+  <path d="M81,44 C85,32 88,18 87,7" fill="none" stroke="#c9a227" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M83,36 C90,32 96,26 96,20" fill="none" stroke="#c9a227" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M85,26 C92,22 97,16 96,10" fill="none" stroke="#c9a227" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M86,17 C90,12 91,6 89,3" fill="none" stroke="#c9a227" stroke-width="0.9" stroke-linecap="round"/>
+  <circle cx="87" cy="7" r="1.9" fill="#c9a227" stroke="none"/>
+  <circle cx="96" cy="20" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="96" cy="10" r="1.2" fill="#8a3a3a" stroke="none"/>
+  <circle cx="89" cy="3" r="1.5" fill="#c9a227" stroke="none"/>
+
+  <!-- R-Frill 3 -->
+  <path d="M79,48 C82,38 83,26 81,16" fill="none" stroke="#c9a227" stroke-width="1.9" stroke-linecap="round"/>
+  <path d="M81,40 C87,36 93,32 93,26" fill="none" stroke="#c9a227" stroke-width="1.1" stroke-linecap="round"/>
+  <path d="M81,30 C87,28 92,24 91,18" fill="none" stroke="#c9a227" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="81" cy="16" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="26" r="1.1" fill="#8a3a3a" stroke="none"/>
+  <circle cx="91" cy="18" r="1.1" fill="#8a3a3a" stroke="none"/>
+
+  <!-- ORNAMENTAL FLOURISHES (many, Epic tier) -->
+  <circle cx="5" cy="54" r="2.2" fill="#c9a227" stroke="none"/>
+  <circle cx="5" cy="60" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="5" cy="66" r="1" fill="#c9a227" stroke="none"/>
+  <circle cx="95" cy="54" r="2.2" fill="#c9a227" stroke="none"/>
+  <circle cx="95" cy="60" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="95" cy="66" r="1" fill="#c9a227" stroke="none"/>
+  <!-- bottom edge dots -->
+  <circle cx="20" cy="97" r="1.4" fill="#c9a227" stroke="none"/>
+  <circle cx="50" cy="98" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="80" cy="97" r="1.4" fill="#c9a227" stroke="none"/>
+
 </svg>
 ```
 
-### Growth Stages
+**Growth Stages:**
 
-- **Egg**: A single leaf — a manuscript page curled lengthwise into a tube, the way a moth lays eggs inside a rolled leaf. One faint ruled line visible on its surface. The curl creates an implied oval. No creature visible, just the wrapped potential.
-- **Nestling**: A cocoon of overlapping manuscript page-strips wound tightly into an oval. The strips are visible as stacked horizontal bands, like a barrel made of paper. Angular protrusions at each side hint at the future wing attachment points. Antennae not yet present.
-- **Juvenile**: Wings partially unfurled from the cocoon, slightly crumpled at the trailing edges. Only 2 wing panels visible per side, no panel details yet — just the division lines and the bare wing-fill. Antennae present but short, no split-quill tips yet.
-- **Adult**: Full display. 3 panels per upper wing with miniature scenes. Lower wings with eyespots. Complete antennae with forked quill tips. Wing veins visible.
+- **Egg:** A translucent pale-cream egg. Visible through the shell surface as faint inner lines: the suggestion of three branching gill stalks in embryonic form, rendered as thin gold strokes at low opacity. The only bestiary buddy whose egg content is visible before hatching.
+- **Nestling:** A tiny flat-headed form with small, simple gill frills — just single stalks with no branching yet. The smile is already present. Body is a simple oval. Legs are stubby stubs.
+- **Juvenile:** Gill frills have their first side branches (one branch each, not yet two or three). Body spots have appeared. Legs are more defined with visible toes. Tail fin shape is recognizable.
+- **Adult:** Full three-stalk frills on each side, each with multiple branches and tip florettes in gold and red. Complete body spot scatter. Paddle tail. All four legs with toe marks. Elaborate side flourishes.
 
-### What Distinguishes It From Rare (Palimpsest)
-
-The Palimpsest is purely geometric: mathematical forms, no organic life, no warmth. It is the achievement of perfect discipline. The Illuminator is what discipline becomes when it is applied to making something beautiful for its own sake — it contains the Palimpsest's compartmented geometry (the wing panels mirror the hexagram's inner structure) but presses that geometry into the service of image-making. The Palimpsest is a theorem. The Illuminator is a theorem that became a painting.
+**Ornamental Flourish Notes:** The gill frills themselves function as the primary ornamental element — they take the place of the border decorations other characters rely on. Additional gold dot columns at mid-height on each side, plus three dots along the bottom edge. No corner clusters — the frills reach into those corners already.
 
 ---
 
-## Concept E — The Librarian (Legendary)
+## Concept E — Phoenix
 
-### Description
+**Slug:** `phoenix` | **Tier:** Legendary
 
-The Librarian is a robed figure with no face — not obscured, not hidden, simply absent. Where a face would be, the hood contains only the same darkness as the space beyond the page. It holds a small lantern in one sleeve-fold, and inside that lantern is a miniature orrery: a central orb surrounded by four orbiting glyphs that rotate slowly, each a different rune. The robes fall in deep parallel folds, the hem barely visible at the bottom of the frame. There are no feet. There is no suggestion that it needs any.
+**Why this animal:** Born from eggs in ashes, mythologically tied to renewal and rarity, recognizable across every culture. Gold and crimson plumage reads instantly as the most valuable tier. Admin-granted only — users never roll a Phoenix through normal progression. It must look like something worth waiting for.
 
-The Librarian is the only one of the five characters that implies a human form without being one. It is the library made briefly personal — the accumulated weight of cataloguing, preserving, and handing down, given enough presence to hold a light. It is what you become in the eyes of a library after you have given enough of yourself to it. This is why it is admin-granted: you don't finish 10 milestones to earn it. You earn it by having become part of what Pergamum is.
+**Description:** A phoenix perched on a decorative bar, wings raised in a half-spread posture — neither fully folded nor fully extended, implying potential energy. The plumage is the richest element: the wings show three tiers of feathers, each tier rendered as layered arcs with individual feather lines in deep red on parchment ground. Wing tips and primary feather ends carry small flame-tip shapes in manuscript gold. Five tail plumes stream downward from the base, each terminating in a pointed flame shape in gold. The crest: five sweeping plumes rising from the crown, the central three in gold, the outer two in deep red. The beak is a hooked curve. A single eye faces forward, rendered with a gold iris ring. Around the wings, a subtle dashed ellipse in violet — the only use of the Pergamum accent color in the entire buddy roster, reserved for this tier alone.
 
-### SVG Sketch — Adult Form
+**Adult SVG:**
 
 ```svg
-<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Ambient glow pooling at robe base -->
-  <ellipse cx="50" cy="84" rx="28" ry="8" fill="#9370db" opacity="0.06"/>
-  <!-- Robe main form -->
-  <path d="M20,97 C20,74 26,54 30,46 L37,27 C40,19 60,19 63,27 L70,46 C74,54 80,74 80,97 Z"
-        fill="#1a1030" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Five robe fold lines (drapery) -->
-  <path d="M32,97 C32,72 33,54 34,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
-  <path d="M40,97 C40,74 40,56 40,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
-  <path d="M50,97 C50,74 50,56 50,46" stroke="#2d1959" stroke-width="0.5" opacity="0.7"/>
-  <path d="M60,97 C60,74 60,56 60,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
-  <path d="M68,97 C68,72 67,54 66,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
-  <!-- Face void: not hidden — absent. Deeper than background. -->
-  <ellipse cx="50" cy="30" rx="11" ry="9" fill="#05040a"/>
-  <!-- Portrait oval frame: the shape of absence is still a shape -->
-  <ellipse cx="50" cy="30" rx="9" ry="7.5" stroke="#140e24" stroke-width="0.5" fill="none" opacity="0.8"/>
-  <!-- Hood rim -->
-  <path d="M37,27 C40,19 60,19 63,27" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <!-- Collar brooch at neckline -->
-  <circle cx="50" cy="42" r="2.2" stroke="#c4b5e8" stroke-width="0.5" fill="#1e1330" opacity="0.7"/>
-  <circle cx="50" cy="42" r="0.8" fill="#9370db" opacity="0.7"/>
-  <!-- Left sleeve fold -->
-  <path d="M27,57 C24,54 22,57 24,62 C26,67 30,66 32,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
-  <!-- Closed book in left hand (spine on left, clasp mark visible) -->
-  <rect x="19" y="63" width="11" height="8" rx="0.5" stroke="#c4b5e8" stroke-width="0.5" fill="#160f28"/>
-  <line x1="19" y1="63" x2="19" y2="71" stroke="#9370db" stroke-width="1.5" opacity="0.7" stroke-linecap="round"/>
-  <line x1="22" y1="67" x2="28" y2="67" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
-  <!-- Right sleeve fold (arm extended to hold lantern) -->
-  <path d="M68,56 C71,53 75,54 75,58 C75,62 71,63 68,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
-  <!-- Lantern: hanging cap (arched roof) -->
-  <path d="M69,50 Q78,43 87,50 L86,50 L70,50 Z" fill="#140e2c" stroke="#c4b5e8" stroke-width="0.6"/>
-  <!-- Lantern finial and hanging chain -->
-  <line x1="78" y1="39" x2="78" y2="43" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.7"/>
-  <path d="M76,41 Q78,39 80,41" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
-  <line x1="78" y1="43" x2="78" y2="50" stroke="#c4b5e8" stroke-width="0.55" opacity="0.5"/>
-  <!-- Main lantern frame -->
-  <rect x="70" y="50" width="16" height="18" stroke="#c4b5e8" stroke-width="0.75" fill="#08061a"/>
-  <!-- Central mullion (vertical glazing bar) -->
-  <line x1="78" y1="50" x2="78" y2="68" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
-  <!-- Horizontal rail at mid-height -->
-  <line x1="70" y1="59" x2="86" y2="59" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
-  <!-- Corner braces (four) -->
-  <path d="M70,50 L73,53" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
-  <path d="M86,50 L83,53" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
-  <path d="M70,68 L73,65" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
-  <path d="M86,68 L83,65" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
-  <!-- Lantern lower pendant -->
-  <path d="M76,68 L78,74 L80,68" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.5"/>
-  <circle cx="78" cy="74" r="1" fill="#c4b5e8" opacity="0.45"/>
-  <!-- Interior glow (visible through panes) -->
-  <ellipse cx="78" cy="59" rx="5" ry="6" fill="#9370db" opacity="0.2"/>
-  <!-- Orbit ring -->
-  <circle cx="78" cy="59" r="3.8" stroke="#9370db" stroke-width="0.3" fill="none" opacity="0.45"/>
-  <!-- Central orb -->
-  <circle cx="78" cy="59" r="1.75" fill="#c4b5e8"/>
-  <!-- Orbiting glyph 1: top — vertical tick -->
-  <line x1="78" y1="53.5" x2="78" y2="55.5" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
-  <!-- Orbiting glyph 2: right — angle bracket -->
-  <path d="M82.5,56.5 L81,59 L82.5,61.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.65"/>
-  <!-- Orbiting glyph 3: bottom — horizontal dash -->
-  <line x1="76" y1="62.5" x2="80" y2="62.5" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
-  <!-- Orbiting glyph 4: left — small cross -->
-  <line x1="73.2" y1="59" x2="75.2" y2="59" stroke="#c4b5e8" stroke-width="0.5" opacity="0.65"/>
-  <line x1="74.2" y1="58" x2="74.2" y2="60" stroke="#c4b5e8" stroke-width="0.5" opacity="0.65"/>
-  <!-- Robe hem decoration (repeating marks along lower hem) -->
-  <path d="M20,96 Q50,98 80,96" stroke="#c4b5e8" stroke-width="0.3" fill="none" opacity="0.25"/>
-  <line x1="25" y1="95" x2="28" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="33" y1="95" x2="36" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="41" y1="95" x2="44" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="49" y1="95" x2="52" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="57" y1="95" x2="60" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="65" y1="95" x2="68" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
-  <line x1="73" y1="95" x2="76" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- PERCH BAR -->
+  <rect x="16" y="89" width="68" height="4" rx="2" fill="#8a3a3a" stroke="#1a1208" stroke-width="1"/>
+  <line x1="26" y1="89" x2="29" y2="93" stroke="#1a1208" stroke-width="0.8" opacity="0.5"/>
+  <line x1="42" y1="89" x2="45" y2="93" stroke="#1a1208" stroke-width="0.8" opacity="0.5"/>
+  <line x1="58" y1="89" x2="61" y2="93" stroke="#1a1208" stroke-width="0.8" opacity="0.5"/>
+  <line x1="74" y1="89" x2="77" y2="93" stroke="#1a1208" stroke-width="0.8" opacity="0.5"/>
+
+  <!-- TAIL PLUMES (5, streaming downward) -->
+  <path d="M44,82 C38,87 28,94 21,99" fill="none" stroke="#8a3a3a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M20,99 C17,97 19,93 21,91 C23,94 23,98 20,99 Z" fill="#c9a227" stroke="none"/>
+  <path d="M47,83 C44,90 40,96 36,100" fill="none" stroke="#8a3a3a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M35,100 C32,98 34,94 36,92 C38,95 38,99 35,100 Z" fill="#c9a227" stroke="none"/>
+  <path d="M50,84 C50,91 50,98 50,103" fill="none" stroke="#8a3a3a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M50,103 C47,101 48,97 50,95 C52,97 53,101 50,103 Z" fill="#c9a227" stroke="none"/>
+  <path d="M53,83 C56,90 60,96 64,100" fill="none" stroke="#8a3a3a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M65,100 C68,98 66,94 64,92 C62,95 62,99 65,100 Z" fill="#c9a227" stroke="none"/>
+  <path d="M56,82 C62,87 72,94 79,99" fill="none" stroke="#8a3a3a" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M80,99 C83,97 81,93 79,91 C77,94 77,98 80,99 Z" fill="#c9a227" stroke="none"/>
+
+  <!-- LEFT TALON -->
+  <path d="M34,89 L29,84 M34,89 L29,89 M34,89 L33,85 L31,81"
+        fill="none" stroke="#1a1208" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- RIGHT TALON -->
+  <path d="M66,89 L71,84 M66,89 L71,89 M66,89 L67,85 L69,81"
+        fill="none" stroke="#1a1208" stroke-width="1.3" stroke-linecap="round"/>
+
+  <!-- LEFT WING (raised, three feather tiers visible) -->
+  <path d="M38,66 C20,56 8,40 10,24 C14,16 23,26 30,34 C33,24 31,12 38,8 C42,16 40,28 42,38 C46,28 47,16 53,14 C54,22 51,34 50,42"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- left wing primary feathers (tier 1) -->
+  <path d="M10,24 C13,20 19,21 24,26" fill="none" stroke="#8a3a3a" stroke-width="0.95" stroke-linecap="round"/>
+  <path d="M16,18 C19,14 25,15 28,20" fill="none" stroke="#8a3a3a" stroke-width="0.95" stroke-linecap="round"/>
+  <path d="M24,13 C27,9 33,10 35,15" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linecap="round"/>
+  <path d="M34,10 C36,6 41,7 41,12" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linecap="round"/>
+  <!-- left wing covert feathers (tier 2) -->
+  <path d="M22,34 C26,30 32,31 34,36" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linecap="round" opacity="0.65"/>
+  <path d="M30,40 C34,36 40,38 40,43" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linecap="round" opacity="0.65"/>
+  <!-- left wing flame tips -->
+  <path d="M9,23 C6,20 8,16 10,18 C12,15 12,20 9,23 Z" fill="#c9a227" stroke="none" opacity="0.9"/>
+  <path d="M15,16 C12,13 14,9 16,11 C18,9 17,13 15,16 Z" fill="#c9a227" stroke="none" opacity="0.8"/>
+
+  <!-- RIGHT WING (mirror) -->
+  <path d="M62,66 C80,56 92,40 90,24 C86,16 77,26 70,34 C67,24 69,12 62,8 C58,16 60,28 58,38 C54,28 53,16 47,14 C46,22 49,34 50,42"
+        fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- right wing primary feathers -->
+  <path d="M90,24 C87,20 81,21 76,26" fill="none" stroke="#8a3a3a" stroke-width="0.95" stroke-linecap="round"/>
+  <path d="M84,18 C81,14 75,15 72,20" fill="none" stroke="#8a3a3a" stroke-width="0.95" stroke-linecap="round"/>
+  <path d="M76,13 C73,9 67,10 65,15" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linecap="round"/>
+  <path d="M66,10 C64,6 59,7 59,12" fill="none" stroke="#8a3a3a" stroke-width="0.9" stroke-linecap="round"/>
+  <!-- right wing coverts -->
+  <path d="M78,34 C74,30 68,31 66,36" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linecap="round" opacity="0.65"/>
+  <path d="M70,40 C66,36 60,38 60,43" fill="none" stroke="#8a3a3a" stroke-width="0.75" stroke-linecap="round" opacity="0.65"/>
+  <!-- right wing flame tips -->
+  <path d="M91,23 C94,20 92,16 90,18 C88,15 88,20 91,23 Z" fill="#c9a227" stroke="none" opacity="0.9"/>
+  <path d="M85,16 C88,13 86,9 84,11 C82,9 83,13 85,16 Z" fill="#c9a227" stroke="none" opacity="0.8"/>
+
+  <!-- VIOLET GLOW AURA (Legendary only) -->
+  <ellipse cx="50" cy="44" rx="28" ry="16" fill="none" stroke="#9370db" stroke-width="0.8" opacity="0.28" stroke-dasharray="2.5,3.5"/>
+
+  <!-- BODY -->
+  <ellipse cx="50" cy="63" rx="13" ry="15" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.5"/>
+  <!-- body feather scale rows -->
+  <path d="M41,57 Q46,54 50,57 Q54,54 59,57" fill="none" stroke="#8a3a3a" stroke-width="0.85" opacity="0.55"/>
+  <path d="M39,63 Q44,60 50,63 Q56,60 61,63" fill="none" stroke="#8a3a3a" stroke-width="0.85" opacity="0.5"/>
+  <path d="M41,69 Q46,66 50,69 Q54,66 59,69" fill="none" stroke="#8a3a3a" stroke-width="0.8" opacity="0.45"/>
+  <path d="M42,75 Q46,72 50,75 Q54,72 58,75" fill="none" stroke="#8a3a3a" stroke-width="0.75" opacity="0.4"/>
+
+  <!-- NECK -->
+  <path d="M44,50 Q50,46 56,50 L54,56 Q50,53 46,56 Z" fill="#c4b5a0" stroke="#1a1208" stroke-width="1.2"/>
+
+  <!-- HEAD -->
+  <circle cx="50" cy="31" r="13" fill="#e8dbb0" stroke="#1a1208" stroke-width="1.5"/>
+  <!-- head feather marks -->
+  <path d="M40,26 Q43,22 46,26" fill="none" stroke="#8a3a3a" stroke-width="0.75" opacity="0.45"/>
+  <path d="M54,26 Q57,22 60,26" fill="none" stroke="#8a3a3a" stroke-width="0.75" opacity="0.45"/>
+
+  <!-- CREST PLUMES (5, rising from crown) -->
+  <path d="M50,18 C50,12 50,6 50,2" fill="none" stroke="#c9a227" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M50,2 C48,0 52,0 50,2 Z" fill="#c9a227" stroke="none"/>
+  <path d="M46,19 C42,12 38,7 36,3" fill="none" stroke="#c9a227" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M35,3 C33,1 38,0 36,3 Z" fill="#c9a227" stroke="none"/>
+  <path d="M54,19 C58,12 62,7 64,3" fill="none" stroke="#c9a227" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M65,3 C67,1 62,0 64,3 Z" fill="#c9a227" stroke="none"/>
+  <path d="M44,20 C38,15 32,11 30,7" fill="none" stroke="#8a3a3a" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M29,7 C27,5 32,3 30,7 Z" fill="#8a3a3a" stroke="none"/>
+  <path d="M56,20 C62,15 68,11 70,7" fill="none" stroke="#8a3a3a" stroke-width="1.3" stroke-linecap="round"/>
+  <path d="M71,7 C73,5 68,3 70,7 Z" fill="#8a3a3a" stroke="none"/>
+
+  <!-- BEAK (hooked) -->
+  <path d="M47,36 C46,32 50,29 54,33 C52,38 48,40 47,36 Z" fill="#c9a227" stroke="#1a1208" stroke-width="0.9"/>
+
+  <!-- EYE (gold iris, dark pupil) -->
+  <circle cx="44" cy="29" r="4.5" fill="#c9a227" stroke="#1a1208" stroke-width="1.1"/>
+  <circle cx="44" cy="29" r="2.8" fill="#1a1208" stroke="none"/>
+  <circle cx="45.1" cy="27.9" r="1" fill="#e8dbb0" stroke="none"/>
+
+  <!-- ORNAMENTAL FLOURISHES (maximum, Legendary) -->
+  <!-- all four corner clusters, larger -->
+  <circle cx="5" cy="5" r="2.4" fill="#c9a227" stroke="none"/>
+  <circle cx="9" cy="3" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="3" cy="9" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="7" cy="13" r="1" fill="#c9a227" stroke="none"/>
+  <path d="M7,6 C5,3 9,1 9,5" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.7"/>
+  <circle cx="95" cy="5" r="2.4" fill="#c9a227" stroke="none"/>
+  <circle cx="91" cy="3" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="97" cy="9" r="1.5" fill="#c9a227" stroke="none"/>
+  <circle cx="93" cy="13" r="1" fill="#c9a227" stroke="none"/>
+  <path d="M93,6 C95,3 91,1 91,5" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.7"/>
+  <!-- side curl chains -->
+  <path d="M4,38 C2,32 8,28 7,34" fill="none" stroke="#c9a227" stroke-width="1.1" opacity="0.7"/>
+  <path d="M4,44 C2,40 7,38 7,42" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.6"/>
+  <path d="M4,50 C3,46 7,45 7,49" fill="none" stroke="#c9a227" stroke-width="0.9" opacity="0.55"/>
+  <path d="M96,38 C98,32 92,28 93,34" fill="none" stroke="#c9a227" stroke-width="1.1" opacity="0.7"/>
+  <path d="M96,44 C98,40 93,38 93,42" fill="none" stroke="#c9a227" stroke-width="1" opacity="0.6"/>
+  <path d="M96,50 C97,46 93,45 93,49" fill="none" stroke="#c9a227" stroke-width="0.9" opacity="0.55"/>
+  <!-- bottom spark dots -->
+  <circle cx="8" cy="80" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="92" cy="80" r="1.6" fill="#c9a227" stroke="none"/>
+  <circle cx="6" cy="86" r="1" fill="#8a3a3a" stroke="none" opacity="0.7"/>
+  <circle cx="94" cy="86" r="1" fill="#8a3a3a" stroke="none" opacity="0.7"/>
+
 </svg>
 ```
 
-### Growth Stages
+**Growth Stages:**
 
-- **Egg**: A wax seal — a circular disc with a single pressed rune at center, surrounded by a plain border. The wax has the slightly uneven edge of a real seal: not a perfect circle, not a polygon, but the organic ring left by a signet. The rune inside is the same one that will appear in the Librarian's lantern. Nothing else is visible.
-- **Nestling**: The seal has cracked down the center and the robes are just emerging — a small dark hooded form, barely taller than wide. The robe has only 2 fold lines. The lantern is present, held at the side, but unlit. The face void is already clearly empty.
-- **Juvenile**: Full robe silhouette established. 4 fold lines. The lantern glows, with the central orb visible, but only 2 orbiting glyphs present. The sleeve folds are visible. Hem detail absent.
-- **Adult**: Complete form. 5 fold lines. Lantern with all 4 orbiting glyphs. Lantern chain/handle visible. Both sleeve folds present. Hem detail visible. Faint ambient glow at the robe base.
+- **Egg:** A dark charcoal-grey egg wrapped in a suggestion of ash: faint wisp-lines radiating outward from the base, rendered in the deep red ink, as if the egg sits in dying embers. A faint gold shimmer ring in manuscript gold circles the equator.
+- **Nestling:** A small gold-tinted chick with a disproportionately large beak. Three small crest nubs visible but not yet plumes. Wing stubs suggested. Tail feathers are simple short spikes, not yet streaming. Eyes are open, alert.
+- **Juvenile:** Crest plumes extending, first two tail plumes appearing. Wing feathers showing their first tier. The gold coloring becomes more prominent. The beak is fully curved. The violet aura is absent — not yet fully realized.
+- **Adult:** Full five crest plumes, five tail plumes with gold flame tips, two wing tiers with flame tip marks, body feather scale rows, violet glow aura, maximum ornamental border. The most elaborate character in the roster.
 
-### What Distinguishes It From Epic (Illuminator)
-
-The Illuminator is still fundamentally a creature. It has a body, wings, antennae; it exists in biological space. It can be admired and even caught. The Librarian has none of that. It is presence without anatomy — a shape that carries cultural weight (robed, standing, holding a light) but refuses biological specificity. Where the Illuminator achieves Epic through mastery and production, the Librarian achieves Legendary through becoming indistinguishable from the institution itself. The Illuminator makes beautiful things. The Librarian is what remains when the person who made beautiful things has been in the library long enough to belong to it.
-
-The visual tells this directly: the Illuminator is a creature you look at. The Librarian is a figure you look toward.
+**Ornamental Flourish Notes:** All four corner clusters with spiral sub-marks, three-element side curl chains on both sides, bottom spark dot pairs (gold + deep red), and the violet dashed ellipse halo around the wings. The ornaments at this tier become structural — they frame the character as if it belongs on an illuminated manuscript capital letter.
 
 ---
 
-## Full Roster
+## Roster
 
-| Tier | Character | Form | Theme |
-|---|---|---|---|
-| Common | The Codex | Ink sprite, ribbon body | Ink, writing, the act of drafting |
-| Uncommon | The Vellum Wyrm | Serpent with manuscript-page scales | Illuminated margins, heraldic creatures |
-| Rare | The Palimpsest | Geometric sigil, concentric rings | Parchment, layered text, Pergamum itself |
-| Epic | The Illuminator | Moth with illuminated folio wings | Book illumination, historiated initials |
-| Legendary | The Librarian | Robed faceless figure, glyph lantern | Custodianship, the library as entity |
-
-Approve or request changes to Concept D and/or Concept E before Phase 2 begins.
+| Tier | Character | Slug | Silhouette Key Feature | Visual Complexity |
+|---|---|---|---|---|
+| Common | Library Cat | `cat` | Sitting quad, two triangular ears, side tail | Simplest — clean ink tabby |
+| Uncommon | Fennec Fox | `fennec` | Ears consume half the frame height | Ear vein lines, fluffy tail, ear-base flourishes |
+| Rare | Snowy Owl | `owl` | Round head (no ears), barrel body, perch branch | Chevron barring, three-ring eyes, facial disc arcs |
+| Epic | Axolotl | `axolotl` | Wide flat head, candelabra gill frills both sides | Six-stalk filigree frills in manuscript gold |
+| Legendary | Phoenix | `phoenix` | Wings up, five crest plumes, five tail plumes | Maximum — feather tiers, flame tips, violet aura |
