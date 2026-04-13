@@ -234,68 +234,110 @@ The Illuminator sits above the Palimpsest precisely because it contains the Pali
 ```svg
 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Body -->
-  <path d="M47,35 C45,42 45,58 47,70 C48,73 52,73 53,70 C55,58 55,42 53,35 Z" fill="#c4b5e8"/>
+  <!-- Abdomen: tapered, three visible segments -->
+  <path d="M47,45 C46,54 46,64 47,74 Q50,78 53,74 C54,64 54,54 53,45 Z" fill="#c4b5e8"/>
+  <line x1="47" y1="52" x2="53" y2="52" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
+  <line x1="46.5" y1="60" x2="53.5" y2="60" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
+  <line x1="47" y1="68" x2="53" y2="68" stroke="#2d1959" stroke-width="0.6" opacity="0.55"/>
+  <!-- Thorax: slightly wider than abdomen, wing-attachment segment -->
+  <ellipse cx="50" cy="37" rx="4.5" ry="8" fill="#c4b5e8"/>
   <!-- Head -->
-  <circle cx="50" cy="30" r="5" fill="#c4b5e8"/>
+  <circle cx="50" cy="27" r="4.5" fill="#c4b5e8"/>
   <!-- Upper right wing -->
-  <path d="M51,40 C56,33 73,26 86,31 C94,36 92,51 83,58 C75,63 62,59 55,53 C53,51 51,48 51,40 Z"
+  <path d="M51,37 C55,29 72,22 84,27 C92,32 90,50 80,57 C72,62 61,58 53,51 C52,49 51,46 51,37 Z"
         fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Upper left wing -->
-  <path d="M49,40 C44,33 27,26 14,31 C6,36 8,51 17,58 C25,63 38,59 45,53 C47,51 49,48 49,40 Z"
+  <!-- Upper left wing (mirrored) -->
+  <path d="M49,37 C45,29 28,22 16,27 C8,32 10,50 20,57 C28,62 39,58 47,51 C48,49 49,46 49,37 Z"
         fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Panel division lines — right wing -->
-  <path d="M64,28 C66,40 66,54 64,58" stroke="#6b4fa3" stroke-width="0.6"/>
-  <path d="M78,33 C80,43 79,54 77,58" stroke="#6b4fa3" stroke-width="0.6"/>
-  <!-- Panel division lines — left wing -->
-  <path d="M36,28 C34,40 34,54 36,58" stroke="#6b4fa3" stroke-width="0.6"/>
-  <path d="M22,33 C20,43 21,54 23,58" stroke="#6b4fa3" stroke-width="0.6"/>
-  <!-- Right wing panel 1: rosette window -->
-  <circle cx="57" cy="45" r="3.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <circle cx="57" cy="45" r="1.2" fill="#9370db" opacity="0.5"/>
-  <line x1="57" y1="41.5" x2="57" y2="48.5" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
-  <line x1="53.5" y1="45" x2="60.5" y2="45" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
-  <!-- Right wing panel 2: pointed arch -->
-  <path d="M70,52 L70,44 Q74,40 78,44 L78,52" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <!-- Right wing panel 3: ruled text lines -->
-  <line x1="82" y1="43" x2="90" y2="43" stroke="#c4b5e8" stroke-width="0.5" opacity="0.4"/>
-  <line x1="81" y1="46" x2="90" y2="46" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
-  <line x1="82" y1="49" x2="89" y2="49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.3"/>
-  <!-- Left wing panel 1: rosette window (mirrored) -->
-  <circle cx="43" cy="45" r="3.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <circle cx="43" cy="45" r="1.2" fill="#9370db" opacity="0.5"/>
-  <line x1="43" y1="41.5" x2="43" y2="48.5" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
-  <line x1="39.5" y1="45" x2="46.5" y2="45" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
-  <!-- Left wing panel 2: pointed arch (mirrored) -->
-  <path d="M30,52 L30,44 Q26,40 22,44 L22,52" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
-  <!-- Left wing panel 3: ruled text lines (mirrored) -->
-  <line x1="18" y1="43" x2="10" y2="43" stroke="#c4b5e8" stroke-width="0.5" opacity="0.4"/>
-  <line x1="19" y1="46" x2="10" y2="46" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
-  <line x1="18" y1="49" x2="11" y2="49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.3"/>
-  <!-- Wing veins (radiating from body) -->
-  <path d="M51,43 L80,35" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
-  <path d="M51,47 L84,49" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
-  <path d="M49,43 L20,35" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
-  <path d="M49,47 L16,49" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
+  <!-- Panel division lines — right wing (follow wing curvature) -->
+  <path d="M64,27 C64,40 63,50 63,57" stroke="#6b4fa3" stroke-width="0.6"/>
+  <path d="M75,25 C76,35 76,48 76,57" stroke="#6b4fa3" stroke-width="0.6"/>
+  <!-- Panel division lines — left wing (mirrored) -->
+  <path d="M36,27 C36,40 37,50 37,57" stroke="#6b4fa3" stroke-width="0.6"/>
+  <path d="M25,25 C24,35 24,48 24,57" stroke="#6b4fa3" stroke-width="0.6"/>
+  <!-- RIGHT WING — Panel 1: 8-spoke Gothic rosette window -->
+  <circle cx="57" cy="45" r="4.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <circle cx="57" cy="45" r="2" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.5"/>
+  <circle cx="57" cy="45" r="0.7" fill="#c4b5e8" opacity="0.65"/>
+  <line x1="57" y1="40.5" x2="57" y2="49.5" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
+  <line x1="52.5" y1="45" x2="61.5" y2="45" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
+  <line x1="53.8" y1="41.8" x2="60.2" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
+  <line x1="60.2" y1="41.8" x2="53.8" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
+  <!-- RIGHT WING — Panel 2: Gothic pointed arch with columns + capitals -->
+  <line x1="66" y1="51" x2="66" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
+  <line x1="72" y1="51" x2="72" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
+  <line x1="64" y1="51" x2="68" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <line x1="70" y1="51" x2="74" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <path d="M66,36 Q69,31 72,36" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <line x1="64" y1="36" x2="68" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="70" y1="36" x2="74" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <!-- RIGHT WING — Panel 3: branching cross / tree of life -->
+  <line x1="80" y1="33" x2="80" y2="52" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
+  <line x1="76" y1="41" x2="84" y2="41" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
+  <line x1="80" y1="33" x2="78" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="80" y1="33" x2="82" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="76" y1="41" x2="74" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="84" y1="41" x2="86" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <!-- LEFT WING — Panel 1: 8-spoke rosette (mirrored) -->
+  <circle cx="43" cy="45" r="4.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <circle cx="43" cy="45" r="2" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.5"/>
+  <circle cx="43" cy="45" r="0.7" fill="#c4b5e8" opacity="0.65"/>
+  <line x1="43" y1="40.5" x2="43" y2="49.5" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
+  <line x1="38.5" y1="45" x2="47.5" y2="45" stroke="#c4b5e8" stroke-width="0.4" opacity="0.45"/>
+  <line x1="39.8" y1="41.8" x2="46.2" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
+  <line x1="46.2" y1="41.8" x2="39.8" y2="48.2" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
+  <!-- LEFT WING — Panel 2: Gothic arch (mirrored) -->
+  <line x1="34" y1="51" x2="34" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
+  <line x1="28" y1="51" x2="28" y2="36" stroke="#c4b5e8" stroke-width="0.5" opacity="0.55"/>
+  <line x1="32" y1="51" x2="36" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <line x1="26" y1="51" x2="30" y2="51" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <path d="M34,36 Q31,31 28,36" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <line x1="32" y1="36" x2="36" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="26" y1="36" x2="30" y2="36" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <!-- LEFT WING — Panel 3: branching cross (mirrored) -->
+  <line x1="20" y1="33" x2="20" y2="52" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
+  <line x1="16" y1="41" x2="24" y2="41" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
+  <line x1="20" y1="33" x2="18" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="20" y1="33" x2="22" y2="30" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="16" y1="41" x2="14" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <line x1="24" y1="41" x2="26" y2="38" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <!-- Wing veins radiating from thorax -->
+  <path d="M51,40 L80,30" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
+  <path d="M51,44 L83,46" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
+  <path d="M49,40 L20,30" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
+  <path d="M49,44 L17,46" stroke="#c4b5e8" stroke-width="0.35" opacity="0.2"/>
+  <!-- Trailing-edge margin dots: right wing -->
+  <circle cx="75" cy="58" r="0.8" fill="#c4b5e8" opacity="0.3"/>
+  <circle cx="68" cy="59" r="0.8" fill="#c4b5e8" opacity="0.3"/>
+  <circle cx="61" cy="57" r="0.8" fill="#c4b5e8" opacity="0.3"/>
+  <!-- Trailing-edge margin dots: left wing -->
+  <circle cx="25" cy="58" r="0.8" fill="#c4b5e8" opacity="0.3"/>
+  <circle cx="32" cy="59" r="0.8" fill="#c4b5e8" opacity="0.3"/>
+  <circle cx="39" cy="57" r="0.8" fill="#c4b5e8" opacity="0.3"/>
   <!-- Lower right wing -->
-  <path d="M51,54 C55,57 68,61 72,70 C74,76 67,79 59,76 C54,74 51,68 51,60 Z"
+  <path d="M51,53 C55,57 68,63 71,71 C73,77 65,80 57,77 C52,75 51,68 51,60 Z"
         fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
   <!-- Lower left wing -->
-  <path d="M49,54 C45,57 32,61 28,70 C26,76 33,79 41,76 C46,74 49,68 49,60 Z"
+  <path d="M49,53 C45,57 32,63 29,71 C27,77 35,80 43,77 C48,75 49,68 49,60 Z"
         fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Lower wing eyespot (right) -->
-  <circle cx="63" cy="67" r="2.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <circle cx="63" cy="67" r="1" fill="#9370db" opacity="0.35"/>
-  <!-- Lower wing eyespot (left) -->
-  <circle cx="37" cy="67" r="2.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
-  <circle cx="37" cy="67" r="1" fill="#9370db" opacity="0.35"/>
-  <!-- Antennae with split quill tips -->
-  <path d="M52,26 C56,21 62,17 66,13" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
-  <path d="M66,13 C68,11 71,12 69,15" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
-  <path d="M66,13 C69,11 71,13 70,16" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
-  <path d="M48,26 C44,21 38,17 34,13" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
-  <path d="M34,13 C32,11 29,12 31,15" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
-  <path d="M34,13 C31,11 29,13 30,16" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
+  <!-- Lower wing eyespot right: 3 concentric rings -->
+  <circle cx="62" cy="68" r="4" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <circle cx="62" cy="68" r="2.5" stroke="#9370db" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <circle cx="62" cy="68" r="1" fill="#9370db" opacity="0.45"/>
+  <!-- Lower wing eyespot left: 3 concentric rings -->
+  <circle cx="38" cy="68" r="4" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <circle cx="38" cy="68" r="2.5" stroke="#9370db" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <circle cx="38" cy="68" r="1" fill="#9370db" opacity="0.45"/>
+  <!-- Right antenna with 3-part split quill tip -->
+  <path d="M52,23 C56,18 62,14 67,11" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
+  <line x1="67" y1="11" x2="65" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="67" y1="11" x2="68" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="67" y1="11" x2="70" y2="9" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+  <!-- Left antenna with 3-part split quill tip -->
+  <path d="M48,23 C44,18 38,14 33,11" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
+  <line x1="33" y1="11" x2="31" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="33" y1="11" x2="32" y2="8" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
+  <line x1="33" y1="11" x2="30" y2="9" stroke="#c4b5e8" stroke-width="0.5" stroke-linecap="round"/>
 </svg>
 ```
 
@@ -325,51 +367,78 @@ The Librarian is the only one of the five characters that implies a human form w
 ```svg
 <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="100" height="100" fill="#0a0a0f"/>
-  <!-- Faint ambient glow at robe base -->
-  <ellipse cx="50" cy="82" rx="28" ry="9" fill="#9370db" opacity="0.05"/>
+  <!-- Ambient glow pooling at robe base -->
+  <ellipse cx="50" cy="84" rx="28" ry="8" fill="#9370db" opacity="0.06"/>
   <!-- Robe main form -->
   <path d="M20,97 C20,74 26,54 30,46 L37,27 C40,19 60,19 63,27 L70,46 C74,54 80,74 80,97 Z"
         fill="#1a1030" stroke="#9370db" stroke-width="0.75"/>
-  <!-- Robe fold lines (drapery) -->
-  <path d="M32,97 C32,72 33,54 34,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
-  <path d="M40,97 C40,74 40,56 40,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
-  <path d="M50,97 C50,72 50,54 50,46" stroke="#2d1959" stroke-width="0.5" opacity="0.7"/>
-  <path d="M60,97 C60,74 60,56 60,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
-  <path d="M68,97 C68,72 67,54 66,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
-  <!-- Face void (deeper than background — the absence of a face) -->
+  <!-- Five robe fold lines (drapery) -->
+  <path d="M32,97 C32,72 33,54 34,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
+  <path d="M40,97 C40,74 40,56 40,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
+  <path d="M50,97 C50,74 50,56 50,46" stroke="#2d1959" stroke-width="0.5" opacity="0.7"/>
+  <path d="M60,97 C60,74 60,56 60,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
+  <path d="M68,97 C68,72 67,54 66,46" stroke="#2d1959" stroke-width="0.65" opacity="0.9"/>
+  <!-- Face void: not hidden — absent. Deeper than background. -->
   <ellipse cx="50" cy="30" rx="11" ry="9" fill="#05040a"/>
+  <!-- Portrait oval frame: the shape of absence is still a shape -->
+  <ellipse cx="50" cy="30" rx="9" ry="7.5" stroke="#140e24" stroke-width="0.5" fill="none" opacity="0.8"/>
   <!-- Hood rim -->
-  <path d="M37,27 C40,19 60,19 63,27" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.35"/>
-  <!-- Left sleeve fold (arm at rest) -->
-  <path d="M27,58 C24,55 22,58 24,62 C26,66 30,65 32,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
-  <!-- Right sleeve fold (holding lantern) -->
-  <path d="M67,57 C70,54 74,55 74,59 C74,63 70,64 67,61 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
-  <!-- Lantern frame -->
-  <rect x="71" y="46" width="14" height="18" rx="2" stroke="#c4b5e8" stroke-width="0.75" fill="#08061a"/>
-  <!-- Lantern cross-bar -->
-  <line x1="71" y1="55" x2="85" y2="55" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
-  <!-- Lantern corner braces -->
-  <path d="M71,46 L74,49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <path d="M85,46 L82,49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <path d="M71,64 L74,61" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <path d="M85,64 L82,61" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
-  <!-- Lantern interior glow -->
-  <ellipse cx="78" cy="55" rx="5" ry="6" fill="#9370db" opacity="0.18"/>
+  <path d="M37,27 C40,19 60,19 63,27" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <!-- Collar brooch at neckline -->
+  <circle cx="50" cy="42" r="2.2" stroke="#c4b5e8" stroke-width="0.5" fill="#1e1330" opacity="0.7"/>
+  <circle cx="50" cy="42" r="0.8" fill="#9370db" opacity="0.7"/>
+  <!-- Left sleeve fold -->
+  <path d="M27,57 C24,54 22,57 24,62 C26,67 30,66 32,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
+  <!-- Closed book in left hand (spine on left, clasp mark visible) -->
+  <rect x="19" y="63" width="11" height="8" rx="0.5" stroke="#c4b5e8" stroke-width="0.5" fill="#160f28"/>
+  <line x1="19" y1="63" x2="19" y2="71" stroke="#9370db" stroke-width="1.5" opacity="0.7" stroke-linecap="round"/>
+  <line x1="22" y1="67" x2="28" y2="67" stroke="#c4b5e8" stroke-width="0.4" opacity="0.35"/>
+  <!-- Right sleeve fold (arm extended to hold lantern) -->
+  <path d="M68,56 C71,53 75,54 75,58 C75,62 71,63 68,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
+  <!-- Lantern: hanging cap (arched roof) -->
+  <path d="M69,50 Q78,43 87,50 L86,50 L70,50 Z" fill="#140e2c" stroke="#c4b5e8" stroke-width="0.6"/>
+  <!-- Lantern finial and hanging chain -->
+  <line x1="78" y1="39" x2="78" y2="43" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.7"/>
+  <path d="M76,41 Q78,39 80,41" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.6"/>
+  <line x1="78" y1="43" x2="78" y2="50" stroke="#c4b5e8" stroke-width="0.55" opacity="0.5"/>
+  <!-- Main lantern frame -->
+  <rect x="70" y="50" width="16" height="18" stroke="#c4b5e8" stroke-width="0.75" fill="#08061a"/>
+  <!-- Central mullion (vertical glazing bar) -->
+  <line x1="78" y1="50" x2="78" y2="68" stroke="#c4b5e8" stroke-width="0.5" opacity="0.5"/>
+  <!-- Horizontal rail at mid-height -->
+  <line x1="70" y1="59" x2="86" y2="59" stroke="#c4b5e8" stroke-width="0.4" opacity="0.4"/>
+  <!-- Corner braces (four) -->
+  <path d="M70,50 L73,53" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
+  <path d="M86,50 L83,53" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
+  <path d="M70,68 L73,65" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
+  <path d="M86,68 L83,65" stroke="#c4b5e8" stroke-width="0.4" opacity="0.5"/>
+  <!-- Lantern lower pendant -->
+  <path d="M76,68 L78,74 L80,68" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.5"/>
+  <circle cx="78" cy="74" r="1" fill="#c4b5e8" opacity="0.45"/>
+  <!-- Interior glow (visible through panes) -->
+  <ellipse cx="78" cy="59" rx="5" ry="6" fill="#9370db" opacity="0.2"/>
+  <!-- Orbit ring -->
+  <circle cx="78" cy="59" r="3.8" stroke="#9370db" stroke-width="0.3" fill="none" opacity="0.45"/>
   <!-- Central orb -->
-  <circle cx="78" cy="55" r="2" fill="#c4b5e8" opacity="0.9"/>
+  <circle cx="78" cy="59" r="1.75" fill="#c4b5e8"/>
   <!-- Orbiting glyph 1: top — vertical tick -->
-  <line x1="78" y1="48" x2="78" y2="51" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
-  <!-- Orbiting glyph 2: right — small angle bracket -->
-  <path d="M83,52 L81.5,55 L83,58" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.65"/>
+  <line x1="78" y1="53.5" x2="78" y2="55.5" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
+  <!-- Orbiting glyph 2: right — angle bracket -->
+  <path d="M82.5,56.5 L81,59 L82.5,61.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.65"/>
   <!-- Orbiting glyph 3: bottom — horizontal dash -->
-  <line x1="76" y1="61" x2="80" y2="61" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
-  <!-- Orbiting glyph 4: left — accent dot -->
-  <circle cx="73" cy="54" r="0.9" fill="#9370db" opacity="0.7"/>
-  <!-- Lantern chain/handle -->
-  <line x1="78" y1="46" x2="78" y2="42" stroke="#c4b5e8" stroke-width="0.6" opacity="0.5"/>
-  <path d="M75,42 Q78,40 81,42" stroke="#c4b5e8" stroke-width="0.6" fill="none" opacity="0.5"/>
-  <!-- Hem line (faint lower edge) -->
-  <path d="M20,97 Q50,99 80,97" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.2"/>
+  <line x1="76" y1="62.5" x2="80" y2="62.5" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
+  <!-- Orbiting glyph 4: left — small cross -->
+  <line x1="73.2" y1="59" x2="75.2" y2="59" stroke="#c4b5e8" stroke-width="0.5" opacity="0.65"/>
+  <line x1="74.2" y1="58" x2="74.2" y2="60" stroke="#c4b5e8" stroke-width="0.5" opacity="0.65"/>
+  <!-- Robe hem decoration (repeating marks along lower hem) -->
+  <path d="M20,96 Q50,98 80,96" stroke="#c4b5e8" stroke-width="0.3" fill="none" opacity="0.25"/>
+  <line x1="25" y1="95" x2="28" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="33" y1="95" x2="36" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="41" y1="95" x2="44" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="49" y1="95" x2="52" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="57" y1="95" x2="60" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="65" y1="95" x2="68" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
+  <line x1="73" y1="95" x2="76" y2="95" stroke="#2d1959" stroke-width="0.5" opacity="0.8"/>
 </svg>
 ```
 
