@@ -53,7 +53,7 @@ export default async function BadgesPage() {
         </p>
         {user && (
           <p className="text-sm text-pergamum-600 mt-1">
-            You've earned {myBadges.length} of {allBadges.length} badges.
+            You&apos;ve earned {myBadges.length} of {allBadges.length} badges.
           </p>
         )}
       </div>

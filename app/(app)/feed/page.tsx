@@ -54,9 +54,9 @@ export default async function FeedPage() {
             <Users className="h-8 w-8 text-muted-foreground" />
           </div>
           <div className="space-y-1">
-            <h2 className="font-semibold">You're not following anyone yet</h2>
+            <h2 className="font-semibold">You&apos;re not following anyone yet</h2>
             <p className="text-sm text-muted-foreground max-w-xs">
-              Visit a user's profile and hit Follow to see their prompts here.
+              Visit a user&apos;s profile and hit Follow to see their prompts here.
             </p>
           </div>
           <Link
@@ -69,7 +69,7 @@ export default async function FeedPage() {
       ) : prompts.length === 0 ? (
         <div className="flex flex-col items-center text-center py-20 gap-3">
           <p className="text-sm text-muted-foreground">
-            The people you follow haven't published anything yet.
+            The people you follow haven&apos;t published anything yet.
           </p>
           <Link
             href="/prompts"

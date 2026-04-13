@@ -57,7 +57,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
             </div>
             <h1 className="text-3xl font-bold tracking-tight">Remix prompt</h1>
             <p className="mt-2 text-muted-foreground">
-              You're building on someone else's work — make it yours and give it a new title.
+              You&apos;re building on someone else&apos;s work — make it yours and give it a new title.
             </p>
           </>
         ) : (
