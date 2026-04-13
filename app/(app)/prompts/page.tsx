@@ -93,10 +93,10 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     : null;
 
   return (
-    <div className="container py-8">
+    <div className="container py-8 max-w-[1280px]">
       {/* Page header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
+        <h1 className="font-serif text-[32px] font-medium tracking-h2">
           {params.q
             ? `Search: "${params.q}"`
             : activeCategory
@@ -106,8 +106,8 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
             : "Browse Prompts"}
         </h1>
         {count !== null && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {count.toLocaleString()} prompt{count !== 1 ? "s" : ""} found
+          <p className="label-mono mt-2">
+            [ {count.toLocaleString()} PROMPT{count !== 1 ? "S" : ""} ]
           </p>
         )}
       </div>
@@ -131,7 +131,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
           {prompts && prompts.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {(prompts as PromptWithAuthor[]).map((prompt) => (
                   <PromptCard key={prompt.id} prompt={prompt} />
                 ))}
@@ -164,8 +164,8 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-              <Search className="h-12 w-12 text-muted-foreground/30 mb-4" />
-              <h3 className="text-lg font-semibold mb-1">No prompts found</h3>
+              <Search className="h-10 w-10 text-foreground-subtle mb-4" />
+              <h3 className="font-semibold text-[17px] mb-2">No prompts found</h3>
               <p className="text-sm text-muted-foreground">
                 {params.q
                   ? "Try different search terms or browse all prompts."

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Search, Menu, X, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,17 +16,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Logo } from "@/components/brand/logo";
+import { ThemeToggle } from "@/components/brand/theme-toggle";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/lib/types/database";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   profile: Profile | null;
 }
 
+const NAV_LINKS = [
+  { href: "/prompts",      label: "Browse"      },
+  { href: "/collections",  label: "Collections" },
+  { href: "/leaderboards", label: "Leaderboards"},
+  { href: "/badges",       label: "Badges"      },
+  { href: "/tools",        label: "Tools"       },
+];
+
 export function Header({ profile }: HeaderProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [searchValue, setSearchValue] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,104 +66,127 @@ export function Header({ profile }: HeaderProps) {
     : profile?.username?.slice(0, 2).toUpperCase() ?? "??";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 transition-shadow duration-200">
-      <div className="container flex h-16 items-center gap-4">
-        {/* Logo */}
-        <Link href="/" className="shrink-0">
-          <Logo variant="full" size="sm" />
-        </Link>
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full border-b transition-all duration-200",
+        scrolled
+          ? "border-border-strong bg-background/90 backdrop-blur-xl"
+          : "border-border bg-background/60 backdrop-blur-xl"
+      )}
+    >
+      <div className="container flex h-14 items-center justify-between gap-4">
+        {/* Left: Logo */}
+        <div className="shrink-0">
+          <Link href="/">
+            <Logo variant="full" size="sm" />
+          </Link>
+        </div>
 
-        {/* Nav links — desktop */}
-        <nav className="hidden md:flex items-center gap-1 ml-2">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/prompts">Browse</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/tools">Tools</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/collections">Collections</Link>
-          </Button>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/leaderboards">Leaderboards</Link>
-          </Button>
+        {/* Center: Nav — desktop */}
+        <nav className="hidden md:flex items-center gap-0.5 absolute left-1/2 -translate-x-1/2">
+          {NAV_LINKS.map(({ href, label }) => {
+            const active = pathname === href || pathname.startsWith(href + "/");
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors",
+                  active
+                    ? "text-foreground bg-background-subtle"
+                    : "text-foreground-muted hover:text-foreground hover:bg-background-subtle"
+                )}
+              >
+                {label}
+                {active && (
+                  <span className="font-mono text-[10px] text-foreground-subtle tracking-label opacity-70">
+                    {href}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
           {profile && (
-            <>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/feed">Following</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/submit">Submit</Link>
-              </Button>
-            </>
+            <Link
+              href="/feed"
+              className={cn(
+                "relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors",
+                pathname === "/feed"
+                  ? "text-foreground bg-background-subtle"
+                  : "text-foreground-muted hover:text-foreground hover:bg-background-subtle"
+              )}
+            >
+              Following
+              {pathname === "/feed" && (
+                <span className="font-mono text-[10px] text-foreground-subtle tracking-label opacity-70">
+                  /feed
+                </span>
+              )}
+            </Link>
           )}
         </nav>
 
-        {/* Search — desktop */}
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex flex-1 max-w-sm items-center relative"
-        >
-          <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search the library…"
-            className="pl-9 pr-4"
-            aria-label="Search prompts"
-          />
-        </form>
-
-        <div className="flex-1 md:hidden" />
-
-        {/* Right side */}
+        {/* Right: Search + actions */}
         <div className="flex items-center gap-2">
+          {/* Search — desktop */}
+          <form onSubmit={handleSearch} className="hidden md:flex items-center relative">
+            <Search className="absolute left-2.5 h-3.5 w-3.5 text-foreground-subtle pointer-events-none" />
+            <Input
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search prompts…"
+              className="pl-8 pr-3 h-8 w-44 text-[13px] bg-background-inset border-border focus:w-56 transition-all"
+              aria-label="Search prompts"
+            />
+          </form>
+
+          <ThemeToggle />
+
           {profile ? (
             <>
-              <Button
-                variant="default"
-                size="sm"
-                className="hidden md:flex"
-                asChild
-              >
+              <Button variant="default" size="sm" className="hidden md:flex h-8 gap-1" asChild>
                 <Link href="/submit">
-                  <Zap className="h-4 w-4 mr-1" />
+                  <Zap className="h-3.5 w-3.5" />
                   Submit
                 </Link>
               </Button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
                     className="rounded-full ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="User menu"
                   >
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-7 w-7">
                       <AvatarImage
                         src={profile.avatar_url ?? undefined}
                         alt={profile.display_name ?? profile.username}
                       />
-                      <AvatarFallback className="bg-pergamum-100 text-pergamum-700 text-xs">
+                      <AvatarFallback className="bg-background-subtle text-foreground-muted text-[10px]">
                         {initials}
                       </AvatarFallback>
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 border-border-strong bg-background-subtle shadow-none"
+                >
                   <DropdownMenuLabel>
-                    <div className="font-medium">
+                    <div className="font-medium text-[14px]">
                       {profile.display_name ?? profile.username}
                     </div>
-                    <div className="text-xs text-muted-foreground font-normal">
-                      @{profile.username}
-                    </div>
+                    <div className="label-mono mt-0.5">@{profile.username}</div>
                     {typeof profile.reputation === "number" && (
-                      <div className="flex items-center gap-1 text-xs text-pergamum-600 font-normal mt-0.5">
+                      <div className="flex items-center gap-1 mt-1">
                         <Star className="h-3 w-3 fill-pergamum-500 text-pergamum-500" />
-                        {profile.reputation} reputation
+                        <span className="label-mono text-pergamum-400">
+                          {profile.reputation} rep
+                        </span>
                       </div>
                     )}
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
@@ -166,7 +207,7 @@ export function Header({ profile }: HeaderProps) {
                       <Link href="/admin">Admin</Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem
                     onClick={handleSignOut}
                     className="text-destructive focus:text-destructive"
@@ -178,10 +219,10 @@ export function Header({ profile }: HeaderProps) {
             </>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" className="h-8 text-[13px]" asChild>
                 <Link href="/auth/login">Sign in</Link>
               </Button>
-              <Button size="sm" asChild>
+              <Button size="sm" className="h-8 text-[13px]" asChild>
                 <Link href="/auth/signup">Sign up</Link>
               </Button>
             </>
@@ -189,92 +230,66 @@ export function Header({ profile }: HeaderProps) {
 
           {/* Mobile menu toggle */}
           <button
-            className="md:hidden p-2 rounded-md hover:bg-accent"
+            className="md:hidden h-8 w-8 flex items-center justify-center rounded-md hover:bg-background-subtle transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t bg-background px-4 py-4 space-y-3">
+        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-3">
           <form onSubmit={handleSearch} className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground-subtle" />
             <Input
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search the library…"
-              className="pl-9"
+              placeholder="Search prompts…"
+              className="pl-8 text-[13px] bg-background-inset"
               aria-label="Search prompts"
             />
           </form>
-          <nav className="flex flex-col gap-1">
-            <Button
-              variant="ghost"
-              className="justify-start"
-              asChild
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link href="/prompts">Browse Prompts</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              asChild
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link href="/tools">AI Tools</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              asChild
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link href="/collections">Collections</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              asChild
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link href="/leaderboards">Leaderboards</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              asChild
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Link href="/badges">Badges</Link>
-            </Button>
+          <nav className="flex flex-col gap-0.5">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "px-3 py-2 rounded-md text-[14px] font-medium transition-colors",
+                  pathname === href || pathname.startsWith(href + "/")
+                    ? "bg-background-subtle text-foreground"
+                    : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
+                )}
+              >
+                {label}
+              </Link>
+            ))}
             {profile && (
-              <>
-                <Button
-                  variant="ghost"
-                  className="justify-start"
-                  asChild
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Link href="/feed">Following</Link>
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="justify-start"
-                  asChild
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Link href="/submit">Submit a Prompt</Link>
-                </Button>
-              </>
+              <Link
+                href="/feed"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "px-3 py-2 rounded-md text-[14px] font-medium transition-colors",
+                  pathname === "/feed"
+                    ? "bg-background-subtle text-foreground"
+                    : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
+                )}
+              >
+                Following
+              </Link>
+            )}
+            {profile && (
+              <Link
+                href="/submit"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-md text-[14px] font-medium text-foreground-muted hover:bg-background-subtle hover:text-foreground transition-colors"
+              >
+                Submit a prompt
+              </Link>
             )}
           </nav>
         </div>

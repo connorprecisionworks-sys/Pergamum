@@ -24,15 +24,15 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
 
   return (
     <Card
-      className={`group hover:border-pergamum-200 dark:hover:border-pergamum-800 hover:shadow-sm transition-all animate-fade-in ${className ?? ""}`}
+      className={`group card-hover border-border bg-card animate-fade-in ${className ?? ""}`}
     >
       <CardContent className="p-5 pb-3">
-        {/* Category + models — always visible */}
+        {/* Category + models */}
         <div className="flex items-center gap-2 mb-3 flex-wrap">
           {category && (
             <Link
               href={blurred ? "/auth/signup" : `/prompts?category=${category.slug}`}
-              className="text-xs font-medium text-pergamum-600 hover:text-pergamum-700 dark:text-pergamum-400 transition-colors"
+              className="label-mono text-pergamum-500 hover:text-pergamum-400 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               {category.name}
@@ -43,23 +43,23 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
           ))}
         </div>
 
-        {/* Title — always visible */}
+        {/* Title — Fraunces */}
         {blurred ? (
-          <h3 className="font-semibold text-base leading-snug line-clamp-2 mb-2">
+          <h3 className="font-serif text-[17px] font-medium leading-snug tracking-h3 line-clamp-2 mb-2">
             {prompt.title}
           </h3>
         ) : (
           <Link href={`/prompts/${prompt.slug}`}>
-            <h3 className="font-semibold text-base leading-snug group-hover:text-pergamum-700 dark:group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
+            <h3 className="font-serif text-[17px] font-medium leading-snug tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
               {prompt.title}
             </h3>
           </Link>
         )}
 
-        {/* Description — blurred when locked */}
+        {/* Description */}
         {prompt.description && (
           <p
-            className={`text-sm text-muted-foreground line-clamp-2 leading-relaxed transition-[filter] ${
+            className={`text-[13px] text-foreground-muted line-clamp-2 leading-relaxed transition-[filter] ${
               blurred ? "blur-[3px] select-none pointer-events-none" : ""
             }`}
           >
@@ -67,7 +67,7 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
           </p>
         )}
 
-        {/* Tags — blurred when locked */}
+        {/* Tags */}
         {prompt.tags.length > 0 && (
           <div
             className={`flex gap-1.5 mt-3 flex-wrap transition-[filter] ${
@@ -78,7 +78,7 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
               <Link
                 key={tag}
                 href={`/prompts?tag=${encodeURIComponent(tag)}`}
-                className="text-xs text-muted-foreground hover:text-foreground bg-muted hover:bg-muted/80 px-2 py-0.5 rounded transition-colors"
+                className="label-mono px-2 py-0.5 rounded bg-background-subtle hover:bg-background-inset hover:text-foreground-muted transition-colors"
                 onClick={(e) => e.stopPropagation()}
                 tabIndex={blurred ? -1 : undefined}
               >
@@ -88,13 +88,13 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
           </div>
         )}
 
-        {/* Sign-up nudge — only when blurred */}
+        {/* Sign-up nudge */}
         {blurred && (
           <div className="mt-3 flex items-center gap-1.5">
             <Lock className="h-3 w-3 text-pergamum-400 shrink-0" />
             <Link
               href="/auth/signup"
-              className="text-xs text-pergamum-600 hover:text-pergamum-700 font-medium transition-colors"
+              className="label-mono text-pergamum-500 hover:text-pergamum-400 transition-colors"
             >
               Free to read — sign up
             </Link>
@@ -102,40 +102,40 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
         )}
       </CardContent>
 
-      <CardFooter className="px-5 py-3 border-t flex items-center justify-between">
-        {/* Author — always visible */}
+      <CardFooter className="px-5 py-3 border-t border-border flex items-center justify-between">
+        {/* Author + time */}
         <div className="flex items-center gap-2 min-w-0">
-          <Avatar className="h-6 w-6">
+          <Avatar className="h-5 w-5 shrink-0">
             <AvatarImage
               src={author?.avatar_url ?? undefined}
               alt={author?.display_name ?? author?.username ?? ""}
             />
-            <AvatarFallback className="text-[10px] bg-pergamum-100 text-pergamum-700">
+            <AvatarFallback className="text-[9px] bg-background-subtle text-foreground-muted">
               {initials}
             </AvatarFallback>
           </Avatar>
           <Link
             href={blurred ? "/auth/signup" : `/u/${author?.username}`}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors truncate"
+            className="label-mono hover:text-foreground-muted transition-colors truncate"
             onClick={(e) => e.stopPropagation()}
           >
             {author?.display_name ?? author?.username}
           </Link>
-          <span className="text-xs text-muted-foreground">·</span>
-          <span className="text-xs text-muted-foreground whitespace-nowrap">
+          <span className="label-mono opacity-40">·</span>
+          <span className="label-mono whitespace-nowrap">
             {relativeTime(prompt.published_at ?? prompt.created_at)}
           </span>
         </div>
 
-        {/* Stats — always visible (social proof) */}
-        <div className="flex items-center gap-3 text-muted-foreground shrink-0">
-          <div className="flex items-center gap-1 text-xs">
-            <ArrowUp className="h-3.5 w-3.5" />
-            <span>{formatCount(prompt.upvotes)}</span>
+        {/* Stats */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1">
+            <ArrowUp className="h-3 w-3 text-foreground-subtle" />
+            <span className="label-mono">{formatCount(prompt.upvotes)}</span>
           </div>
-          <div className="flex items-center gap-1 text-xs">
-            <Eye className="h-3.5 w-3.5" />
-            <span>{formatCount(prompt.views)}</span>
+          <div className="flex items-center gap-1">
+            <Eye className="h-3 w-3 text-foreground-subtle" />
+            <span className="label-mono">{formatCount(prompt.views)}</span>
           </div>
         </div>
       </CardFooter>

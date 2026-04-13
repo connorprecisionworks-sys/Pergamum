@@ -23,7 +23,15 @@ const config: Config = {
         serif: ["var(--font-fraunces)", "Georgia", "serif"],
         mono: ["var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
       },
+      letterSpacing: {
+        display: "-0.03em",
+        h1: "-0.02em",
+        h2: "-0.015em",
+        h3: "-0.01em",
+        label: "0.08em",
+      },
       colors: {
+        // ── shadcn/ui tokens ──────────────────────────────────────
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -57,7 +65,15 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Pergamum brand palette — available as bg-pergamum-500, text-pergamum-700, etc.
+        // ── New design-system semantic tokens ─────────────────────
+        // Reference CSS vars directly (hex, not HSL) so no hsl() wrapper needed.
+        // No opacity modifier support (bg-background-subtle/50 won't work) — by design.
+        "background-subtle":  "var(--background-subtle)",
+        "background-inset":   "var(--background-inset)",
+        "border-strong":      "var(--border-strong)",
+        "foreground-muted":   "var(--foreground-muted)",
+        "foreground-subtle":  "var(--foreground-subtle)",
+        // ── Pergamum brand palette ────────────────────────────────
         pergamum: {
           50:  "#f5f3ff",
           100: "#e6e6fa",
@@ -72,9 +88,9 @@ const config: Config = {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "var(--radius)",      /* 8px */
+        md: "calc(var(--radius) - 2px)", /* 6px */
+        sm: "calc(var(--radius) - 4px)", /* 4px */
       },
       keyframes: {
         "accordion-down": {
@@ -86,7 +102,7 @@ const config: Config = {
           to: { height: "0" },
         },
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(6px)" },
+          from: { opacity: "0", transform: "translateY(8px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
         shake: {
@@ -100,12 +116,12 @@ const config: Config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.35s ease-out both",
+        "fade-in": "fade-in 0.4s ease-out both",
         shake: "shake 0.3s ease-in-out",
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 
 export default config;

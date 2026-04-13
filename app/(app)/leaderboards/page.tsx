@@ -14,7 +14,8 @@ export const metadata: Metadata = {
   description: "Top prompts and top contributors on Pergamum.",
 };
 
-const MEDAL = ["🥇", "🥈", "🥉"];
+// Rank colors for top 3 — no emojis
+const RANK_COLOR = ["text-yellow-400", "text-zinc-300", "text-amber-600"];
 
 export default async function LeaderboardsPage() {
   const supabase = await createClient();
@@ -55,12 +56,10 @@ export default async function LeaderboardsPage() {
 
   return (
     <div className="container py-10 max-w-4xl">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <Trophy className="h-7 w-7 text-yellow-500" />
-          <h1 className="text-3xl font-bold tracking-tight font-serif">Leaderboards</h1>
-        </div>
-        <p className="text-muted-foreground">
+      <div className="mb-10">
+        <span className="label-mono">[ Rankings ]</span>
+        <h1 className="font-serif text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
+        <p className="text-foreground-muted mt-2">
           Top prompts and contributors on Pergamum.
         </p>
       </div>
@@ -112,11 +111,9 @@ function PromptLeaderboard({ prompts }: { prompts: PromptWithAuthor[] }) {
           <Card key={prompt.id} className={i < 3 ? "border-yellow-200 dark:border-yellow-900/50" : ""}>
             <CardContent className="flex items-center gap-4 p-4">
               <div className="w-8 text-center shrink-0">
-                {i < 3 ? (
-                  <span className="text-xl">{MEDAL[i]}</span>
-                ) : (
-                  <span className="text-sm font-bold text-muted-foreground">{i + 1}</span>
-                )}
+                <span className={`font-mono text-sm font-bold ${RANK_COLOR[i] ?? "text-foreground-subtle"}`}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
               </div>
               <div className="flex-1 min-w-0">
                 <Link
@@ -179,11 +176,9 @@ function ContributorLeaderboard({
           <Card key={user.id} className={i < 3 ? "border-yellow-200 dark:border-yellow-900/50" : ""}>
             <CardContent className="flex items-center gap-4 p-4">
               <div className="w-8 text-center shrink-0">
-                {i < 3 ? (
-                  <span className="text-xl">{MEDAL[i]}</span>
-                ) : (
-                  <span className="text-sm font-bold text-muted-foreground">{i + 1}</span>
-                )}
+                <span className={`font-mono text-sm font-bold ${RANK_COLOR[i] ?? "text-foreground-subtle"}`}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
               </div>
               <Avatar className="h-9 w-9 shrink-0">
                 <AvatarImage src={user.avatar_url ?? undefined} />

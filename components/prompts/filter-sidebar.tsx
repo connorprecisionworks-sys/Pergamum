@@ -2,26 +2,17 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { Category } from "@/lib/types/database";
 import { X } from "lucide-react";
 
 const SORT_OPTIONS = [
-  { value: "trending", label: "Trending" },
-  { value: "newest", label: "Newest" },
-  { value: "top", label: "Top all-time" },
+  { value: "trending", label: "Trending"     },
+  { value: "newest",   label: "Newest"       },
+  { value: "top",      label: "Top all-time" },
 ] as const;
 
-const MODEL_OPTIONS = [
-  "claude",
-  "gpt-4",
-  "gemini",
-  "llama",
-  "mistral",
-  "any",
-];
+const MODEL_OPTIONS = ["claude", "gpt-4", "gemini", "llama", "mistral", "any"];
 
 interface FilterSidebarProps {
   categories: Category[];
@@ -31,9 +22,9 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentSort = searchParams.get("sort") ?? "trending";
+  const currentSort     = searchParams.get("sort")     ?? "trending";
   const currentCategory = searchParams.get("category") ?? "";
-  const currentModel = searchParams.get("model") ?? "";
+  const currentModel    = searchParams.get("model")    ?? "";
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -43,52 +34,45 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
       } else {
         params.delete(key);
       }
-      // Reset to page 1 when filter changes
       params.delete("page");
       router.push(`/prompts?${params.toString()}`);
     },
     [router, searchParams]
   );
 
-  const clearAll = () => {
-    router.push("/prompts");
-  };
+  const clearAll = () => router.push("/prompts");
 
-  const hasFilters = currentCategory || currentModel || (currentSort !== "trending");
+  const hasFilters = !!(currentCategory || currentModel || currentSort !== "trending");
+
+  const activeStyle   = "bg-background-subtle text-foreground font-medium";
+  const inactiveStyle = "text-foreground-muted hover:bg-background-subtle hover:text-foreground";
 
   return (
-    <aside className="w-full space-y-6" aria-label="Filter prompts">
-      {/* Active filters summary + clear */}
+    <aside className="w-full space-y-7" aria-label="Filter prompts">
       {hasFilters && (
         <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            Active filters
-          </span>
+          <span className="label-mono">Active filters</span>
           <button
             onClick={clearAll}
-            className="text-xs text-pergamum-600 hover:text-pergamum-700 flex items-center gap-1"
+            className="label-mono text-pergamum-500 hover:text-pergamum-400 flex items-center gap-1 transition-colors"
           >
             <X className="h-3 w-3" />
-            Clear all
+            Clear
           </button>
         </div>
       )}
 
       {/* Sort */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Sort by
-        </h3>
-        <div className="flex flex-col gap-1">
+        <div className="label-mono mb-3">[ Sort ]</div>
+        <div className="flex flex-col gap-0.5">
           {SORT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => updateParam("sort", opt.value === "trending" ? "" : opt.value)}
               className={cn(
-                "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
-                currentSort === opt.value
-                  ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+                currentSort === opt.value ? activeStyle : inactiveStyle
               )}
               aria-pressed={currentSort === opt.value}
             >
@@ -100,36 +84,27 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
 
       {/* Category */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Category
-        </h3>
-        <div className="flex flex-col gap-1">
+        <div className="label-mono mb-3">[ Category ]</div>
+        <div className="flex flex-col gap-0.5">
           <button
             onClick={() => updateParam("category", "")}
             className={cn(
-              "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
-              !currentCategory
-                ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+              !currentCategory ? activeStyle : inactiveStyle
             )}
             aria-pressed={!currentCategory}
           >
-            All categories
+            All
           </button>
           {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() =>
-                updateParam(
-                  "category",
-                  currentCategory === cat.slug ? "" : cat.slug
-                )
+                updateParam("category", currentCategory === cat.slug ? "" : cat.slug)
               }
               className={cn(
-                "text-sm text-left px-3 py-1.5 rounded-md transition-colors",
-                currentCategory === cat.slug
-                  ? "bg-pergamum-100 text-pergamum-800 font-medium dark:bg-pergamum-900/30 dark:text-pergamum-300"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+                currentCategory === cat.slug ? activeStyle : inactiveStyle
               )}
               aria-pressed={currentCategory === cat.slug}
             >
@@ -141,26 +116,26 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
 
       {/* Model */}
       <div className="space-y-2">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Model
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {MODEL_OPTIONS.map((model) => (
-            <button
-              key={model}
-              onClick={() =>
-                updateParam("model", currentModel === model ? "" : model)
-              }
-              aria-pressed={currentModel === model}
-            >
-              <Badge
-                variant={currentModel === model ? "pergamum" : "outline"}
-                className="cursor-pointer capitalize hover:bg-pergamum-50 dark:hover:bg-pergamum-900/20 transition-colors"
+        <div className="label-mono mb-3">[ Model ]</div>
+        <div className="flex flex-wrap gap-1.5">
+          {MODEL_OPTIONS.map((model) => {
+            const active = currentModel === model;
+            return (
+              <button
+                key={model}
+                onClick={() => updateParam("model", currentModel === model ? "" : model)}
+                aria-pressed={active}
+                className={cn(
+                  "label-mono px-2.5 py-1 rounded border transition-colors capitalize",
+                  active
+                    ? "border-pergamum-500/60 text-pergamum-400 bg-pergamum-900/20"
+                    : "border-border text-foreground-subtle hover:border-border-strong hover:text-foreground-muted"
+                )}
               >
                 {model}
-              </Badge>
-            </button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </div>
     </aside>
