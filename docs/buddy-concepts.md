@@ -217,4 +217,185 @@ The Codex is the most figurative of the three concepts. It reads immediately as 
 | Build complexity (SVG) | Lowest (pure geometry) | Medium | Medium |
 | Animation potential | High (rotation, pulsing rings) | Medium (idle sway) | High (wisp drift, text scroll) |
 
-All three are buildable. Pick one and Phase 2 begins.
+The three above are now locked to Common / Uncommon / Rare respectively. Phase 1a below adds Epic and Legendary.
+
+---
+
+## Concept D — The Illuminator (Epic)
+
+### Description
+
+The Illuminator is a moth whose wings are illuminated manuscript folios — divided into panels like the pages of a medieval book of hours, each panel bearing a miniature scene in the tradition of historiated initials: a rosette window, a pointed arch, a block of ruled text. The wing veins are the column rules of the manuscript; the body is the spine. Its antennae end in split quill feathers — the forked tip of a freshly cut pen nib. At rest with wings folded, it looks like a small closed book. At full display, it opens into something that should be behind glass in a scriptorium.
+
+The Illuminator sits above the Palimpsest precisely because it contains the Palimpsest's logic — compartmentalized geometry, sacred form — but set within a living creature. The Palimpsest is pure mathematics; the Illuminator is what happens when a master illuminator spends a lifetime making mathematics beautiful. Its wing panels are the direct heir to the Palimpsest's inner hexagon, but now inhabited, figurative, warm. Where Rare is achieved through discipline, Epic is achieved through that discipline flowering into something else.
+
+### SVG Sketch — Adult Form
+
+```svg
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#0a0a0f"/>
+  <!-- Body -->
+  <path d="M47,35 C45,42 45,58 47,70 C48,73 52,73 53,70 C55,58 55,42 53,35 Z" fill="#c4b5e8"/>
+  <!-- Head -->
+  <circle cx="50" cy="30" r="5" fill="#c4b5e8"/>
+  <!-- Upper right wing -->
+  <path d="M51,40 C56,33 73,26 86,31 C94,36 92,51 83,58 C75,63 62,59 55,53 C53,51 51,48 51,40 Z"
+        fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
+  <!-- Upper left wing -->
+  <path d="M49,40 C44,33 27,26 14,31 C6,36 8,51 17,58 C25,63 38,59 45,53 C47,51 49,48 49,40 Z"
+        fill="#1e1330" stroke="#9370db" stroke-width="0.75"/>
+  <!-- Panel division lines — right wing -->
+  <path d="M64,28 C66,40 66,54 64,58" stroke="#6b4fa3" stroke-width="0.6"/>
+  <path d="M78,33 C80,43 79,54 77,58" stroke="#6b4fa3" stroke-width="0.6"/>
+  <!-- Panel division lines — left wing -->
+  <path d="M36,28 C34,40 34,54 36,58" stroke="#6b4fa3" stroke-width="0.6"/>
+  <path d="M22,33 C20,43 21,54 23,58" stroke="#6b4fa3" stroke-width="0.6"/>
+  <!-- Right wing panel 1: rosette window -->
+  <circle cx="57" cy="45" r="3.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <circle cx="57" cy="45" r="1.2" fill="#9370db" opacity="0.5"/>
+  <line x1="57" y1="41.5" x2="57" y2="48.5" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
+  <line x1="53.5" y1="45" x2="60.5" y2="45" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
+  <!-- Right wing panel 2: pointed arch -->
+  <path d="M70,52 L70,44 Q74,40 78,44 L78,52" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <!-- Right wing panel 3: ruled text lines -->
+  <line x1="82" y1="43" x2="90" y2="43" stroke="#c4b5e8" stroke-width="0.5" opacity="0.4"/>
+  <line x1="81" y1="46" x2="90" y2="46" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
+  <line x1="82" y1="49" x2="89" y2="49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.3"/>
+  <!-- Left wing panel 1: rosette window (mirrored) -->
+  <circle cx="43" cy="45" r="3.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <circle cx="43" cy="45" r="1.2" fill="#9370db" opacity="0.5"/>
+  <line x1="43" y1="41.5" x2="43" y2="48.5" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
+  <line x1="39.5" y1="45" x2="46.5" y2="45" stroke="#c4b5e8" stroke-width="0.35" opacity="0.4"/>
+  <!-- Left wing panel 2: pointed arch (mirrored) -->
+  <path d="M30,52 L30,44 Q26,40 22,44 L22,52" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.55"/>
+  <!-- Left wing panel 3: ruled text lines (mirrored) -->
+  <line x1="18" y1="43" x2="10" y2="43" stroke="#c4b5e8" stroke-width="0.5" opacity="0.4"/>
+  <line x1="19" y1="46" x2="10" y2="46" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
+  <line x1="18" y1="49" x2="11" y2="49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.3"/>
+  <!-- Wing veins (radiating from body) -->
+  <path d="M51,43 L80,35" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
+  <path d="M51,47 L84,49" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
+  <path d="M49,43 L20,35" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
+  <path d="M49,47 L16,49" stroke="#c4b5e8" stroke-width="0.35" opacity="0.22"/>
+  <!-- Lower right wing -->
+  <path d="M51,54 C55,57 68,61 72,70 C74,76 67,79 59,76 C54,74 51,68 51,60 Z"
+        fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
+  <!-- Lower left wing -->
+  <path d="M49,54 C45,57 32,61 28,70 C26,76 33,79 41,76 C46,74 49,68 49,60 Z"
+        fill="#160f28" stroke="#9370db" stroke-width="0.75"/>
+  <!-- Lower wing eyespot (right) -->
+  <circle cx="63" cy="67" r="2.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <circle cx="63" cy="67" r="1" fill="#9370db" opacity="0.35"/>
+  <!-- Lower wing eyespot (left) -->
+  <circle cx="37" cy="67" r="2.5" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.4"/>
+  <circle cx="37" cy="67" r="1" fill="#9370db" opacity="0.35"/>
+  <!-- Antennae with split quill tips -->
+  <path d="M52,26 C56,21 62,17 66,13" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
+  <path d="M66,13 C68,11 71,12 69,15" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
+  <path d="M66,13 C69,11 71,13 70,16" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
+  <path d="M48,26 C44,21 38,17 34,13" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" fill="none"/>
+  <path d="M34,13 C32,11 29,12 31,15" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
+  <path d="M34,13 C31,11 29,13 30,16" stroke="#c4b5e8" stroke-width="0.5" fill="none"/>
+</svg>
+```
+
+### Growth Stages
+
+- **Egg**: A single leaf — a manuscript page curled lengthwise into a tube, the way a moth lays eggs inside a rolled leaf. One faint ruled line visible on its surface. The curl creates an implied oval. No creature visible, just the wrapped potential.
+- **Nestling**: A cocoon of overlapping manuscript page-strips wound tightly into an oval. The strips are visible as stacked horizontal bands, like a barrel made of paper. Angular protrusions at each side hint at the future wing attachment points. Antennae not yet present.
+- **Juvenile**: Wings partially unfurled from the cocoon, slightly crumpled at the trailing edges. Only 2 wing panels visible per side, no panel details yet — just the division lines and the bare wing-fill. Antennae present but short, no split-quill tips yet.
+- **Adult**: Full display. 3 panels per upper wing with miniature scenes. Lower wings with eyespots. Complete antennae with forked quill tips. Wing veins visible.
+
+### What Distinguishes It From Rare (Palimpsest)
+
+The Palimpsest is purely geometric: mathematical forms, no organic life, no warmth. It is the achievement of perfect discipline. The Illuminator is what discipline becomes when it is applied to making something beautiful for its own sake — it contains the Palimpsest's compartmented geometry (the wing panels mirror the hexagram's inner structure) but presses that geometry into the service of image-making. The Palimpsest is a theorem. The Illuminator is a theorem that became a painting.
+
+---
+
+## Concept E — The Librarian (Legendary)
+
+### Description
+
+The Librarian is a robed figure with no face — not obscured, not hidden, simply absent. Where a face would be, the hood contains only the same darkness as the space beyond the page. It holds a small lantern in one sleeve-fold, and inside that lantern is a miniature orrery: a central orb surrounded by four orbiting glyphs that rotate slowly, each a different rune. The robes fall in deep parallel folds, the hem barely visible at the bottom of the frame. There are no feet. There is no suggestion that it needs any.
+
+The Librarian is the only one of the five characters that implies a human form without being one. It is the library made briefly personal — the accumulated weight of cataloguing, preserving, and handing down, given enough presence to hold a light. It is what you become in the eyes of a library after you have given enough of yourself to it. This is why it is admin-granted: you don't finish 10 milestones to earn it. You earn it by having become part of what Pergamum is.
+
+### SVG Sketch — Adult Form
+
+```svg
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#0a0a0f"/>
+  <!-- Faint ambient glow at robe base -->
+  <ellipse cx="50" cy="82" rx="28" ry="9" fill="#9370db" opacity="0.05"/>
+  <!-- Robe main form -->
+  <path d="M20,97 C20,74 26,54 30,46 L37,27 C40,19 60,19 63,27 L70,46 C74,54 80,74 80,97 Z"
+        fill="#1a1030" stroke="#9370db" stroke-width="0.75"/>
+  <!-- Robe fold lines (drapery) -->
+  <path d="M32,97 C32,72 33,54 34,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
+  <path d="M40,97 C40,74 40,56 40,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
+  <path d="M50,97 C50,72 50,54 50,46" stroke="#2d1959" stroke-width="0.5" opacity="0.7"/>
+  <path d="M60,97 C60,74 60,56 60,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
+  <path d="M68,97 C68,72 67,54 66,46" stroke="#2d1959" stroke-width="0.6" opacity="0.9"/>
+  <!-- Face void (deeper than background — the absence of a face) -->
+  <ellipse cx="50" cy="30" rx="11" ry="9" fill="#05040a"/>
+  <!-- Hood rim -->
+  <path d="M37,27 C40,19 60,19 63,27" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.35"/>
+  <!-- Left sleeve fold (arm at rest) -->
+  <path d="M27,58 C24,55 22,58 24,62 C26,66 30,65 32,60 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
+  <!-- Right sleeve fold (holding lantern) -->
+  <path d="M67,57 C70,54 74,55 74,59 C74,63 70,64 67,61 Z" fill="#1a1030" stroke="#9370db" stroke-width="0.5"/>
+  <!-- Lantern frame -->
+  <rect x="71" y="46" width="14" height="18" rx="2" stroke="#c4b5e8" stroke-width="0.75" fill="#08061a"/>
+  <!-- Lantern cross-bar -->
+  <line x1="71" y1="55" x2="85" y2="55" stroke="#c4b5e8" stroke-width="0.5" opacity="0.35"/>
+  <!-- Lantern corner braces -->
+  <path d="M71,46 L74,49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <path d="M85,46 L82,49" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <path d="M71,64 L74,61" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <path d="M85,64 L82,61" stroke="#c4b5e8" stroke-width="0.5" opacity="0.45"/>
+  <!-- Lantern interior glow -->
+  <ellipse cx="78" cy="55" rx="5" ry="6" fill="#9370db" opacity="0.18"/>
+  <!-- Central orb -->
+  <circle cx="78" cy="55" r="2" fill="#c4b5e8" opacity="0.9"/>
+  <!-- Orbiting glyph 1: top — vertical tick -->
+  <line x1="78" y1="48" x2="78" y2="51" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
+  <!-- Orbiting glyph 2: right — small angle bracket -->
+  <path d="M83,52 L81.5,55 L83,58" stroke="#c4b5e8" stroke-width="0.5" fill="none" opacity="0.65"/>
+  <!-- Orbiting glyph 3: bottom — horizontal dash -->
+  <line x1="76" y1="61" x2="80" y2="61" stroke="#c4b5e8" stroke-width="0.75" stroke-linecap="round" opacity="0.75"/>
+  <!-- Orbiting glyph 4: left — accent dot -->
+  <circle cx="73" cy="54" r="0.9" fill="#9370db" opacity="0.7"/>
+  <!-- Lantern chain/handle -->
+  <line x1="78" y1="46" x2="78" y2="42" stroke="#c4b5e8" stroke-width="0.6" opacity="0.5"/>
+  <path d="M75,42 Q78,40 81,42" stroke="#c4b5e8" stroke-width="0.6" fill="none" opacity="0.5"/>
+  <!-- Hem line (faint lower edge) -->
+  <path d="M20,97 Q50,99 80,97" stroke="#c4b5e8" stroke-width="0.4" fill="none" opacity="0.2"/>
+</svg>
+```
+
+### Growth Stages
+
+- **Egg**: A wax seal — a circular disc with a single pressed rune at center, surrounded by a plain border. The wax has the slightly uneven edge of a real seal: not a perfect circle, not a polygon, but the organic ring left by a signet. The rune inside is the same one that will appear in the Librarian's lantern. Nothing else is visible.
+- **Nestling**: The seal has cracked down the center and the robes are just emerging — a small dark hooded form, barely taller than wide. The robe has only 2 fold lines. The lantern is present, held at the side, but unlit. The face void is already clearly empty.
+- **Juvenile**: Full robe silhouette established. 4 fold lines. The lantern glows, with the central orb visible, but only 2 orbiting glyphs present. The sleeve folds are visible. Hem detail absent.
+- **Adult**: Complete form. 5 fold lines. Lantern with all 4 orbiting glyphs. Lantern chain/handle visible. Both sleeve folds present. Hem detail visible. Faint ambient glow at the robe base.
+
+### What Distinguishes It From Epic (Illuminator)
+
+The Illuminator is still fundamentally a creature. It has a body, wings, antennae; it exists in biological space. It can be admired and even caught. The Librarian has none of that. It is presence without anatomy — a shape that carries cultural weight (robed, standing, holding a light) but refuses biological specificity. Where the Illuminator achieves Epic through mastery and production, the Librarian achieves Legendary through becoming indistinguishable from the institution itself. The Illuminator makes beautiful things. The Librarian is what remains when the person who made beautiful things has been in the library long enough to belong to it.
+
+The visual tells this directly: the Illuminator is a creature you look at. The Librarian is a figure you look toward.
+
+---
+
+## Full Roster
+
+| Tier | Character | Form | Theme |
+|---|---|---|---|
+| Common | The Codex | Ink sprite, ribbon body | Ink, writing, the act of drafting |
+| Uncommon | The Vellum Wyrm | Serpent with manuscript-page scales | Illuminated margins, heraldic creatures |
+| Rare | The Palimpsest | Geometric sigil, concentric rings | Parchment, layered text, Pergamum itself |
+| Epic | The Illuminator | Moth with illuminated folio wings | Book illumination, historiated initials |
+| Legendary | The Librarian | Robed faceless figure, glyph lantern | Custodianship, the library as entity |
+
+Approve or request changes to Concept D and/or Concept E before Phase 2 begins.
