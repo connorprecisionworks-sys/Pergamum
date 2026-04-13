@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2, Reply } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -53,9 +55,11 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
             {relativeTime(comment.created_at)}
           </span>
         </div>
-        <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">
-          {comment.body}
-        </p>
+        <div className="prose prose-sm dark:prose-invert max-w-none text-foreground/90 [&>p]:leading-relaxed [&>p:last-child]:mb-0 [&>ul]:mt-1 [&>ol]:mt-1 [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:overflow-x-auto">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {comment.body}
+          </ReactMarkdown>
+        </div>
         {currentUserId && (
           <button
             onClick={() => onReply(comment)}
@@ -181,7 +185,7 @@ export function CommentSection({
           <Textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder="Share your experience with this prompt, suggest improvements…"
+            placeholder="Share your experience, suggest improvements… (Markdown supported)"
             rows={3}
             aria-label="Write a comment"
           />

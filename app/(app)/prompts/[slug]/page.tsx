@@ -5,10 +5,9 @@ import { ArrowLeft, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/utils";
+import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
 import type { PromptWithAuthor, CommentWithAuthor, VoteValue } from "@/lib/types/database";
 import { CommentSection } from "./comment-section";
 
@@ -56,16 +55,22 @@ export default async function PromptPage({ params }: PromptPageProps) {
     notFound();
   }
 
-  // Fetch current user's vote
+  // Fetch current user's vote + collections containing this prompt
   let currentVote: VoteValue | null = null;
+  let containingCollectionIds: string[] = [];
   if (user) {
-    const { data: vote } = await supabase
-      .from("votes")
-      .select("value")
-      .eq("user_id", user.id)
-      .eq("prompt_id", prompt.id)
-      .single();
-    if (vote) currentVote = vote.value as VoteValue;
+    const [voteResult, containingResult] = await Promise.all([
+      supabase.from("votes").select("value").eq("user_id", user.id).eq("prompt_id", prompt.id).single(),
+      supabase
+        .from("collection_prompts")
+        .select("collection_id, collections!inner(owner_id)")
+        .eq("prompt_id", prompt.id)
+        .eq("collections.owner_id" as never, user.id),
+    ]);
+    if (voteResult.data) currentVote = voteResult.data.value as VoteValue;
+    containingCollectionIds = (containingResult.data ?? []).map(
+      (r: { collection_id: string }) => r.collection_id
+    );
   }
 
   // Fetch comments with authors (top-level only, replies fetched via nesting)
@@ -91,6 +96,16 @@ export default async function PromptPage({ params }: PromptPageProps) {
         currentUserId={user?.id ?? null}
         currentVote={currentVote}
       />
+
+      {user && (
+        <div className="max-w-3xl mx-auto flex justify-end mt-4">
+          <AddToCollectionButton
+            promptId={prompt.id}
+            currentUserId={user.id}
+            initialContaining={containingCollectionIds}
+          />
+        </div>
+      )}
 
       <Separator className="my-12" />
 

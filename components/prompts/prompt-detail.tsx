@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { Eye, Flag, Tag } from "lucide-react";
+import { Eye, Flag, Tag, GitFork } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -179,7 +179,17 @@ export function PromptDetail({
         </div>
 
         <div className="flex items-center gap-3 justify-between flex-wrap">
-          <CopyButton text={substitutedBody} promptId={prompt.id} />
+          <div className="flex items-center gap-2">
+            <CopyButton text={substitutedBody} promptId={prompt.id} />
+            {currentUserId && currentUserId !== prompt.author_id && (
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/submit?fork_from=${prompt.id}`}>
+                  <GitFork className="h-4 w-4 mr-1.5" />
+                  Remix
+                </Link>
+              </Button>
+            )}
+          </div>
           <Button
             variant="ghost"
             size="sm"

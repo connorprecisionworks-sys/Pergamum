@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, normalizeTags, substituteVariables } from "@/lib/utils";
-import type { Category } from "@/lib/types/database";
+import type { Category, Prompt } from "@/lib/types/database";
 
 const MODEL_OPTIONS = ["any", "claude", "gpt-4", "gemini", "llama", "mistral", "stable-diffusion", "dall-e", "midjourney"];
 
@@ -50,6 +50,7 @@ interface SubmitFormProps {
   authorId: string;
   contributionCount: number;
   isAdmin: boolean;
+  forkedFrom?: Pick<Prompt, "id" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
 }
 
 export function SubmitForm({
@@ -57,11 +58,14 @@ export function SubmitForm({
   authorId,
   contributionCount,
   isAdmin,
+  forkedFrom,
 }: SubmitFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [selectedModels, setSelectedModels] = useState<string[]>(["any"]);
+  const [selectedModels, setSelectedModels] = useState<string[]>(
+    forkedFrom?.model_tags ?? ["any"]
+  );
 
   const {
     register,
@@ -74,7 +78,12 @@ export function SubmitForm({
     resolver: zodResolver(promptSchema),
     defaultValues: {
       variables: [],
-      model_tags: ["any"],
+      model_tags: forkedFrom?.model_tags ?? ["any"],
+      title: forkedFrom ? `Remix: ${forkedFrom.title}` : "",
+      description: forkedFrom?.description ?? "",
+      body: forkedFrom?.body ?? "",
+      category_id: forkedFrom?.category_id ?? "",
+      tags: forkedFrom?.tags?.join(", ") ?? "",
     },
   });
 
@@ -149,6 +158,7 @@ export function SubmitForm({
           })),
           status,
           published_at,
+          forked_from_id: forkedFrom?.id ?? null,
         })
         .select("slug")
         .single();
@@ -217,7 +227,10 @@ export function SubmitForm({
           <Label htmlFor="category">
             Category <span className="text-destructive">*</span>
           </Label>
-          <Select onValueChange={(v) => setValue("category_id", v)}>
+          <Select
+            defaultValue={forkedFrom?.category_id ?? undefined}
+            onValueChange={(v) => setValue("category_id", v)}
+          >
             <SelectTrigger id="category" aria-describedby={errors.category_id ? "cat-error" : undefined}>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>

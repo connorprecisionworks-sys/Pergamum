@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Search, Menu, X, Zap } from "lucide-react";
+import { Search, Menu, X, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -63,10 +63,21 @@ export function Header({ profile }: HeaderProps) {
           <Button variant="ghost" size="sm" asChild>
             <Link href="/tools">Tools</Link>
           </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/collections">Collections</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/leaderboards">Leaderboards</Link>
+          </Button>
           {profile && (
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/submit">Submit</Link>
-            </Button>
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/feed">Following</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/submit">Submit</Link>
+              </Button>
+            </>
           )}
         </nav>
 
@@ -127,6 +138,12 @@ export function Header({ profile }: HeaderProps) {
                     <div className="text-xs text-muted-foreground font-normal">
                       @{profile.username}
                     </div>
+                    {typeof profile.reputation === "number" && (
+                      <div className="flex items-center gap-1 text-xs text-pergamum-600 font-normal mt-0.5">
+                        <Star className="h-3 w-3 fill-pergamum-500 text-pergamum-500" />
+                        {profile.reputation} reputation
+                      </div>
+                    )}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
@@ -134,6 +151,15 @@ export function Header({ profile }: HeaderProps) {
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href={`/u/${profile.username}`}>Public profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/profile">Edit profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard/collections">Collections</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/feed">Following feed</Link>
                   </DropdownMenuItem>
                   {profile.is_admin && (
                     <DropdownMenuItem asChild>
@@ -206,15 +232,49 @@ export function Header({ profile }: HeaderProps) {
             >
               <Link href="/tools">AI Tools</Link>
             </Button>
+            <Button
+              variant="ghost"
+              className="justify-start"
+              asChild
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Link href="/collections">Collections</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start"
+              asChild
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Link href="/leaderboards">Leaderboards</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="justify-start"
+              asChild
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Link href="/badges">Badges</Link>
+            </Button>
             {profile && (
-              <Button
-                variant="ghost"
-                className="justify-start"
-                asChild
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Link href="/submit">Submit a Prompt</Link>
-              </Button>
+              <>
+                <Button
+                  variant="ghost"
+                  className="justify-start"
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Link href="/feed">Following</Link>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="justify-start"
+                  asChild
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Link href="/submit">Submit a Prompt</Link>
+                </Button>
+              </>
             )}
           </nav>
         </div>

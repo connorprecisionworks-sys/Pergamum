@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Eye, ArrowUp, Edit, Trash2, FileText, Clock } from "lucide-react";
+import { Plus, Eye, ArrowUp, Edit, Trash2, FileText, Clock, User, BookOpen, Star } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -87,8 +87,38 @@ export default async function DashboardPage() {
         </Button>
       </div>
 
+      {/* Quick links */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/dashboard/profile">
+            <User className="h-4 w-4 mr-1.5" />
+            Edit profile
+          </Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/dashboard/collections">
+            <BookOpen className="h-4 w-4 mr-1.5" />
+            My collections
+          </Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/badges">
+            <Star className="h-4 w-4 mr-1.5" />
+            Badges
+          </Link>
+        </Button>
+        {profile?.username && (
+          <Button variant="outline" size="sm" asChild>
+            <Link href={`/u/${profile.username}`}>
+              <Eye className="h-4 w-4 mr-1.5" />
+              Public profile
+            </Link>
+          </Button>
+        )}
+      </div>
+
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -125,6 +155,17 @@ export default async function DashboardPage() {
             <div className="text-2xl font-bold">{formatCount(totalViews)}</div>
           </CardContent>
         </Card>
+        {typeof profile?.reputation === "number" && (
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                <Star className="h-4 w-4" />
+                <span className="text-sm">Reputation</span>
+              </div>
+              <div className="text-2xl font-bold">{profile.reputation}</div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Prompts table */}

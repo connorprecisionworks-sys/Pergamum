@@ -23,6 +23,13 @@ export type Database = {
           reputation: number;
           is_admin: boolean;
           onboarding_complete: boolean;
+          website: string | null;
+          twitter: string | null;
+          github: string | null;
+          location: string | null;
+          featured_prompt_id: string | null;
+          lifetime_copies: number;
+          lifetime_upvotes_received: number;
           created_at: string;
           updated_at: string;
         };
@@ -36,6 +43,13 @@ export type Database = {
           reputation?: number;
           is_admin?: boolean;
           onboarding_complete?: boolean;
+          website?: string | null;
+          twitter?: string | null;
+          github?: string | null;
+          location?: string | null;
+          featured_prompt_id?: string | null;
+          lifetime_copies?: number;
+          lifetime_upvotes_received?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -48,6 +62,13 @@ export type Database = {
           reputation?: number;
           is_admin?: boolean;
           onboarding_complete?: boolean;
+          website?: string | null;
+          twitter?: string | null;
+          github?: string | null;
+          location?: string | null;
+          featured_prompt_id?: string | null;
+          lifetime_copies?: number;
+          lifetime_upvotes_received?: number;
           updated_at?: string;
         };
         Relationships: [];
@@ -98,6 +119,8 @@ export type Database = {
           status: string;
           trending_score: number;
           search_vector: string | null;
+          forked_from_id: string | null;
+          copies: number;
           created_at: string;
           updated_at: string;
           published_at: string | null;
@@ -118,6 +141,8 @@ export type Database = {
           views?: number;
           status?: string;
           trending_score?: number;
+          forked_from_id?: string | null;
+          copies?: number;
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
@@ -136,6 +161,8 @@ export type Database = {
           views?: number;
           status?: string;
           trending_score?: number;
+          forked_from_id?: string | null;
+          copies?: number;
           updated_at?: string;
           published_at?: string | null;
         };
@@ -295,6 +322,169 @@ export type Database = {
         };
         Relationships: [];
       };
+      badges: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          description: string;
+          icon: string;
+          tier: "bronze" | "silver" | "gold";
+          criteria: Record<string, unknown>;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          description: string;
+          icon: string;
+          tier: "bronze" | "silver" | "gold";
+          criteria?: Record<string, unknown>;
+          created_at?: string;
+        };
+        Update: {
+          slug?: string;
+          name?: string;
+          description?: string;
+          icon?: string;
+          tier?: "bronze" | "silver" | "gold";
+          criteria?: Record<string, unknown>;
+        };
+        Relationships: [];
+      };
+      user_badges: {
+        Row: {
+          user_id: string;
+          badge_id: string;
+          earned_at: string;
+        };
+        Insert: {
+          user_id: string;
+          badge_id: string;
+          earned_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "user_badges_badge_id_fkey";
+            columns: ["badge_id"];
+            isOneToOne: false;
+            referencedRelation: "badges";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      collections: {
+        Row: {
+          id: string;
+          owner_id: string;
+          title: string;
+          slug: string;
+          description: string | null;
+          is_public: boolean;
+          cover_color: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          owner_id: string;
+          title: string;
+          slug: string;
+          description?: string | null;
+          is_public?: boolean;
+          cover_color?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          title?: string;
+          slug?: string;
+          description?: string | null;
+          is_public?: boolean;
+          cover_color?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collections_owner_id_fkey";
+            columns: ["owner_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      collection_prompts: {
+        Row: {
+          collection_id: string;
+          prompt_id: string;
+          added_at: string;
+          sort_order: number;
+        };
+        Insert: {
+          collection_id: string;
+          prompt_id: string;
+          added_at?: string;
+          sort_order?: number;
+        };
+        Update: {
+          sort_order?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collection_prompts_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "collection_prompts_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      follows: {
+        Row: {
+          follower_id: string;
+          following_id: string;
+          created_at: string;
+        };
+        Insert: {
+          follower_id: string;
+          following_id: string;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey";
+            columns: ["follower_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey";
+            columns: ["following_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -317,6 +507,50 @@ export type Database = {
   };
 };
 
+// ─── v2 tables ───────────────────────────────────────────────
+export type Badge = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  icon: string;
+  tier: "bronze" | "silver" | "gold";
+  criteria: Record<string, unknown>;
+  created_at: string;
+};
+
+export type UserBadge = {
+  user_id: string;
+  badge_id: string;
+  earned_at: string;
+};
+
+export type Collection = {
+  id: string;
+  owner_id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  is_public: boolean;
+  cover_color: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CollectionPrompt = {
+  collection_id: string;
+  prompt_id: string;
+  added_at: string;
+  sort_order: number;
+};
+
+export type Follow = {
+  follower_id: string;
+  following_id: string;
+  created_at: string;
+};
+// ─────────────────────────────────────────────────────────────
+
 // Convenience row types
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
@@ -330,6 +564,7 @@ export type PromptStatus = "draft" | "published" | "flagged" | "removed";
 export type ReportStatus = "open" | "resolved";
 export type ToolStatus = "pending" | "approved" | "rejected";
 export type VoteValue = -1 | 1;
+export type BadgeTier = "bronze" | "silver" | "gold";
 
 export interface PromptVariable {
   name: string;
