@@ -124,6 +124,44 @@ supabase/
 
 ---
 
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `pnpm dev` | Start the dev server at http://localhost:3000 |
+| `pnpm build` | Production build |
+| `pnpm lint` | ESLint |
+| `pnpm type-check` | TypeScript (`tsc --noEmit`) |
+| `pnpm check` | Run type-check → lint → build sequentially (same as CI) |
+
+**Install the pre-commit hook** (runs `pnpm type-check` before every commit):
+
+```bash
+cp scripts/pre-commit.sh .git/hooks/pre-commit
+```
+
+Skip the hook on a specific commit with `git commit --no-verify`.
+
+---
+
+## Pre-deploy Checklist
+
+Run through this before every production deployment.
+
+- [ ] All env vars present in Vercel project settings (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`)
+- [ ] Supabase **Site URL** updated to the production domain
+- [ ] Supabase **Redirect URLs** include the production callback: `https://your-domain.com/auth/callback`
+- [ ] Google OAuth callback URL updated in GCP console
+- [ ] GitHub OAuth callback URL updated in GitHub app settings
+- [ ] First admin user has `is_admin = true` in the `profiles` table
+- [ ] All migrations run (`supabase db push`)
+- [ ] `pnpm check` passes cleanly (zero type errors, zero lint warnings, clean build)
+- [ ] Lighthouse mobile score ≥ 90 on `/`, `/prompts`, `/prompts/[any-slug]`
+- [ ] Smoke test passes: `bash scripts/smoke.sh https://your-domain.com`
+- [ ] End-to-end smoke: sign up → confirm email → complete onboarding → submit prompt → vote on a prompt → copy a prompt — all as a fresh user
+
+---
+
 ## Contribution Guidelines
 
 1. Fork the repo and create a feature branch.
