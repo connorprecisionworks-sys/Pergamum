@@ -1,5 +1,4 @@
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,18 +7,12 @@ import { FadeSection } from "@/components/brand/fade-section";
 import { createClient } from "@/lib/supabase/server";
 import type { PromptWithAuthor, Category, Profile } from "@/lib/types/database";
 
-const HeroCards = dynamic(
-  () => import("@/components/brand/hero-cards").then((m) => ({ default: m.HeroCards })),
-  { ssr: true }
-);
-
 export default async function LandingPage() {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
 
   const [
-    { data: featuredPrompts },
     { data: teasePrompts },
     { data: categories },
     { data: categoryCounts },
@@ -27,12 +20,6 @@ export default async function LandingPage() {
     { count: promptCount },
     { count: userCount },
   ] = await Promise.all([
-    supabase
-      .from("prompts")
-      .select(`*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`)
-      .eq("status", "published")
-      .order("trending_score", { ascending: false })
-      .limit(3),
     supabase
       .from("prompts")
       .select(`*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`)
@@ -64,66 +51,78 @@ export default async function LandingPage() {
   return (
     <>
       {/* ─────────────────────────────────────────────
-          Section 1: Hero
+          Section 1: Hero — centered, ~90vh, restrained
       ───────────────────────────────────────────── */}
-      <section className="relative min-h-[calc(100vh-4rem)] flex items-center overflow-hidden py-32">
-        {/* Grid overlay */}
-        <div className="absolute inset-0 hero-grid-bg pointer-events-none" />
-        {/* Radial accent glow — top-right */}
+      <section className="relative flex flex-col items-center justify-center min-h-[80vh] md:min-h-[88vh] px-6 pt-32 md:pt-40 pb-24 md:pb-28 overflow-hidden">
+        {/* Single ambient violet glow at top — sole decorative element */}
         <div
-          className="absolute -top-32 right-0 w-[700px] h-[700px] pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(147,112,219,0.07) 0%, transparent 70%)" }}
+          className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] pointer-events-none opacity-[0.55]"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, hsl(var(--primary) / 0.10) 0%, transparent 60%)",
+          }}
+          aria-hidden="true"
         />
 
-        <div className="container relative">
-          <div className="grid grid-cols-12 gap-8 items-center">
-            {/* Left columns 1-7 */}
-            <div className="col-span-12 lg:col-span-7 space-y-8">
-              <div>
-                <span className="label-mono">[ A LIVING PROMPT LIBRARY ]</span>
-              </div>
+        <div className="relative w-full max-w-[720px] mx-auto text-center flex flex-col items-center gap-8 md:gap-10">
+          {/* Eyebrow */}
+          <div className="flex items-center gap-3 text-[11px] md:text-xs font-medium tracking-[0.22em] uppercase text-muted-foreground">
+            <span className="inline-block h-[5px] w-[5px] rounded-full bg-primary" aria-hidden="true" />
+            Now live
+            <span className="inline-block h-[5px] w-[5px] rounded-full bg-primary" aria-hidden="true" />
+          </div>
 
-              <div className="space-y-1">
-                <h1
-                  className="font-serif text-6xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight text-foreground"
-                >
-                  The library
-                  <br />
-                  <span className="text-pergamum-500">is open.</span>
-                </h1>
-              </div>
+          {/* Headline — tight tracking, single idea */}
+          <h1 className="font-serif font-normal text-foreground text-[clamp(2.5rem,7.2vw,5rem)] leading-[1.04] tracking-[-0.03em]">
+            The library<br />
+            <span className="text-primary">is open.</span>
+          </h1>
 
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
-                Pergamum is a community archive of prompts for every AI tool.
-                Discover what works, contribute what you&apos;ve learned, remix
-                what others have built.
-              </p>
+          {/* Subhead — concrete, two short clauses */}
+          <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[560px]">
+            A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier, no signup to read.
+          </p>
 
-              <div className="flex items-center gap-3 flex-wrap">
-                <Button size="lg" asChild className="gap-2">
-                  <Link href="/prompts">
-                    Browse the library
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/auth/signup">Contribute a prompt</Link>
-                </Button>
-              </div>
+          {/* CTAs — primary verb + secondary text-link */}
+          <div className="flex items-center justify-center gap-7 flex-wrap pt-1">
+            <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
+              <Link href="/prompts">Browse the library</Link>
+            </Button>
+            <Link
+              href="/auth/signup"
+              className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
+            >
+              Contribute a prompt
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
 
-              <div>
-                <span className="label-mono">
-                  [ {pc} PROMPT{pc !== 1 ? "S" : ""} &nbsp;·&nbsp; {categoryCount} CATEGOR{categoryCount !== 1 ? "IES" : "Y"} &nbsp;·&nbsp; {uc} CONTRIBUTOR{uc !== 1 ? "S" : ""} ]
-                </span>
-              </div>
-            </div>
+        {/* Stats baseline — subtle, anchors the bottom */}
+        <div className="absolute bottom-8 md:bottom-10 inset-x-0 text-center pointer-events-none">
+          <span className="label-mono">
+            [ {pc} prompt{pc !== 1 ? "s" : ""} &nbsp;·&nbsp; {categoryCount} categor{categoryCount !== 1 ? "ies" : "y"} &nbsp;·&nbsp; {uc} contributor{uc !== 1 ? "s" : ""} ]
+          </span>
+        </div>
+      </section>
 
-            {/* Right columns 8-12 — decorative floating cards */}
-            <div className="hidden lg:flex col-span-5 items-center justify-center">
-              {featuredPrompts && featuredPrompts.length >= 2 && (
-                <HeroCards prompts={featuredPrompts as PromptWithAuthor[]} />
-              )}
-            </div>
+      {/* ─────────────────────────────────────────────
+          Trust bar — works-with row
+      ───────────────────────────────────────────── */}
+      <section className="border-y border-border/60 py-10 md:py-12">
+        <div className="container">
+          <p className="text-center text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-6">
+            Works with
+          </p>
+          <div className="flex items-center justify-center gap-x-10 md:gap-x-14 gap-y-4 flex-wrap">
+            {["Claude", "GPT-4", "Gemini", "Llama", "Mistral", "Perplexity", "Grok"].map((name) => (
+              <span
+                key={name}
+                className="text-[15px] md:text-base font-medium text-foreground/45 tracking-tight"
+              >
+                {name}
+              </span>
+            ))}
           </div>
         </div>
       </section>

@@ -1,0 +1,200 @@
+<meta charset="utf-8">
+<title>Pergamum — Variables</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 675px; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #f6f4ed;
+    color: #171717;
+    padding: 56px 72px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #8b8a83;
+  }
+
+  h1 {
+    margin-top: 18px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-align: center;
+    max-width: 880px;
+  }
+  h1 .muted { color: #94928a; font-weight: 500; }
+  h1 .var { color: #6b26d9; font-style: italic; }
+
+  .stage {
+    margin-top: 44px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 56px;
+    align-items: start;
+    width: 100%;
+  }
+
+  /* Mockup card */
+  .mockup {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 22px 24px 24px;
+    border: 1px solid #e7e3d6;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+  .mockup .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #efece1;
+  }
+  .mockup .brand { display: flex; align-items: center; gap: 8px; font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; }
+  .mockup .brand .p { color: #6b26d9; font-size: 22px; line-height: 1; }
+  .mockup .dots { display: flex; gap: 5px; }
+  .mockup .dots span { width: 7px; height: 7px; border-radius: 50%; background: #e1ddcd; }
+
+  .title {
+    margin-top: 16px;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.3;
+    color: #171717;
+  }
+  .meta { margin-top: 6px; font-size: 12px; color: #8b8a83; display: flex; gap: 10px; align-items: center; }
+  .badge {
+    display: inline-block;
+    background: #efeafc;
+    color: #4b1d99;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+
+  pre.prompt {
+    margin-top: 14px;
+    background: #faf8f0;
+    border: 1px solid #efece1;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #2a2a2a;
+    white-space: pre-wrap;
+  }
+  pre.prompt b { color: #6b26d9; font-weight: 500; background: #f1ebfe; padding: 1px 4px; border-radius: 3px; }
+
+  .inputs { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .field { background: #ffffff; border: 1px solid #d7d3c1; border-radius: 8px; padding: 7px 10px; font-size: 12px; }
+  .field .label { font-size: 10px; color: #94928a; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+  .field .value { font-family: 'JetBrains Mono', monospace; color: #171717; margin-top: 2px; }
+
+  .actions { margin-top: 14px; display: flex; gap: 8px; }
+  .btn {
+    background: #6b26d9; color: #fff; border-radius: 8px; padding: 8px 14px;
+    font-size: 12.5px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn .check { width: 12px; height: 12px; border-radius: 999px; background: #ffffff33; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-ghost { background: transparent; color: #4a4942; border: 1px solid #d7d3c1; }
+
+  /* Steps */
+  .steps { padding-top: 8px; }
+  .step { display: flex; gap: 14px; margin-bottom: 22px; }
+  .num {
+    flex: 0 0 26px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #171717; color: #fff;
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step h3 { font-size: 16px; font-weight: 600; line-height: 1.2; color: #171717; }
+  .step p { margin-top: 4px; font-size: 13.5px; line-height: 1.5; color: #5a5852; }
+</style>
+
+<section class="eyebrow">Variable templates in every prompt</section>
+
+<h1>
+  Spot the <span class="var">{{blanks}}</span>.
+  <span class="muted">Try the prompt in two clicks.</span>
+</h1>
+
+<div class="stage">
+  <div class="mockup">
+    <div class="top">
+      <div class="brand"><span class="p">P</span> pergamum</div>
+      <div class="dots"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="title">Customer interview synthesizer</div>
+    <div class="meta">
+      <span class="badge">Claude</span>
+      <span>· @maya · 412 upvotes · 2k copies</span>
+    </div>
+
+    <pre class="prompt">You are a senior product researcher.
+
+Read the interview notes below and produce:
+1. The top three pain points, in priority order
+2. One concrete <b>{{deliverable}}</b> for the team
+3. A <b>{{tone}}</b>, &lt;120-word summary
+
+Notes: <b>{{notes}}</b></pre>
+
+    <div class="inputs">
+      <div class="field">
+        <div class="label">deliverable</div>
+        <div class="value">Jira ticket</div>
+      </div>
+      <div class="field">
+        <div class="label">tone</div>
+        <div class="value">crisp, direct</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="btn"><span class="check">✓</span> Copy filled prompt</div>
+      <div class="btn btn-ghost">Save</div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div>
+        <h3>Spot the variables</h3>
+        <p>Every <code>{{thing}}</code> in a prompt becomes a live input field on the page.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div>
+        <h3>Type and watch</h3>
+        <p>The preview rewrites as you type. No copy-paste-edit dance.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <div>
+        <h3>Copy and ship</h3>
+        <p>One click. Drop it into Claude, ChatGPT, anywhere you write.</p>
+      </div>
+    </div>
+  </div>
+</div>
