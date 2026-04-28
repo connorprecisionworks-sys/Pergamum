@@ -42,7 +42,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     if (mode === "signup") track("signup_started");
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: values.email,
           password: values.password,
           options: {
@@ -51,7 +51,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         });
         if (error) throw error;
         track("signup_completed");
-        toast.success("Check your email — we've sent a confirmation link.");
+        // If session is returned immediately, email confirmation is disabled — go straight in.
+        // Otherwise, tell the user to check their email.
+        if (data.session) {
+          window.location.href = "/onboarding";
+        } else {
+          toast.success("Check your email — we've sent a confirmation link.");
+        }
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: values.email,

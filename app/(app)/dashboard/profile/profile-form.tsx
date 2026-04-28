@@ -1,8 +1,7 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { useFormState } from "react-dom";
-import { useFormStatus } from "react-dom";
+import { useRef, useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { Loader2, Camera } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -33,7 +32,8 @@ export function ProfileForm({ profile, publishedPrompts }: ProfileFormProps) {
   const [state, action] = useFormState(updateProfile, {} as { error?: string; success?: boolean });
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url ?? undefined);
   const [uploading, setUploading] = useState(false);
-  const [featuredId, setFeaturedId] = useState(profile.featured_prompt_id ?? "");
+  const NONE_VALUE = "__none__";
+  const [featuredId, setFeaturedId] = useState(profile.featured_prompt_id ?? NONE_VALUE);
   const fileRef = useRef<HTMLInputElement>(null);
 
   if (state?.success) {
@@ -140,16 +140,19 @@ export function ProfileForm({ profile, publishedPrompts }: ProfileFormProps) {
       {publishedPrompts.length > 0 && (
         <div className="space-y-1.5">
           <Label htmlFor="featured_prompt_id">Featured prompt</Label>
-          <Select
+          {/* Hidden input carries the real value to the server action.
+              Empty string == no featured prompt. */}
+          <input
+            type="hidden"
             name="featured_prompt_id"
-            value={featuredId}
-            onValueChange={setFeaturedId}
-          >
+            value={featuredId === NONE_VALUE ? "" : featuredId}
+          />
+          <Select value={featuredId} onValueChange={setFeaturedId}>
             <SelectTrigger id="featured_prompt_id">
               <SelectValue placeholder="None" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">None</SelectItem>
+              <SelectItem value={NONE_VALUE}>None</SelectItem>
               {publishedPrompts.map((p) => (
                 <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>
               ))}
