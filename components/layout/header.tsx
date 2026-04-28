@@ -26,11 +26,12 @@ interface HeaderProps {
 }
 
 const NAV_LINKS = [
-  { href: "/prompts",      label: "Browse"      },
-  { href: "/collections",  label: "Collections" },
-  { href: "/leaderboards", label: "Leaderboards"},
-  { href: "/badges",       label: "Badges"      },
-  { href: "/tools",        label: "Tools"       },
+  { href: "/prompts",       label: "Browse"       },
+  { href: "/collections",   label: "Collections"  },
+  { href: "/leaderboards",  label: "Leaderboards" },
+  { href: "/badges",        label: "Badges"       },
+  { href: "/tools",         label: "Tools"        },
+  { href: "/the-science",   label: "The Science"  },
 ];
 
 export function Header({ profile }: HeaderProps) {
