@@ -38,10 +38,10 @@ export default async function OnboardingPage() {
           </Link>
           <div className="space-y-1">
             <h1 className="text-2xl font-bold tracking-tight">
-              Welcome to Pergamum
+              You&apos;re in — let&apos;s set up your profile.
             </h1>
             <p className="text-sm text-muted-foreground">
-              Set up your profile before you start — it only takes a moment.
+              A few quick details and you&apos;re ready to start contributing.
             </p>
           </div>
         </div>

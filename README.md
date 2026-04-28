@@ -17,7 +17,7 @@ A free, community-driven web app where anyone can browse, contribute, and vote o
 - **Browse & filter** — Filter by category, model tag, free-text search (Postgres FTS). Sort by trending / newest / top all-time. All filters are URL-driven (shareable links).
 - **Model badges** — Visual chips for Claude, GPT-4, Gemini, Llama, Mistral, etc. on every card.
 - **Tools directory** — ~15 seeded free AI tools. Filterable by category. Auth users can submit; admins approve.
-- **Moderation** — First 2 prompts from new users go to an admin review queue. Flag button on every prompt. Admin panel shows queue + reports.
+- **Moderation** — Every prompt is reviewed before publishing. Flag button on every prompt. Admin panel shows queue + reports.
 - **Public profiles** — `/u/[username]` with bio, stats, and published prompts.
 - **Responsive** — Mobile-first, tested at sm/md/lg breakpoints.
 
@@ -142,7 +142,7 @@ supabase/
 | **Trending score computed on read** | Eliminates a scheduled job for v1. The `calculate_trending_score` SQL function exists; calling it from a Supabase cron job (or pg_cron) is a one-liner upgrade path. At scale, run it on a scheduled job and store the result in `trending_score`. |
 | **Violet accent color** | Chosen over blue (overused), emerald (too "money"), amber (too warm). Violet reads as "creative/technical" — well-matched to prompt engineering. |
 | **Hand-written database types** | `supabase gen types typescript` requires a live project to run. The hand-written types are 100% consistent with the migration. Once you link a project, run `supabase gen types typescript --local > lib/types/database.ts` to replace them. |
-| **Moderation gate at 2 prompts** | Stops spam from brand-new accounts without blocking legitimate contributors after a short trust-building period. Threshold is easy to change. |
+| **Universal moderation gate** | Every prompt enters review before publishing, ensuring consistent quality at launch. Revert to the 2-prompt threshold by restoring `const needsReview = !isAdmin && contributionCount < 2` in `submit-form.tsx` and re-adding the `contributionCount` prop. |
 | **URL-driven filters** | All browse filters are stored in the URL query string, making every filtered view bookmarkable and shareable. No client-side filter state needed. |
 | **No caching headers set** | Deferred to Vercel's defaults for v1. Add `revalidate` or ISR to browse/detail pages for production traffic. |
 

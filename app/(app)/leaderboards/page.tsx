@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Trophy, ArrowUp, Star, Copy } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -58,30 +59,24 @@ export default async function LeaderboardsPage() {
     <div className="container py-10 max-w-4xl">
       <div className="mb-10">
         <span className="label-mono">[ Rankings ]</span>
-        <h1 className="font-serif text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
+        <h1 className="font-serif text-[32px] md:text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
         <p className="text-foreground-muted mt-2">
           Top prompts and contributors on Pergamum.
         </p>
       </div>
 
       <Tabs defaultValue="all-time">
-        <TabsList className="mb-6">
-          <TabsTrigger value="all-time">All-time prompts</TabsTrigger>
-          <TabsTrigger value="this-week">This week</TabsTrigger>
-          <TabsTrigger value="contributors">Contributors</TabsTrigger>
+        <TabsList className="mb-6 w-full">
+          <TabsTrigger value="all-time" className="flex-1">All-time</TabsTrigger>
+          <TabsTrigger value="this-week" className="flex-1">This week</TabsTrigger>
+          <TabsTrigger value="contributors" className="flex-1">Contributors</TabsTrigger>
         </TabsList>
 
         <TabsContent value="all-time">
           <PromptLeaderboard prompts={allTimePrompts} />
         </TabsContent>
         <TabsContent value="this-week">
-          {weekPrompts.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-10 text-center">
-              No prompts published in the last 7 days.
-            </p>
-          ) : (
-            <PromptLeaderboard prompts={weekPrompts} />
-          )}
+          <PromptLeaderboard prompts={weekPrompts} />
         </TabsContent>
         <TabsContent value="contributors">
           <ContributorLeaderboard contributors={contributors} />
@@ -94,9 +89,12 @@ export default async function LeaderboardsPage() {
 function PromptLeaderboard({ prompts }: { prompts: PromptWithAuthor[] }) {
   if (prompts.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground py-10 text-center">
-        No data yet.
-      </p>
+      <EmptyState
+        icon={<Trophy className="h-6 w-6 text-muted-foreground" />}
+        title="Be the first on the leaderboard"
+        description="Submit a prompt and earn upvotes to claim the top spot."
+        action={{ label: "Submit a prompt", href: "/submit" }}
+      />
     );
   }
   return (
@@ -162,7 +160,12 @@ function ContributorLeaderboard({
 }) {
   if (contributors.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground py-10 text-center">No data yet.</p>
+      <EmptyState
+        icon={<Trophy className="h-6 w-6 text-muted-foreground" />}
+        title="No contributors yet"
+        description="Submit prompts and earn reputation to appear here."
+        action={{ label: "Submit a prompt", href: "/submit" }}
+      />
     );
   }
   return (

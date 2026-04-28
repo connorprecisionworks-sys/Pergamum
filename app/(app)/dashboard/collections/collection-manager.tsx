@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState, useTransition } from "react";
-import { Plus, Trash2, Loader2, Globe, Lock, ExternalLink } from "lucide-react";
+import { Plus, Trash2, Loader2, Globe, Lock, ExternalLink, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import { createCollection, deleteCollection } from "./actions";
 import type { Collection } from "@/lib/types/database";
 
@@ -125,9 +126,12 @@ export function CollectionManager({ collections: initial, ownerUsername, openNew
       </div>
 
       {collections.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-12 text-center">
-          No collections yet. Create one to start curating.
-        </p>
+        <EmptyState
+          icon={<BookOpen className="h-6 w-6 text-muted-foreground" />}
+          title="No collections yet"
+          description="Save prompts to collections to organise them."
+          action={{ label: "Create your first collection", onClick: () => setDialogOpen(true) }}
+        />
       ) : (
         <div className="space-y-2">
           {collections.map((c) => (

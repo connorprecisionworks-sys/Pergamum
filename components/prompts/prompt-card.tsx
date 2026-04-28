@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowUp, Eye, Lock } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -33,7 +31,6 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
             <Link
               href={blurred ? "/auth/signup" : `/prompts?category=${category.slug}`}
               className="label-mono text-pergamum-500 hover:text-pergamum-400 transition-colors"
-              onClick={(e) => e.stopPropagation()}
             >
               {category.name}
             </Link>
@@ -79,7 +76,6 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
                 key={tag}
                 href={`/prompts?tag=${encodeURIComponent(tag)}`}
                 className="label-mono px-2 py-0.5 rounded bg-background-subtle hover:bg-background-inset hover:text-foreground-muted transition-colors"
-                onClick={(e) => e.stopPropagation()}
                 tabIndex={blurred ? -1 : undefined}
               >
                 #{tag}
@@ -117,7 +113,6 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
           <Link
             href={blurred ? "/auth/signup" : `/u/${author?.username}`}
             className="label-mono hover:text-foreground-muted transition-colors truncate"
-            onClick={(e) => e.stopPropagation()}
           >
             {author?.display_name ?? author?.username}
           </Link>

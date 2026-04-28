@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Users } from "lucide-react";
+import { Users, Rss } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PromptCard } from "@/components/prompts/prompt-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { PromptWithAuthor } from "@/lib/types/database";
 
 export const metadata: Metadata = {
@@ -49,35 +49,19 @@ export default async function FeedPage() {
       </div>
 
       {followingIds.length === 0 ? (
-        <div className="flex flex-col items-center text-center py-20 gap-4">
-          <div className="rounded-full bg-muted p-4">
-            <Users className="h-8 w-8 text-muted-foreground" />
-          </div>
-          <div className="space-y-1">
-            <h2 className="font-semibold">You&apos;re not following anyone yet</h2>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Visit a user&apos;s profile and hit Follow to see their prompts here.
-            </p>
-          </div>
-          <Link
-            href="/prompts"
-            className="text-sm text-pergamum-600 hover:text-pergamum-700 font-medium"
-          >
-            Browse the library →
-          </Link>
-        </div>
+        <EmptyState
+          icon={<Users className="h-6 w-6 text-muted-foreground" />}
+          title="Follow people to see their prompts here"
+          description="Discover contributors worth following on the leaderboards."
+          action={{ label: "View leaderboards", href: "/leaderboards" }}
+        />
       ) : prompts.length === 0 ? (
-        <div className="flex flex-col items-center text-center py-20 gap-3">
-          <p className="text-sm text-muted-foreground">
-            The people you follow haven&apos;t published anything yet.
-          </p>
-          <Link
-            href="/prompts"
-            className="text-sm text-pergamum-600 hover:text-pergamum-700 font-medium"
-          >
-            Browse the library →
-          </Link>
-        </div>
+        <EmptyState
+          icon={<Rss className="h-6 w-6 text-muted-foreground" />}
+          title="Nothing from your follows yet"
+          description="The people you follow haven't published anything yet."
+          action={{ label: "Browse the library", href: "/prompts" }}
+        />
       ) : (
         <div className="space-y-4">
           {prompts.map((prompt) => (

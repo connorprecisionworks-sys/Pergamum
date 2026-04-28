@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
@@ -9,7 +10,11 @@ import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/utils";
 import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
 import type { PromptWithAuthor, CommentWithAuthor, VoteValue } from "@/lib/types/database";
-import { CommentSection } from "./comment-section";
+
+const CommentSection = dynamic(
+  () => import("./comment-section").then((m) => ({ default: m.CommentSection })),
+  { ssr: true }
+);
 
 interface PromptPageProps {
   params: Promise<{ slug: string }>;
@@ -81,8 +86,35 @@ export default async function PromptPage({ params }: PromptPageProps) {
     .is("parent_id", null)
     .order("created_at", { ascending: true });
 
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pergamum.app";
+  const promptAuthor = (prompt as PromptWithAuthor).profiles;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: prompt.title,
+    description: prompt.description ?? undefined,
+    url: `${BASE_URL}/prompts/${prompt.slug}`,
+    datePublished: prompt.published_at ?? prompt.created_at,
+    dateModified: prompt.updated_at ?? prompt.published_at ?? prompt.created_at,
+    author: {
+      "@type": "Person",
+      name: promptAuthor?.display_name ?? promptAuthor?.username ?? "Unknown",
+      url: promptAuthor?.username
+        ? `${BASE_URL}/u/${promptAuthor.username}`
+        : undefined,
+    },
+  };
+
   return (
     <div className="container py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          // Escape closing script tags so user-supplied title/description
+          // can't break out of the JSON-LD block.
+          __html: JSON.stringify(jsonLd).replace(/<\/script>/gi, "<\\/script>"),
+        }}
+      />
       <Link
         href="/prompts"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"

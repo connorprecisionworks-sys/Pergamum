@@ -27,7 +27,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", id);
 
       if (error) {
-        toast.error("Failed to approve prompt.");
+        toast.error("Couldn't approve the prompt.");
         return;
       }
 
@@ -46,7 +46,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", id);
 
       if (error) {
-        toast.error("Failed to reject prompt.");
+        toast.error("Couldn't reject the prompt.");
         return;
       }
       toast.success("Prompt removed.");
@@ -63,7 +63,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", promptId);
 
       if (error) {
-        toast.error("Failed to flag prompt.");
+        toast.error("Couldn't flag the prompt.");
         return;
       }
 
@@ -86,7 +86,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", id);
 
       if (error) {
-        toast.error("Failed to resolve report.");
+        toast.error("Couldn't resolve the report.");
         return;
       }
       toast.success("Report resolved (no action taken).");
@@ -102,7 +102,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", id);
 
       if (error) {
-        toast.error("Failed to approve tool.");
+        toast.error("Couldn't approve the tool.");
         return;
       }
       toast.success("Tool approved.");
@@ -118,7 +118,7 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
         .eq("id", id);
 
       if (error) {
-        toast.error("Failed to reject tool.");
+        toast.error("Couldn't reject the tool.");
         return;
       }
       toast.success("Tool rejected.");

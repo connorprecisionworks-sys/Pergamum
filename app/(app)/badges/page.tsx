@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Award, Star, Crown } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BadgeShowcase } from "@/components/profile/badge-showcase";
+import { Card, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { Badge as BadgeType } from "@/lib/types/database";
 
 export const metadata: Metadata = {
@@ -57,6 +55,17 @@ export default async function BadgesPage() {
           </p>
         )}
       </div>
+
+      {user && myBadges.length === 0 && (
+        <div className="mb-10">
+          <EmptyState
+            icon={<Award className="h-6 w-6 text-muted-foreground" />}
+            title="No badges earned yet"
+            description="Submit prompts, gain followers, and build reputation to unlock badges."
+            action={{ label: "Submit your first prompt", href: "/submit" }}
+          />
+        </div>
+      )}
 
       {(["gold", "silver", "bronze"] as const).map((tier) => {
         const { label, icon: Icon, color, bg } = TIER_CONFIG[tier];

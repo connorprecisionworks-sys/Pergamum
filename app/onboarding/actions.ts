@@ -52,5 +52,29 @@ export async function completeOnboarding(
     return { error: "Failed to save your profile. Please try again." };
   }
 
-  redirect("/dashboard");
+  // analytics_events table is not in generated types until migration runs
+  // eslint-disable-next-line
+  await (supabase as any).from("analytics_events").insert({
+    event: "onboarding_completed",
+    user_id: user.id,
+  });
+
+  redirect("/submit");
+}
+
+export async function skipOnboarding() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) redirect("/auth/login");
+
+  await supabase
+    .from("profiles")
+    .update({ onboarding_complete: true })
+    .eq("id", user.id);
+
+  redirect("/submit");
 }

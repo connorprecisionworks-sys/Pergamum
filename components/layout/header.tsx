@@ -230,9 +230,11 @@ export function Header({ profile }: HeaderProps) {
 
           {/* Mobile menu toggle */}
           <button
-            className="md:hidden h-8 w-8 flex items-center justify-center rounded-md hover:bg-background-subtle transition-colors"
+            className="md:hidden h-11 w-11 flex items-center justify-center rounded-md hover:bg-background-subtle transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav"
           >
             {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
@@ -241,7 +243,7 @@ export function Header({ profile }: HeaderProps) {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-3">
+        <div id="mobile-nav" className="md:hidden border-t border-border bg-background px-4 py-4 space-y-3">
           <form onSubmit={handleSearch} className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-foreground-subtle" />
             <Input

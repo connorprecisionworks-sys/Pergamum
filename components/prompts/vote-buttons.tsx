@@ -80,8 +80,9 @@ export function VoteButtons({
         onClick={() => castVote(1)}
         disabled={isPending}
         aria-label={vote === 1 ? "Remove upvote" : "Upvote this prompt"}
+        aria-pressed={vote === 1}
         className={cn(
-          "gap-1.5",
+          "gap-1.5 min-h-[44px]",
           vote === 1 &&
             "border-pergamum-400 bg-pergamum-50 text-pergamum-700 hover:bg-pergamum-100 dark:border-pergamum-700 dark:bg-pergamum-900/30 dark:text-pergamum-400"
         )}
@@ -96,8 +97,9 @@ export function VoteButtons({
         onClick={() => castVote(-1)}
         disabled={isPending}
         aria-label={vote === -1 ? "Remove downvote" : "Downvote this prompt"}
+        aria-pressed={vote === -1}
         className={cn(
-          "gap-1.5",
+          "gap-1.5 min-h-[44px]",
           vote === -1 &&
             "border-red-400 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400"
         )}

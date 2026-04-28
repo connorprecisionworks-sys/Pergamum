@@ -33,28 +33,33 @@ export function CopyButton({ text, promptId, className }: CopyButtonProps) {
       // Reset after 2s
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      toast.error("Failed to copy. Please select and copy manually.");
+      toast.error("Couldn't copy automatically — select the text and copy it manually.");
     }
   };
 
   return (
-    <Button
-      onClick={handleCopy}
-      variant={copied ? "secondary" : "default"}
-      className={className}
-      aria-label={copied ? "Copied!" : "Copy prompt to clipboard"}
-    >
-      {copied ? (
-        <>
-          <Check className="h-4 w-4 mr-2" />
-          Copied!
-        </>
-      ) : (
-        <>
-          <Copy className="h-4 w-4 mr-2" />
-          Copy prompt
-        </>
-      )}
-    </Button>
+    <>
+      <span role="status" aria-live="polite" className="sr-only">
+        {copied ? "Prompt copied to clipboard" : ""}
+      </span>
+      <Button
+        onClick={handleCopy}
+        variant={copied ? "secondary" : "default"}
+        className={className}
+        aria-label={copied ? "Copied to clipboard" : "Copy prompt to clipboard"}
+      >
+        {copied ? (
+          <>
+            <Check className="h-4 w-4 mr-2" />
+            Copied!
+          </>
+        ) : (
+          <>
+            <Copy className="h-4 w-4 mr-2" />
+            Copy prompt
+          </>
+        )}
+      </Button>
+    </>
   );
 }

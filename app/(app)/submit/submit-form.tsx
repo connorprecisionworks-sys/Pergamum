@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, normalizeTags, substituteVariables } from "@/lib/utils";
+import { track } from "@/lib/analytics";
 import type { Category, Prompt } from "@/lib/types/database";
 
 const MODEL_OPTIONS = ["any", "claude", "gpt-4", "gemini", "llama", "mistral", "stable-diffusion", "dall-e", "midjourney"];
@@ -48,16 +49,16 @@ type PromptFormValues = z.infer<typeof promptSchema>;
 interface SubmitFormProps {
   categories: Category[];
   authorId: string;
-  contributionCount: number;
   isAdmin: boolean;
+  isFirstPrompt: boolean;
   forkedFrom?: Pick<Prompt, "id" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
 }
 
 export function SubmitForm({
   categories,
   authorId,
-  contributionCount,
   isAdmin,
+  isFirstPrompt,
   forkedFrom,
 }: SubmitFormProps) {
   const router = useRouter();
@@ -133,9 +134,8 @@ export function SubmitForm({
         slug = `${base}-${i}`;
       }
 
-      // Determine publish status
-      // First 2 prompts from new users go to review queue
-      const needsReview = !isAdmin && contributionCount < 2;
+      // Every non-admin submission enters review before publishing
+      const needsReview = !isAdmin;
       const status = needsReview ? "pending" : "published";
       const published_at = needsReview ? null : new Date().toISOString();
 
@@ -166,12 +166,11 @@ export function SubmitForm({
       if (error) throw error;
 
       if (needsReview) {
-        toast.success(
-          "Prompt submitted for review! It'll be published once approved."
-        );
+        if (isFirstPrompt) track("first_prompt_submitted");
+        toast.success("Prompt submitted — it'll go live once approved, usually within an hour.");
         router.push("/dashboard");
       } else {
-        toast.success("Prompt published!");
+        toast.success("Prompt published — it's live!");
         router.push(`/prompts/${data.slug}`);
       }
     } catch (err) {
@@ -184,6 +183,16 @@ export function SubmitForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+      {/* First-timer welcome banner */}
+      {isFirstPrompt && !isAdmin && (
+        <div className="flex gap-3 p-4 rounded-lg bg-pergamum-50 dark:bg-pergamum-950/20 border border-pergamum-200 dark:border-pergamum-800">
+          <Info className="h-4 w-4 text-pergamum-600 shrink-0 mt-0.5" />
+          <p className="text-sm text-pergamum-800 dark:text-pergamum-300">
+            Welcome! Every prompt is reviewed before going live, usually under an hour.
+          </p>
+        </div>
+      )}
+
       {/* Title */}
       <div className="space-y-2">
         <Label htmlFor="title">
@@ -193,8 +202,11 @@ export function SubmitForm({
           id="title"
           placeholder="e.g. Senior Developer Code Review"
           {...register("title")}
-          aria-describedby={errors.title ? "title-error" : undefined}
+          aria-describedby={errors.title ? "title-error" : "title-hint"}
         />
+        <p id="title-hint" className="text-xs text-muted-foreground">
+          A clear, specific title helps people find your prompt.
+        </p>
         {errors.title && (
           <p id="title-error" className="text-sm text-destructive">
             {errors.title.message}
@@ -212,8 +224,11 @@ export function SubmitForm({
           placeholder="What does this prompt do? When should someone use it?"
           rows={3}
           {...register("description")}
-          aria-describedby={errors.description ? "desc-error" : undefined}
+          aria-describedby={errors.description ? "desc-error" : "desc-hint"}
         />
+        <p id="desc-hint" className="text-xs text-muted-foreground">
+          This shows on the prompt card and in search results, so be specific.
+        </p>
         {errors.description && (
           <p id="desc-error" className="text-sm text-destructive">
             {errors.description.message}
@@ -285,7 +300,7 @@ export function SubmitForm({
           {...register("tags")}
         />
         <p className="text-xs text-muted-foreground">
-          Comma-separated. Helps people find this prompt.
+          Separate with commas — these help people find your prompt by topic.
         </p>
       </div>
 
@@ -412,12 +427,12 @@ export function SubmitForm({
       </div>
 
       {/* Moderation note */}
-      {!isAdmin && contributionCount < 2 && (
+      {!isAdmin && (
         <div className="flex gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
           <Info className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
           <p className="text-sm text-amber-800 dark:text-amber-300">
-            Your first 2 prompts will be reviewed before publishing — usually
-            within 24 hours. After that, your submissions go live immediately.
+            Every prompt is reviewed before going live (usually under an hour).
+            We&apos;ll let you know when yours is approved.
           </p>
         </div>
       )}

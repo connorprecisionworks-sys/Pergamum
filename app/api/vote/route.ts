@@ -16,6 +16,29 @@ export async function POST(request: Request) {
     );
   }
 
+  // Rate limit: max 10 vote actions per user per minute
+  const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString();
+  // eslint-disable-next-line
+  const { count: recentCount } = await (supabase as any)
+    .from("rate_limit_vote_log")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .gte("created_at", oneMinuteAgo);
+
+  if ((recentCount ?? 0) >= 10) {
+    return NextResponse.json(
+      { error: "You're voting too quickly — please slow down." },
+      { status: 429 }
+    );
+  }
+
+  // Log this vote action (fire-and-forget; don't block on it)
+  // eslint-disable-next-line
+  (supabase as any)
+    .from("rate_limit_vote_log")
+    .insert({ user_id: user.id })
+    .then(() => {});
+
   let body: { promptId: string; value: VoteValue };
   try {
     body = await request.json() as { promptId: string; value: VoteValue };

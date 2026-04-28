@@ -45,9 +45,8 @@ export function Footer() {
           <div className="space-y-4">
             <span className="label-mono">[ Built by ]</span>
             <p className="text-[13px] text-foreground-muted leading-relaxed">
-              Pergamum is community-powered and free forever.
-              <br />
-              Built with Next.js and Supabase.
+              Community-powered and free forever — no paywalls, no sign-up
+              required to browse.
             </p>
             <p className="label-mono">
               &copy; {new Date().getFullYear()} Pergamum

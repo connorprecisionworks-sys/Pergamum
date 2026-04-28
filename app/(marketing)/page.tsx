@@ -1,12 +1,17 @@
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PromptCard } from "@/components/prompts/prompt-card";
-import { HeroCards } from "@/components/brand/hero-cards";
 import { FadeSection } from "@/components/brand/fade-section";
 import { createClient } from "@/lib/supabase/server";
 import type { PromptWithAuthor, Category, Profile } from "@/lib/types/database";
+
+const HeroCards = dynamic(
+  () => import("@/components/brand/hero-cards").then((m) => ({ default: m.HeroCards })),
+  { ssr: true }
+);
 
 export default async function LandingPage() {
   const supabase = await createClient();
@@ -80,7 +85,7 @@ export default async function LandingPage() {
 
               <div className="space-y-1">
                 <h1
-                  className="font-serif text-[64px] md:text-[80px] lg:text-[96px] font-normal leading-[0.95] tracking-display text-foreground"
+                  className="font-serif text-[40px] sm:text-[56px] md:text-[80px] lg:text-[96px] font-normal leading-[0.95] tracking-display text-foreground"
                 >
                   The library
                   <br />
@@ -300,7 +305,7 @@ export default async function LandingPage() {
       ───────────────────────────────────────────── */}
       <section className="border-t border-border py-32">
         <div className="container text-center space-y-6">
-          <h2 className="font-serif text-[48px] font-normal tracking-h1 leading-tight">
+          <h2 className="font-serif text-[32px] md:text-[48px] font-normal tracking-h1 leading-tight">
             Start building your library.
           </h2>
           <Button size="lg" asChild>

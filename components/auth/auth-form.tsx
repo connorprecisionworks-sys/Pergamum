@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
+import { track } from "@/lib/analytics";
 
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -41,6 +42,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   const onSubmit = async (values: AuthFormValues) => {
     setLoading(true);
+    if (mode === "signup") track("signup_started");
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
@@ -51,9 +53,8 @@ export function AuthForm({ mode }: AuthFormProps) {
           },
         });
         if (error) throw error;
-        toast.success(
-          "Check your email! We've sent you a confirmation link."
-        );
+        track("signup_completed");
+        toast.success("Check your email — we've sent a confirmation link.");
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: values.email,
@@ -72,8 +73,12 @@ export function AuthForm({ mode }: AuthFormProps) {
         }
       }
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Something went wrong";
+      let message = err instanceof Error ? err.message : "Something went wrong";
+      if (/invalid login credentials/i.test(message)) {
+        message = "That email and password don't match. Try again or reset your password.";
+      } else if (/email not confirmed/i.test(message)) {
+        message = "You'll need to confirm your email before signing in. Check your inbox.";
+      }
       toast.error(message);
     } finally {
       setLoading(false);
@@ -174,6 +179,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             type="email"
             placeholder="you@example.com"
             autoComplete={mode === "login" ? "email" : "email"}
+            aria-invalid={!!errors.email}
             aria-describedby={errors.email ? "email-error" : undefined}
             {...register("email")}
           />
@@ -191,6 +197,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             type="password"
             placeholder="••••••••"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
+            aria-invalid={!!errors.password}
             aria-describedby={errors.password ? "password-error" : undefined}
             {...register("password")}
           />

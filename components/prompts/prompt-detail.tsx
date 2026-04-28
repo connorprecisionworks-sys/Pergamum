@@ -37,7 +37,7 @@ export function PromptDetail({
 
   const handleReport = async () => {
     if (!currentUserId) {
-      toast.error("Sign in to report prompts.");
+      toast.error("Sign in to report this prompt.");
       return;
     }
     const reason = window.prompt(
@@ -53,9 +53,9 @@ export function PromptDetail({
     });
 
     if (error) {
-      toast.error("Failed to submit report.");
+      toast.error("Couldn't submit your report. Try again.");
     } else {
-      toast.success("Report submitted. Thank you!");
+      toast.success("Report submitted — thanks for keeping the library tidy.");
     }
   };
 
@@ -173,7 +173,7 @@ export function PromptDetail({
         </div>
 
         <div className="relative rounded-xl border bg-zinc-50 dark:bg-zinc-900/50 overflow-hidden">
-          <pre className="prompt-body p-6 text-sm overflow-x-auto">
+          <pre className="prompt-body p-4 md:p-6 text-sm overflow-x-auto">
             {substitutedBody}
           </pre>
         </div>

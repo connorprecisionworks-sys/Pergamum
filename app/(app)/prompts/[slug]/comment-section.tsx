@@ -107,7 +107,7 @@ export function CommentSection({
         .single();
 
       if (error) {
-        toast.error("Failed to post comment.");
+        toast.error("Couldn't post your comment. Try again.");
         return;
       }
 
@@ -139,7 +139,7 @@ export function CommentSection({
         </div>
       ) : (
         <p className="text-sm text-muted-foreground py-4">
-          No comments yet. Be the first to share your experience with this prompt!
+          No comments yet — share your experience or suggest an improvement.
         </p>
       )}
 

@@ -113,6 +113,77 @@ In Supabase dashboard → **Authentication → URL Configuration**:
 
 ---
 
+## Email template polish
+
+In the Supabase dashboard → **Authentication → Email Templates → Confirm signup**, replace the default template with the following HTML. This keeps the Pergamum brand and provides a plain-text fallback.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm your Pergamum account</title>
+</head>
+<body style="margin:0;padding:0;background:#0f0f0f;font-family:system-ui,-apple-system,sans-serif;color:#e5e5e5;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:48px 0;">
+    <tr>
+      <td align="center">
+        <table width="480" cellpadding="0" cellspacing="0" style="background:#1a1a1a;border-radius:12px;border:1px solid #2a2a2a;padding:48px 40px;">
+          <tr>
+            <td>
+              <!-- Wordmark -->
+              <p style="margin:0 0 32px;font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#9370db;">
+                PERGAMUM
+              </p>
+
+              <!-- Headline -->
+              <h1 style="margin:0 0 12px;font-size:24px;font-weight:700;color:#ffffff;line-height:1.3;">
+                Confirm your email
+              </h1>
+              <p style="margin:0 0 32px;font-size:15px;color:#a0a0a0;line-height:1.6;">
+                Click the button below to confirm your address and get into the library.
+              </p>
+
+              <!-- CTA -->
+              <a href="{{ .ConfirmationURL }}"
+                 style="display:inline-block;background:#7c3aed;color:#ffffff;font-size:15px;font-weight:600;text-decoration:none;padding:14px 28px;border-radius:8px;">
+                Confirm email
+              </a>
+
+              <!-- Divider -->
+              <hr style="border:none;border-top:1px solid #2a2a2a;margin:36px 0;" />
+
+              <!-- Footer -->
+              <p style="margin:0;font-size:13px;color:#555555;line-height:1.6;">
+                If you didn&rsquo;t create a Pergamum account, you can safely ignore this email.<br />
+                Community-powered and free forever &mdash; <a href="https://pergamum.app" style="color:#9370db;text-decoration:none;">pergamum.app</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+```
+
+Plain-text fallback (paste into the "Text" tab of the same template):
+
+```
+PERGAMUM
+
+Confirm your email address to get into the library.
+
+{{ .ConfirmationURL }}
+
+If you didn't create a Pergamum account, ignore this email.
+— pergamum.app
+```
+
+---
+
 ## Checklist
 
 - [ ] Supabase project created

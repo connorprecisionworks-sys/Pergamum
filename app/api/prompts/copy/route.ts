@@ -12,6 +12,12 @@ export async function POST(request: Request) {
 
     const supabase = await createClient();
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      // View tracking requires auth (anon updates are blocked by RLS anyway)
+      return NextResponse.json({ ok: true });
+    }
+
     // Read current view count then increment (Supabase doesn't support SQL expressions in update)
     const { data: prompt, error: readError } = await supabase
       .from("prompts")

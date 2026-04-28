@@ -16,6 +16,7 @@ import { CollectionCard } from "@/components/collections/collection-card";
 import { BadgeShowcase } from "@/components/profile/badge-showcase";
 import { FollowButton } from "@/components/profile/follow-button";
 import { formatCount, relativeTime } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { PromptWithAuthor, Badge as BadgeType, UserBadge, Collection } from "@/lib/types/database";
 
 interface ProfilePageProps {
@@ -275,9 +276,11 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
         {/* Prompts */}
         <TabsContent value="prompts">
           {prompts.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-12 text-center">
-              The shelves are still being filled.
-            </p>
+            <EmptyState
+              icon={<FileText className="h-6 w-6 text-muted-foreground" />}
+              title={`@${username} hasn't published yet`}
+              description="Check back soon — their prompts will appear here."
+            />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {prompts.map((p) => <PromptCard key={p.id} prompt={p} />)}

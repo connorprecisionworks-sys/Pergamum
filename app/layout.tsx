@@ -22,7 +22,10 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pergamum.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "Pergamum — A living library of prompts.",
     template: "%s | Pergamum",
@@ -42,6 +45,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Pergamum",
+    title: "Pergamum — A living library of prompts.",
+    description:
+      "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
+  },
+  twitter: {
+    card: "summary_large_image",
     title: "Pergamum — A living library of prompts.",
     description:
       "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
@@ -68,6 +77,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen font-sans antialiased">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        >
+          Skip to content
+        </a>
         {children}
         <Toaster richColors position="top-right" />
       </body>

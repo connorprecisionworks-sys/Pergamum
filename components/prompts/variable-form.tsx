@@ -57,7 +57,6 @@ export function VariableForm({
                 value={values[variable.name] ?? ""}
                 onChange={(e) => handleChange(variable.name, e.target.value)}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                aria-label={variable.name}
               >
                 {variable.options.map((opt) => (
                   <option key={opt} value={opt}>

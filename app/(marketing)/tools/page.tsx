@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import { createClient } from "@/lib/supabase/server";
+import { Wrench } from "lucide-react";
+import { createPublicClient } from "@/lib/supabase/server";
 import { ToolCard } from "@/components/tools/tool-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import type { Tool } from "@/lib/types/database";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "Free AI Tools Directory",
@@ -22,7 +26,7 @@ const TOOL_CATEGORIES = [
 ];
 
 export default async function ToolsPage() {
-  const supabase = await createClient();
+  const supabase = createPublicClient();
 
   const { data: tools } = await supabase
     .from("tools")
@@ -57,6 +61,15 @@ export default async function ToolsPage() {
             No paywalls, no sign-up required to browse.
           </p>
         </div>
+
+        {(!tools || (tools as Tool[]).length === 0) && (
+          <EmptyState
+            icon={<Wrench className="h-6 w-6 text-muted-foreground" />}
+            title="No tools listed yet"
+            description="Know a great free AI tool? Suggest it and help the community."
+            action={{ label: "Suggest a tool", href: "/submit" }}
+          />
+        )}
 
         <div className="space-y-12">
           {TOOL_CATEGORIES.map((cat) => {

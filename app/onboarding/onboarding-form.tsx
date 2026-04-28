@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { completeOnboarding } from "./actions";
+import { completeOnboarding, skipOnboarding } from "./actions";
 import type { Profile } from "@/lib/types/database";
 
 interface OnboardingFormProps {
@@ -24,7 +24,7 @@ function SubmitButton() {
       ) : (
         <Sparkles className="h-4 w-4 mr-2" />
       )}
-      {pending ? "Saving…" : "Finish setup"}
+      {pending ? "Saving…" : "Let's go"}
     </Button>
   );
 }
@@ -80,7 +80,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
           />
         </div>
         <p className="text-xs text-muted-foreground">
-          Letters, numbers, underscores, and hyphens only.
+          Your @handle for your public profile — you can change it later.
         </p>
       </div>
 
@@ -94,10 +94,19 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
           rows={3}
           maxLength={300}
         />
-        <p className="text-xs text-muted-foreground">Optional. Max 300 characters.</p>
+        <p className="text-xs text-muted-foreground">Optional. A sentence or two helps others know who you are.</p>
       </div>
 
       <SubmitButton />
+
+      <form action={skipOnboarding}>
+        <button
+          type="submit"
+          className="w-full text-center text-sm text-muted-foreground hover:text-foreground transition-colors py-1"
+        >
+          Skip for now
+        </button>
+      </form>
     </form>
   );
 }

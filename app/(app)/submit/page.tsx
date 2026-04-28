@@ -26,7 +26,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
 
   const params = await searchParams;
 
-  const [profileResult, categoriesResult, sourceResult] = await Promise.all([
+  const [profileResult, categoriesResult, sourceResult, promptCountResult] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase.from("categories").select("*").order("sort_order"),
     params.fork_from
@@ -37,10 +37,12 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           .eq("status", "published")
           .single()
       : Promise.resolve({ data: null }),
+    supabase.from("prompts").select("id", { count: "exact", head: true }).eq("author_id", user.id),
   ]);
 
   const profile = profileResult.data;
   const categories = (categoriesResult.data as Category[] | null) ?? [];
+  const isFirstPrompt = (promptCountResult.count ?? 0) === 0;
   const sourcePrompt = sourceResult.data as Pick<
     Prompt,
     "id" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables"
@@ -74,8 +76,8 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
       <SubmitForm
         categories={categories}
         authorId={user.id}
-        contributionCount={profile?.contribution_count ?? 0}
         isAdmin={profile?.is_admin ?? false}
+        isFirstPrompt={isFirstPrompt}
         forkedFrom={sourcePrompt ?? undefined}
       />
     </div>

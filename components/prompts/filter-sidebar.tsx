@@ -54,6 +54,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
           <span className="label-mono">Active filters</span>
           <button
             onClick={clearAll}
+            aria-label="Clear all filters"
             className="label-mono text-pergamum-500 hover:text-pergamum-400 flex items-center gap-1 transition-colors"
           >
             <X className="h-3 w-3" />
@@ -63,15 +64,15 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
       )}
 
       {/* Sort */}
-      <div className="space-y-2">
-        <div className="label-mono mb-3">[ Sort ]</div>
+      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
+        <legend className="label-mono mb-3">[ Sort ]</legend>
         <div className="flex flex-col gap-0.5">
           {SORT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => updateParam("sort", opt.value === "trending" ? "" : opt.value)}
               className={cn(
-                "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+                "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
                 currentSort === opt.value ? activeStyle : inactiveStyle
               )}
               aria-pressed={currentSort === opt.value}
@@ -80,16 +81,16 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
             </button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Category */}
-      <div className="space-y-2">
-        <div className="label-mono mb-3">[ Category ]</div>
+      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
+        <legend className="label-mono mb-3">[ Category ]</legend>
         <div className="flex flex-col gap-0.5">
           <button
             onClick={() => updateParam("category", "")}
             className={cn(
-              "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+              "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
               !currentCategory ? activeStyle : inactiveStyle
             )}
             aria-pressed={!currentCategory}
@@ -103,7 +104,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
                 updateParam("category", currentCategory === cat.slug ? "" : cat.slug)
               }
               className={cn(
-                "text-[13px] text-left px-3 py-1.5 rounded-md transition-colors",
+                "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
                 currentCategory === cat.slug ? activeStyle : inactiveStyle
               )}
               aria-pressed={currentCategory === cat.slug}
@@ -112,11 +113,11 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
             </button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Model */}
-      <div className="space-y-2">
-        <div className="label-mono mb-3">[ Model ]</div>
+      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
+        <legend className="label-mono mb-3">[ Model ]</legend>
         <div className="flex flex-wrap gap-1.5">
           {MODEL_OPTIONS.map((model) => {
             const active = currentModel === model;
@@ -126,7 +127,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
                 onClick={() => updateParam("model", currentModel === model ? "" : model)}
                 aria-pressed={active}
                 className={cn(
-                  "label-mono px-2.5 py-1 rounded border transition-colors capitalize",
+                  "label-mono px-2.5 py-2 min-h-[44px] rounded border transition-colors capitalize",
                   active
                     ? "border-pergamum-500/60 text-pergamum-400 bg-pergamum-900/20"
                     : "border-border text-foreground-subtle hover:border-border-strong hover:text-foreground-muted"
@@ -137,7 +138,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
             );
           })}
         </div>
-      </div>
+      </fieldset>
     </aside>
   );
 }

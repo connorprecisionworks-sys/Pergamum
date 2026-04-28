@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Eye, ArrowUp, Edit, Trash2, FileText, Clock, User, BookOpen, Star } from "lucide-react";
+import { Plus, Eye, ArrowUp, Edit, FileText, Clock, User, BookOpen, Star, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { EmptyState } from "@/components/ui/empty-state";
 import { formatCount, relativeTime } from "@/lib/utils";
 import type { Prompt } from "@/lib/types/database";
 
@@ -69,6 +70,44 @@ export default async function DashboardPage() {
 
   const totalUpvotes = published.reduce((acc, p) => acc + p.upvotes, 0);
   const totalViews = (prompts ?? []).reduce((acc, p) => acc + p.views, 0);
+  const hasNoPrompts = (prompts ?? []).length === 0;
+
+  if (hasNoPrompts) {
+    return (
+      <div className="container py-10">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <p className="text-muted-foreground mt-1">
+              Welcome, {profile?.display_name ?? profile?.username}
+            </p>
+          </div>
+        </div>
+
+        <Card className="max-w-lg mx-auto mt-16 text-center p-12">
+          <CardContent className="space-y-6 pt-0">
+            <div className="flex justify-center">
+              <div className="h-16 w-16 rounded-full bg-pergamum-100 dark:bg-pergamum-900/30 flex items-center justify-center">
+                <Sparkles className="h-8 w-8 text-pergamum-600" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-bold tracking-tight">Share your first prompt</h2>
+              <p className="text-muted-foreground">
+                Contribute to the library and earn reputation with every upvote.
+              </p>
+            </div>
+            <Button asChild size="lg">
+              <Link href="/submit">
+                <Plus className="h-4 w-4 mr-2" />
+                Submit a prompt
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-10">
@@ -185,10 +224,29 @@ export default async function DashboardPage() {
             </TabsList>
 
             <TabsContent value="published">
-              <PromptTable prompts={published} />
+              <PromptTable
+                prompts={published}
+                emptyContent={
+                  <EmptyState
+                    icon={<FileText className="h-6 w-6 text-muted-foreground" />}
+                    title="Share your first prompt"
+                    description="Contribute to the library and earn reputation with each upvote."
+                    action={{ label: "Submit a prompt", href: "/submit" }}
+                  />
+                }
+              />
             </TabsContent>
             <TabsContent value="drafts">
-              <PromptTable prompts={drafts} />
+              <PromptTable
+                prompts={drafts}
+                emptyContent={
+                  <EmptyState
+                    icon={<Clock className="h-6 w-6 text-muted-foreground" />}
+                    title="Nothing in review"
+                    description="Submitted prompts appear here while awaiting review."
+                  />
+                }
+              />
             </TabsContent>
           </Tabs>
         </CardContent>
@@ -197,12 +255,10 @@ export default async function DashboardPage() {
   );
 }
 
-function PromptTable({ prompts }: { prompts: Prompt[] }) {
+function PromptTable({ prompts, emptyContent }: { prompts: Prompt[]; emptyContent?: ReactNode }) {
   if (prompts.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground py-6 text-center">
-        Nothing here yet.
-      </p>
+    return emptyContent ?? (
+      <p className="text-sm text-muted-foreground py-6 text-center">Nothing here yet.</p>
     );
   }
 

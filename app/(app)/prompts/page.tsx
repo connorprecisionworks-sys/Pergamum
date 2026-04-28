@@ -4,6 +4,8 @@ import { Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { FilterSidebar } from "@/components/prompts/filter-sidebar";
+import { EmptyState } from "@/components/ui/empty-state";
+import { FilterDialog } from "@/components/prompts/filter-dialog";
 import type { PromptWithAuthor, Category } from "@/lib/types/database";
 
 export const metadata: Metadata = {
@@ -122,10 +124,10 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
         {/* Prompt grid */}
         <div className="flex-1 min-w-0">
-          {/* Mobile filters row */}
+          {/* Mobile filters — collapsed into a dialog */}
           <div className="lg:hidden mb-6">
             <Suspense fallback={null}>
-              <FilterSidebar categories={(categories as Category[] | null) ?? []} />
+              <FilterDialog categories={(categories as Category[] | null) ?? []} />
             </Suspense>
           </div>
 
@@ -163,15 +165,16 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
               )}
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <Search className="h-10 w-10 text-foreground-subtle mb-4" />
-              <h3 className="font-semibold text-[17px] mb-2">No prompts found</h3>
-              <p className="text-sm text-muted-foreground">
-                {params.q
+            <EmptyState
+              icon={<Search className="h-6 w-6 text-muted-foreground" />}
+              title="No prompts match your filters"
+              description={
+                params.q
                   ? "Try different search terms or browse all prompts."
-                  : "No prompts match these filters yet. Be the first to contribute!"}
-              </p>
-            </div>
+                  : "Adjust your filters or be the first to contribute."
+              }
+              action={{ label: "Clear filters", href: "/prompts" }}
+            />
           )}
         </div>
       </div>
