@@ -77,8 +77,9 @@ export function Header({ profile }: HeaderProps) {
       <div className="container flex h-14 items-center justify-between gap-4">
         {/* Left: Logo */}
         <div className="shrink-0">
-          <Link href="/">
-            <Logo variant="full" size="sm" />
+          <Link href="/" className="inline-flex items-center gap-2">
+            <Logo size="sm" />
+            <span className="font-serif font-medium text-foreground text-base">Pergamum</span>
           </Link>
         </div>
 

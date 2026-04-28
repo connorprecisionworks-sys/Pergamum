@@ -53,7 +53,7 @@ export default async function ToolsPage() {
     <div className="container py-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-10 space-y-3">
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="font-serif text-5xl md:text-6xl tracking-tight font-normal">
             Free AI Tools Directory
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl">

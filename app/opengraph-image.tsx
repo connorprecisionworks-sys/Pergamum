@@ -15,49 +15,48 @@ export default function Image() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          background: "#f5f2ee",
           padding: "80px",
-          background:
-            "linear-gradient(135deg, #1a0a2e 0%, #0f0f0f 60%, #000000 100%)",
         }}
       >
+        {/* Big serif P */}
+        <p
+          style={{
+            fontFamily: "serif",
+            fontSize: 180,
+            fontWeight: 400,
+            color: "#6b26d9",
+            lineHeight: 1,
+            margin: "0 0 24px",
+          }}
+        >
+          P
+        </p>
+
         {/* Wordmark */}
         <p
           style={{
             fontFamily: "serif",
-            fontSize: 36,
-            fontWeight: 700,
-            color: "#9370db",
+            fontSize: 48,
+            fontWeight: 400,
+            color: "#1a1a1a",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            margin: "0 0 32px",
+            margin: "0 0 20px",
           }}
         >
           PERGAMUM
         </p>
 
-        {/* Headline */}
-        <p
-          style={{
-            fontFamily: "serif",
-            fontSize: 72,
-            fontWeight: 700,
-            color: "#ffffff",
-            lineHeight: 1.05,
-            textAlign: "center",
-            margin: "0 0 24px",
-          }}
-        >
-          The library is open.
-        </p>
-
         {/* Tagline */}
         <p
           style={{
-            fontFamily: "monospace",
-            fontSize: 24,
+            fontFamily: "sans-serif",
+            fontSize: 22,
             color: "#888888",
             textAlign: "center",
             margin: 0,
+            letterSpacing: "0.02em",
           }}
         >
           A community archive of prompts for every AI tool.

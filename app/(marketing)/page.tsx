@@ -85,7 +85,7 @@ export default async function LandingPage() {
 
               <div className="space-y-1">
                 <h1
-                  className="font-serif text-[40px] sm:text-[56px] md:text-[80px] lg:text-[96px] font-normal leading-[0.95] tracking-display text-foreground"
+                  className="font-serif text-6xl md:text-7xl lg:text-8xl font-normal leading-[0.95] tracking-tight text-foreground"
                 >
                   The library
                   <br />
@@ -93,7 +93,7 @@ export default async function LandingPage() {
                 </h1>
               </div>
 
-              <p className="text-[18px] text-foreground-muted leading-relaxed max-w-[520px]">
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl">
                 Pergamum is a community archive of prompts for every AI tool.
                 Discover what works, contribute what you&apos;ve learned, remix
                 what others have built.

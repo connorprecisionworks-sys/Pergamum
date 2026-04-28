@@ -16,68 +16,68 @@
     --pergamum-800: 260 56% 32%;
     --pergamum-900: 261 56% 22%;
 
-    /* ── shadcn/ui tokens — light mode ── */
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* ── shadcn/ui tokens — light mode (warm cream) ── */
+    --background: 40 25% 96%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: var(--pergamum-500);
+    --popover-foreground: 0 0% 9%;
+    --primary: 263 70% 50%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 40%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --secondary: 40 18% 92%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 40 18% 92%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 40 18% 92%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: var(--pergamum-500);
+    --border: 40 10% 88%;
+    --input: 40 10% 88%;
+    --ring: 263 70% 50%;
     --radius: 0.5rem;
 
     /* ── Design tokens — light mode ── */
-    --background-subtle: #f5f5f8;
-    --background-inset:  #ececf0;
-    --border-strong:     #c8c8d8;
-    --foreground-muted:  #6b6b80;
-    --foreground-subtle: #9090a0;
-    --accent-glow:       rgba(147, 112, 219, 0.15);
-    --grid-line:         rgba(180, 180, 210, 0.25);
+    --background-subtle: #edeae4;
+    --background-inset:  #e5e1da;
+    --border-strong:     #cec9c1;
+    --foreground-muted:  #666666;
+    --foreground-subtle: #999999;
+    --accent-glow:       rgba(107, 38, 217, 0.12);
+    --grid-line:         rgba(180, 170, 155, 0.30);
   }
 
   .dark {
-    /* ── shadcn/ui tokens — dark mode (new palette) ── */
-    --background: 252 20% 5%;        /* #0a0a0f */
-    --foreground: 240 14% 93%;       /* #e8e8f0 */
-    --card: 252 18% 8%;              /* #12121a */
-    --card-foreground: 240 14% 93%;
-    --popover: 252 18% 8%;
-    --popover-foreground: 240 14% 93%;
-    --primary: var(--pergamum-500);
+    /* ── shadcn/ui tokens — dark mode (near-black) ── */
+    --background: 0 0% 7%;
+    --foreground: 40 15% 92%;
+    --card: 0 0% 10%;
+    --card-foreground: 40 15% 92%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 40 15% 92%;
+    --primary: 263 75% 65%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 16% 12%;        /* #1a1a24 */
-    --secondary-foreground: 240 14% 93%;
-    --muted: 240 18% 9%;             /* near #12121a */
-    --muted-foreground: 240 12% 61%; /* #9090a8 */
-    --accent: 240 16% 12%;
-    --accent-foreground: 240 14% 93%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 40 15% 92%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 40 8% 65%;
+    --accent: 0 0% 14%;
+    --accent-foreground: 40 15% 92%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 20% 15%;           /* #1f1f2e */
-    --input: 240 16% 12%;            /* #1a1a24 */
-    --ring: var(--pergamum-500);
+    --border: 0 0% 18%;
+    --input: 0 0% 14%;
+    --ring: 263 75% 65%;
 
     /* ── Design tokens — dark mode ── */
-    --background-subtle: #12121a;
-    --background-inset:  #1a1a24;
-    --border-strong:     #2a2a3d;
-    --foreground-muted:  #9090a8;
-    --foreground-subtle: #606078;
-    --accent-glow:       rgba(116, 71, 209, 0.33);
-    --grid-line:         rgba(31, 31, 46, 0.9);
+    --background-subtle: #1c1c1c;
+    --background-inset:  #242424;
+    --border-strong:     #3a3a3a;
+    --foreground-muted:  #a8a49c;
+    --foreground-subtle: #737373;
+    --accent-glow:       rgba(150, 99, 233, 0.25);
+    --grid-line:         rgba(40, 40, 40, 0.85);
   }
 }
 
@@ -93,6 +93,9 @@
     font-size: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3 {
+    @apply font-serif tracking-tight leading-tight;
   }
 }
 
