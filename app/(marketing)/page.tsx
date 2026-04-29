@@ -57,7 +57,7 @@ export default async function LandingPage() {
           </div>
 
           {/* Two-column layout at lg+: text on left, animated prompt stack on right */}
-          <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_440px] gap-12 lg:gap-16 items-center">
             <div className="flex flex-col gap-7 md:gap-9 max-w-[640px]">
               <TypewriterHero />
 
