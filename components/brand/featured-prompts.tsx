@@ -79,7 +79,7 @@ export function FeaturedPrompts({ prompts, totalCount }: FeaturedPromptsProps) {
 function FeaturedSlot({ prompt }: { prompt: PromptWithAuthor }) {
   const author = prompt.profiles;
   const handle = author?.username ?? "anonymous";
-  const model = prompt.model_tag ?? "Any model";
+  const model = prompt.model_tags?.[0] ?? "Any model";
 
   return (
     <Link
