@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { FadeSection } from "@/components/brand/fade-section";
 import { LiveDemo } from "@/components/brand/live-demo";
+import { TypewriterHero } from "@/components/brand/typewriter-hero";
 import { createClient } from "@/lib/supabase/server";
 import type { PromptWithAuthor } from "@/lib/types/database";
 
@@ -57,11 +58,8 @@ export default async function LandingPage() {
             <span className="inline-block h-[5px] w-[5px] rounded-full bg-primary" aria-hidden="true" />
           </div>
 
-          {/* Headline — tight tracking, single idea */}
-          <h1 className="font-serif font-normal text-foreground text-[clamp(2.5rem,7.2vw,5rem)] leading-[1.04] tracking-[-0.03em]">
-            The library<br />
-            <span className="text-primary">is open.</span>
-          </h1>
+          {/* Headline — typewriter cycle through use cases */}
+          <TypewriterHero />
 
           {/* Subhead — concrete, two short clauses */}
           <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[560px]">
