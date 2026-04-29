@@ -1,17 +1,15 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PromptCard } from "@/components/prompts/prompt-card";
 import { FadeSection } from "@/components/brand/fade-section";
 import { LiveDemo } from "@/components/brand/live-demo";
 import { TypewriterHero } from "@/components/brand/typewriter-hero";
+import { FeaturedPrompts } from "@/components/brand/featured-prompts";
 import { createClient } from "@/lib/supabase/server";
 import type { PromptWithAuthor } from "@/lib/types/database";
 
 export default async function LandingPage() {
   const supabase = await createClient();
-
-  const { data: { user } } = await supabase.auth.getUser();
 
   const [
     { data: teasePrompts },
@@ -111,44 +109,30 @@ export default async function LandingPage() {
       </section>
 
       {/* ─────────────────────────────────────────────
-          Section 2: Library tease (gated preview)
+          Section 2: Featured prompts — scroll-snap row
+          (replaces the old gated grid; alignment matches editorial hero)
       ───────────────────────────────────────────── */}
-      <section className="container py-24 border-t border-border">
-        <FadeSection>
-          <span className="label-mono">[ 01 — WHAT&apos;S INSIDE ]</span>
-          <h2 className="font-serif text-[32px] font-medium tracking-h2 mt-3 mb-4">
-            Prompts from the community
-          </h2>
-          <p className="text-[15px] text-foreground-muted max-w-lg leading-relaxed mb-10">
-            Every prompt is reviewed, categorized, and searchable by model.
-            Vote on what works, remix what you find, build on what others share.
-          </p>
-        </FadeSection>
-
-        <div className="relative">
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 ${!user ? "fade-bottom" : ""}`}>
-            {(teasePrompts as PromptWithAuthor[] | null ?? []).map((prompt) => (
-              <PromptCard key={prompt.id} prompt={prompt} blurred={!user} />
-            ))}
-          </div>
-
-          {!user && (
-            <>
-              {/* Gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-background via-background/70 to-transparent pointer-events-none" />
-              {/* CTA centered over the fade */}
-              <div className="absolute bottom-6 inset-x-0 flex flex-col items-center gap-3">
-                <Button size="lg" asChild>
-                  <Link href="/auth/signup">
-                    Sign up to see the full library
-                    <ArrowRight className="h-4 w-4 ml-1" />
-                  </Link>
-                </Button>
-                <span className="label-mono">Free forever · No credit card</span>
-              </div>
-            </>
-          )}
+      <section className="border-t border-border/60 py-20 md:py-28">
+        <div className="px-6 md:px-12 lg:px-20 max-w-[1180px] mx-auto mb-10 md:mb-12">
+          <FadeSection>
+            <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-4">
+              From the community
+            </p>
+            <h2 className="font-serif text-[32px] md:text-[44px] font-normal leading-[1.05] tracking-[-0.025em] max-w-[680px]">
+              What people are using right now.
+            </h2>
+            <p className="mt-4 text-[15px] md:text-[16px] text-muted-foreground max-w-[540px] leading-[1.55]">
+              Scroll to see what&apos;s being copied this week. Open any prompt to fill in its variables and use it.
+            </p>
+          </FadeSection>
         </div>
+
+        <FadeSection delay={0.1}>
+          <FeaturedPrompts
+            prompts={(teasePrompts as PromptWithAuthor[] | null) ?? []}
+            totalCount={pc}
+          />
+        </FadeSection>
       </section>
 
       {/* ─────────────────────────────────────────────

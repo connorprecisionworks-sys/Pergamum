@@ -14,8 +14,17 @@ const USERNAME_RE = /^[a-zA-Z0-9_-]+$/;
 
 export function OnboardingForm({ profile }: OnboardingFormProps) {
   const [step, setStep] = useState(0);
-  const [displayName, setDisplayName] = useState(profile.display_name ?? "");
-  const [username, setUsername] = useState(profile.username);
+  // Don't pre-fill the display name with an email-shaped string — Supabase's
+  // signup trigger sometimes drops the user's email into display_name as a
+  // fallback. If it's email-shaped, blank the field so the user types fresh.
+  const initialDisplayName =
+    profile.display_name && !/[@\s]/.test(profile.display_name)
+      ? profile.display_name
+      : "";
+  const [displayName, setDisplayName] = useState(initialDisplayName);
+  const [username, setUsername] = useState(
+    /[@.]/.test(profile.username) ? "" : profile.username
+  );
   const [bio, setBio] = useState(profile.bio ?? "");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -23,11 +32,14 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // First word of name — for the live "Welcome, X." heading on step 0
-  const firstName = useMemo(
-    () => displayName.trim().split(/\s+/)[0] ?? "",
-    [displayName]
-  );
+  // The full name (preserving spaces) for the live "Welcome, X." heading.
+  // Empty out anything that looks like an email or URL so the heading never reads weird.
+  const greetingName = useMemo(() => {
+    const raw = displayName.trim();
+    if (!raw) return "";
+    if (/[@/]/.test(raw)) return "";
+    return raw;
+  }, [displayName]);
 
   // Auto-focus the input each time the step changes
   useEffect(() => {
@@ -111,10 +123,10 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
                 <span
                   className={cn(
                     "inline-block transition-all duration-200",
-                    firstName ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
+                    greetingName ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
                   )}
                 >
-                  {firstName ? <>, <span className="text-primary">{firstName}</span></> : null}
+                  {greetingName ? <>, <span className="text-primary">{greetingName}</span></> : null}
                 </span>
                 <span>.</span>
               </h1>
@@ -135,7 +147,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
               autoComplete="name"
               spellCheck={false}
               aria-label="Display name"
-              className="w-full bg-transparent border-0 border-b border-border/80 focus:border-primary outline-none py-4 text-2xl md:text-4xl font-serif placeholder:text-muted-foreground/40 transition-colors"
+              className="w-full bg-transparent border-0 border-b border-border/80 focus:border-primary outline-none px-4 md:px-5 py-4 text-2xl md:text-4xl font-serif placeholder:text-muted-foreground/40 transition-colors"
             />
           </div>
         )}
@@ -152,7 +164,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
               </p>
             </div>
 
-            <div className="flex items-baseline gap-2 border-b border-border/80 focus-within:border-primary transition-colors">
+            <div className="flex items-baseline gap-3 border-b border-border/80 focus-within:border-primary transition-colors px-4 md:px-5">
               <span className="text-2xl md:text-4xl font-serif text-muted-foreground/60 select-none">
                 pergamum.net/u/
               </span>
@@ -169,7 +181,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
                 autoComplete="username"
                 spellCheck={false}
                 aria-label="Username"
-                className="flex-1 min-w-0 bg-transparent border-0 outline-none py-4 text-2xl md:text-4xl font-serif placeholder:text-muted-foreground/40"
+                className="flex-1 min-w-0 bg-transparent border-0 outline-none py-4 text-2xl md:text-4xl font-serif placeholder:text-muted-foreground/40 focus:ring-0"
               />
             </div>
 
