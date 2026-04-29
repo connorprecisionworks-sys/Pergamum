@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   ChainOfThoughtChart,
-  FewShotChart,
+  TreeOfThoughtsChart,
   SelfConsistencyChart,
 } from "@/components/science/research-charts";
 
@@ -130,10 +130,10 @@ const SOURCES = [
   },
   {
     id: 2,
-    authors: "Brown et al.",
-    year: 2020,
-    title: "Language Models are Few-Shot Learners",
-    url: "https://arxiv.org/abs/2005.14165",
+    authors: "Yao et al.",
+    year: 2023,
+    title: "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+    url: "https://arxiv.org/abs/2305.10601",
   },
   {
     id: 3,
@@ -141,6 +141,13 @@ const SOURCES = [
     year: 2022,
     title: "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
     url: "https://arxiv.org/abs/2203.11171",
+  },
+  {
+    id: 4,
+    authors: "Schulhoff et al.",
+    year: 2024,
+    title: "The Prompt Report: A Systematic Survey of Prompt Engineering Techniques",
+    url: "https://arxiv.org/abs/2406.06608",
   },
 ];
 
@@ -164,7 +171,7 @@ export default function TheSciencePage() {
           How prompt structure changes model behaviour.
         </h1>
         <p className="mt-7 text-[18px] md:text-[20px] text-muted-foreground leading-[1.55] max-w-[640px]">
-          Three peer-reviewed studies measured the effect of structured prompts on model performance. We summarise what each one found, what it implies for the prompts you write, and where the evidence stops.
+          Three findings from the prompting literature, plus one recent survey that catalogues everything since. We summarise what each measured, what it implies for the prompts you write, and where the evidence stops.
         </p>
         <div className="mt-10 flex items-center gap-4 text-[13px] text-muted-foreground">
           <span>Pergamum Research</span>
@@ -321,7 +328,7 @@ export default function TheSciencePage() {
           The numbers don&apos;t lie.
         </h2>
         <p className="text-[17px] leading-[1.7] text-foreground/85 max-w-[640px]">
-          Three findings from peer-reviewed ML research, all replicable, all widely cited. We&apos;re not cherry-picking — these are the landmark papers in the prompting literature, and they all point the same way.
+          Three findings spanning the foundational papers (2022) through the more recent reasoning techniques (2023). The 2024 Prompt Report — a systematic survey from a coalition of researchers across Maryland, OpenAI, Stanford, Microsoft, and others — catalogues 58 distinct prompting techniques across the literature, and the same patterns hold across all of them.
         </p>
       </section>
 
@@ -341,14 +348,14 @@ export default function TheSciencePage() {
 
           <figure className="space-y-3">
             <figcaption className="space-y-1">
-              <p className="font-serif text-xl text-foreground tracking-tight">Few-shot examples</p>
-              <p className="text-xs text-muted-foreground">TriviaQA accuracy on GPT-3 175B</p>
+              <p className="font-serif text-xl text-foreground tracking-tight">Tree of Thoughts</p>
+              <p className="text-xs text-muted-foreground">Game of 24 success rate, GPT-4</p>
             </figcaption>
-            <FewShotChart />
+            <TreeOfThoughtsChart />
             <p className="text-xs text-muted-foreground italic">
-              Showing the model 64 examples of the kind of answer you want lifts accuracy from 64.3% to 71.2% — for free.
+              Letting the model explore and prune multiple reasoning paths takes a task it solves 4% of the time and pushes it to 74%.
             </p>
-            <p className="text-[11px] text-muted-foreground/70">Brown et al., 2020 <sup>[2]</sup></p>
+            <p className="text-[11px] text-muted-foreground/70">Yao et al., 2023 <sup>[2]</sup></p>
           </figure>
 
           <figure className="space-y-3">
@@ -367,7 +374,7 @@ export default function TheSciencePage() {
 
       <section className="max-w-[760px] mx-auto space-y-7 mb-16 md:mb-20">
         <p className="text-[17px] leading-[1.7] text-foreground/85">
-          These aren&apos;t toy effects. The same patterns show up across reasoning, coding, and knowledge tasks — every benchmark Anthropic, OpenAI, and DeepMind have published on. Structure is the cheapest performance lever you have access to. It costs you a minute of writing and gives you a model that performs as if it were a tier larger than it actually is.
+          These aren&apos;t toy effects, and they aren&apos;t old news. The same patterns show up across the reasoning, coding, and knowledge benchmarks Anthropic, OpenAI, and DeepMind have continued to publish through 2024 and into 2025 — and increasingly across structured-output techniques like Anthropic&apos;s XML-tag prompting (typically 15-20% accuracy lifts on Claude over plain text), DSPy-style program synthesis, and ReAct-style tool use. Structure remains the cheapest performance lever you have access to: a minute of writing, and a model that performs as if it were a tier larger than it actually is.
         </p>
 
         {/* Sources */}

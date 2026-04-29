@@ -104,6 +104,30 @@ export function FewShotChart() {
   );
 }
 
+export function TreeOfThoughtsChart() {
+  return (
+    <SimpleBarChart
+      data={[
+        { label: "Standard", value: 7.3 },
+        { label: "Chain-of-thought", value: 4.0 },
+        { label: "Tree of Thoughts", value: 74.0 },
+      ]}
+    />
+  );
+}
+
+export function XmlFormatChart() {
+  return (
+    <SimpleBarChart
+      data={[
+        { label: "Plain text", value: 100 },
+        { label: "XML tags", value: 117.5 },
+      ]}
+      unit=""
+    />
+  );
+}
+
 export function SelfConsistencyChart() {
   return (
     <SimpleBarChart
