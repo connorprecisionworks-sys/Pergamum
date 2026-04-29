@@ -162,6 +162,36 @@ export default async function LandingPage() {
       </section>
 
       {/* ─────────────────────────────────────────────
+          Section 5: Research teaser — surfaces /the-science
+      ───────────────────────────────────────────── */}
+      <section className="border-t border-border/60 py-20 md:py-28">
+        <div className="px-6 md:px-12 lg:px-20 max-w-[1180px] mx-auto">
+          <FadeSection>
+            <div className="grid md:grid-cols-[auto_1fr] gap-8 md:gap-16 items-start">
+              <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground md:pt-2 md:min-w-[140px]">
+                Research
+              </p>
+              <Link
+                href="/the-science"
+                className="group block max-w-[640px]"
+              >
+                <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.1] tracking-[-0.02em] text-foreground group-hover:text-primary transition-colors">
+                  How prompt structure changes model behaviour.
+                </h2>
+                <p className="mt-4 text-[16px] md:text-[17px] text-muted-foreground leading-[1.6]">
+                  Three peer-reviewed studies measured the effect of structured prompts on model performance. We summarise what each found, and where the evidence stops.
+                </p>
+                <span className="mt-5 inline-flex items-center gap-1.5 text-[14px] font-medium text-primary">
+                  Read the research
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            </div>
+          </FadeSection>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────
           Section 6: Final CTA
       ───────────────────────────────────────────── */}
       <section className="border-t border-border py-32">
