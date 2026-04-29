@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, Loader2, Eye, EyeOff, Info } from "lucide-react";
+import { Plus, Trash2, Loader2, Eye, EyeOff, Info, Braces } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -95,6 +95,46 @@ export function SubmitForm({
 
   const watchedBody = watch("body") ?? "";
   const watchedVariables = watch("variables") ?? [];
+
+  // Auto-detect {{variables}} in the prompt body and de-dupe in order of first occurrence.
+  const detectedVars = useMemo(() => {
+    if (!watchedBody) return [] as string[];
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const match of watchedBody.matchAll(/\{\{(\w+)\}\}/g)) {
+      const name = match[1];
+      if (!seen.has(name)) {
+        seen.add(name);
+        out.push(name);
+      }
+    }
+    return out;
+  }, [watchedBody]);
+
+  // Wire a real ref to the body textarea so we can insert at the caret.
+  // react-hook-form's `register` returns its own ref — we layer ours on via callback.
+  const bodyRef = useRef<HTMLTextAreaElement | null>(null);
+  const bodyReg = register("body");
+
+  function insertVariable() {
+    const ta = bodyRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    const selected = ta.value.slice(start, end);
+    // Sanitise selection to valid variable name; fallback to "name".
+    const cleaned = selected.toLowerCase().replace(/[^\w]+/g, "_").replace(/^_+|_+$/g, "");
+    const placeholder = cleaned || "name";
+    const insertion = `{{${placeholder}}}`;
+    const newValue = ta.value.slice(0, start) + insertion + ta.value.slice(end);
+    setValue("body", newValue, { shouldValidate: true, shouldDirty: true });
+    // After React updates the value, move caret to select the inserted name so user can type-replace it.
+    requestAnimationFrame(() => {
+      ta.focus();
+      const nameStart = start + 2; // skip past `{{`
+      ta.setSelectionRange(nameStart, nameStart + placeholder.length);
+    });
+  }
 
   const toggleModel = (model: string) => {
     setSelectedModels((prev) => {
@@ -306,17 +346,13 @@ export function SubmitForm({
 
       <Separator />
 
-      {/* Variables */}
+      {/* Variables (optional metadata for auto-detected vars) */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h3 className="font-semibold">Variables</h3>
+            <h3 className="font-semibold">Variable details (optional)</h3>
             <p className="text-sm text-muted-foreground">
-              Use{" "}
-              <code className="bg-muted px-1 rounded text-xs">
-                {"{{variable_name}}"}
-              </code>{" "}
-              in your prompt body to create interactive inputs.
+              Pergamum auto-detects any <code className="bg-muted px-1 rounded text-xs font-mono">{"{{name}}"}</code> in your prompt body. Add help text or a default value here if you want.
             </p>
           </div>
           <Button
@@ -328,7 +364,7 @@ export function SubmitForm({
             }
           >
             <Plus className="h-4 w-4 mr-1" />
-            Add variable
+            Add details
           </Button>
         </div>
 
@@ -382,28 +418,45 @@ export function SubmitForm({
 
       {/* Prompt body */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <Label htmlFor="body">
             Prompt body <span className="text-destructive">*</span>
           </Label>
-          <button
-            type="button"
-            onClick={() => setShowPreview(!showPreview)}
-            className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-          >
-            {showPreview ? (
-              <>
-                <EyeOff className="h-3.5 w-3.5" />
-                Edit
-              </>
-            ) : (
-              <>
-                <Eye className="h-3.5 w-3.5" />
-                Preview
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={insertVariable}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:opacity-80 transition-opacity"
+              aria-label="Insert a variable at the cursor"
+            >
+              <Braces className="h-3.5 w-3.5" />
+              Insert variable
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowPreview(!showPreview)}
+              className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+            >
+              {showPreview ? (
+                <>
+                  <EyeOff className="h-3.5 w-3.5" />
+                  Edit
+                </>
+              ) : (
+                <>
+                  <Eye className="h-3.5 w-3.5" />
+                  Preview
+                </>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Friendly explainer — appears once above the field */}
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Want any part of your prompt to be fillable? Highlight it and click{" "}
+          <span className="text-foreground font-medium">Insert variable</span>, or wrap it in <code className="font-mono px-1 rounded bg-muted">{`{{}}`}</code> yourself — like <code className="font-mono px-1 rounded bg-muted text-primary">{`{{topic}}`}</code>. We&apos;ll turn each one into a live input on the prompt page.
+        </p>
 
         {showPreview ? (
           <div className="rounded-xl border bg-zinc-50 dark:bg-zinc-900/50 p-5">
@@ -412,13 +465,51 @@ export function SubmitForm({
         ) : (
           <Textarea
             id="body"
-            placeholder={`Write your prompt here. Use {{variable_name}} for dynamic parts.\n\nExample:\nYou are an expert {{language}} developer. Review the following code and provide feedback on:\n- Code quality\n- Performance\n- Security`}
+            placeholder={`You are an expert {{language}} developer. Review the following code and tell me about:
+
+- Code quality
+- Performance
+- Security
+
+Code:
+{{code}}`}
             rows={12}
             className="font-mono text-sm"
-            {...register("body")}
-            aria-describedby={errors.body ? "body-error" : undefined}
+            {...bodyReg}
+            ref={(el) => {
+              bodyReg.ref(el);
+              bodyRef.current = el;
+            }}
+            aria-describedby={errors.body ? "body-error" : "body-vars"}
           />
         )}
+
+        {/* Live variable detection feedback */}
+        <div id="body-vars" className="flex flex-wrap items-center gap-2 text-xs min-h-[1.5em]">
+          {detectedVars.length > 0 ? (
+            <>
+              <span className="text-muted-foreground font-medium">
+                Variables found:
+              </span>
+              {detectedVars.map((v) => (
+                <span
+                  key={v}
+                  className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary font-mono text-[11px]"
+                >
+                  {v}
+                </span>
+              ))}
+              <span className="text-muted-foreground">
+                — fillable on the prompt page.
+              </span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">
+              No variables yet. Static prompts work fine — but variables make yours reusable.
+            </span>
+          )}
+        </div>
+
         {errors.body && (
           <p id="body-error" className="text-sm text-destructive">
             {errors.body.message}
