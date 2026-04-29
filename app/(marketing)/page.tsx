@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { FadeSection } from "@/components/brand/fade-section";
+import { LiveDemo } from "@/components/brand/live-demo";
 import { createClient } from "@/lib/supabase/server";
-import type { PromptWithAuthor, Category, Profile } from "@/lib/types/database";
+import type { PromptWithAuthor } from "@/lib/types/database";
 
 export default async function LandingPage() {
   const supabase = await createClient();
@@ -14,10 +14,8 @@ export default async function LandingPage() {
 
   const [
     { data: teasePrompts },
-    { data: categories },
-    { data: categoryCounts },
-    { data: topContributors },
     { count: promptCount },
+    { count: categoryCount },
     { count: userCount },
   ] = await Promise.all([
     supabase
@@ -26,27 +24,14 @@ export default async function LandingPage() {
       .eq("status", "published")
       .order("copies", { ascending: false })
       .limit(6),
-    supabase.from("categories").select("*").order("sort_order"),
-    supabase.from("prompts").select("category_id").eq("status", "published"),
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url, reputation, contribution_count")
-      .order("reputation", { ascending: false })
-      .limit(8),
     supabase.from("prompts").select("*", { count: "exact", head: true }).eq("status", "published"),
+    supabase.from("categories").select("*", { count: "exact", head: true }),
     supabase.from("profiles").select("*", { count: "exact", head: true }),
   ]);
 
-  // Category prompt counts
-  const catCountMap = (categoryCounts ?? []).reduce<Record<string, number>>((acc, r) => {
-    if (r.category_id) acc[r.category_id] = (acc[r.category_id] ?? 0) + 1;
-    return acc;
-  }, {});
-
-  const categoryCount = (categories ?? []).length;
   const pc = promptCount ?? 0;
+  const cc = categoryCount ?? 0;
   const uc = userCount ?? 0;
-  const cats = (categories as Category[] | null) ?? [];
 
   return (
     <>
@@ -101,7 +86,7 @@ export default async function LandingPage() {
         {/* Stats baseline — subtle, anchors the bottom */}
         <div className="absolute bottom-8 md:bottom-10 inset-x-0 text-center pointer-events-none">
           <span className="label-mono">
-            [ {pc} prompt{pc !== 1 ? "s" : ""} &nbsp;·&nbsp; {categoryCount} categor{categoryCount !== 1 ? "ies" : "y"} &nbsp;·&nbsp; {uc} contributor{uc !== 1 ? "s" : ""} ]
+            [ {pc} prompt{pc !== 1 ? "s" : ""} &nbsp;·&nbsp; {cc} categor{cc !== 1 ? "ies" : "y"} &nbsp;·&nbsp; {uc} contributor{uc !== 1 ? "s" : ""} ]
           </span>
         </div>
       </section>
@@ -169,133 +154,28 @@ export default async function LandingPage() {
       </section>
 
       {/* ─────────────────────────────────────────────
-          Section 3: How it works
+          Section 3: Live demo of variable templating
+          (replaces "How it works" + "Categories" + "Contributors")
       ───────────────────────────────────────────── */}
-      <section className="border-t border-border py-24">
-        <div className="container">
+      <section className="border-t border-border/60 py-24 md:py-32">
+        <div className="container max-w-5xl">
           <FadeSection>
-            <span className="label-mono">[ 02 — HOW IT WORKS ]</span>
-            <h2 className="font-serif text-[32px] font-medium tracking-h2 mt-3 mb-12">
-              Three things you can do here
-            </h2>
+            <div className="text-center mb-12 md:mb-16">
+              <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-4">
+                Variables, demonstrated
+              </p>
+              <h2 className="font-serif text-[36px] md:text-[52px] font-normal leading-[1.05] tracking-[-0.02em] max-w-[720px] mx-auto">
+                Type. Watch. Copy.
+              </h2>
+              <p className="mt-5 text-[16px] md:text-[18px] text-muted-foreground max-w-[560px] mx-auto leading-[1.5]">
+                Every <code className="font-mono text-[0.9em] text-foreground/80">{`{{variable}}`}</code> in a prompt becomes a live input. The preview rewrites as you type — no copy-paste-edit dance.
+              </p>
+            </div>
           </FadeSection>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-            {[
-              {
-                num: "01",
-                title: "Discover",
-                body: "Search and filter thousands of prompts by category, model, and use case. Find the exact prompt for the job in seconds.",
-                link: "Browse prompts →",
-                href: "/prompts",
-              },
-              {
-                num: "02",
-                title: "Contribute",
-                body: "Submit prompts you've refined in your own work. Quality-reviewed submissions earn reputation and badges.",
-                link: "Submit yours →",
-                href: "/submit",
-              },
-              {
-                num: "03",
-                title: "Remix",
-                body: "Fork any prompt, adapt it to your context, and publish the variation. The best ideas evolve through iteration.",
-                link: "Start remixing →",
-                href: "/prompts",
-              },
-            ].map((item, i) => (
-              <FadeSection key={i} delay={i * 0.08} className="py-8 px-8 first:pl-0 last:pr-0">
-                <span className="font-serif text-[48px] font-normal text-pergamum-500 tracking-h1 leading-none">
-                  {item.num}
-                </span>
-                <h3 className="font-semibold text-[20px] tracking-h3 mt-4 mb-2">{item.title}</h3>
-                <p className="text-[15px] text-foreground-muted leading-relaxed mb-5">{item.body}</p>
-                <Link
-                  href={item.href}
-                  className="text-[13px] text-pergamum-500 hover:text-pergamum-400 transition-colors font-medium"
-                >
-                  {item.link}
-                </Link>
-              </FadeSection>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────
-          Section 4: Categories
-      ───────────────────────────────────────────── */}
-      <section className="border-t border-border py-24">
-        <div className="container">
-          <FadeSection>
-            <span className="label-mono">[ 03 — BY CATEGORY ]</span>
-            <h2 className="font-serif text-[32px] font-medium tracking-h2 mt-3 mb-8">
-              Explore by domain
-            </h2>
+          <FadeSection delay={0.1}>
+            <LiveDemo />
           </FadeSection>
-
-          <div className="flex flex-wrap gap-2">
-            {cats.map((cat) => {
-              const count = catCountMap[cat.id] ?? 0;
-              return (
-                <Link
-                  key={cat.id}
-                  href={`/prompts?category=${cat.slug}`}
-                  className="group inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-[13px] font-medium text-foreground-muted hover:border-pergamum-500/60 hover:text-pergamum-400 transition-colors"
-                  style={{ "--tw-shadow": "none" } as React.CSSProperties}
-                >
-                  {cat.name}
-                  <span className="label-mono group-hover:text-pergamum-600 transition-colors">
-                    {count}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────
-          Section 5: Contributors
-      ───────────────────────────────────────────── */}
-      <section className="border-t border-border py-24">
-        <div className="container">
-          <FadeSection>
-            <span className="label-mono">[ 04 — CONTRIBUTORS ]</span>
-            <h2 className="font-serif text-[32px] font-medium tracking-h2 mt-3 mb-8">
-              Built by the people who use it
-            </h2>
-          </FadeSection>
-
-          <div className="flex items-end gap-8 flex-wrap">
-            {(topContributors as Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "reputation" | "contribution_count">[] | null ?? []).map((u) => {
-              const initials = u.display_name
-                ? u.display_name.slice(0, 2).toUpperCase()
-                : u.username.slice(0, 2).toUpperCase();
-              return (
-                <Link
-                  key={u.id}
-                  href={`/u/${u.username}`}
-                  className="flex flex-col items-center gap-2 group"
-                >
-                  <Avatar className="h-11 w-11 ring-2 ring-border group-hover:ring-pergamum-500/50 transition-all">
-                    <AvatarImage src={u.avatar_url ?? undefined} />
-                    <AvatarFallback className="bg-background-subtle text-foreground-muted text-xs">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="label-mono group-hover:text-foreground-muted transition-colors">
-                    @{u.username}
-                  </span>
-                </Link>
-              );
-            })}
-            {uc > (topContributors?.length ?? 0) && (
-              <span className="label-mono pb-1">
-                + {(uc - (topContributors?.length ?? 0)).toLocaleString()} more
-              </span>
-            )}
-          </div>
         </div>
       </section>
 

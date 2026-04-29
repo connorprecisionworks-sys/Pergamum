@@ -32,19 +32,9 @@ export default async function OnboardingPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-pergamum-50/30 to-background">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center space-y-3">
-          <Link href="/" className="inline-flex justify-center">
-            <Logo variant="full" size="md" />
-          </Link>
-          <div className="space-y-1">
-            <h1 className="text-2xl font-bold tracking-tight">
-              You&apos;re in — let&apos;s set up your profile.
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              A few quick details and you&apos;re ready to start contributing.
-            </p>
-          </div>
-        </div>
+        <Link href="/" className="inline-flex justify-center w-full">
+          <Logo variant="full" size="md" />
+        </Link>
 
         <div className="rounded-xl border bg-card p-6 shadow-sm">
           <OnboardingForm profile={profile} />

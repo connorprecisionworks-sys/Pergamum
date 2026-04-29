@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,33 +32,59 @@ function SubmitButton() {
 
 export function OnboardingForm({ profile }: OnboardingFormProps) {
   const [state, action] = useFormState(completeOnboarding, initialState);
+  const [displayName, setDisplayName] = useState(profile.display_name ?? "");
+
+  // First word of the typed name (so "Connor Dore" greets as "Connor").
+  const firstName = displayName.trim().split(/\s+/)[0] ?? "";
 
   return (
-    <form action={action} className="space-y-6">
-      {state?.error && (
-        <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
-          {state.error}
-        </div>
-      )}
-
-      <div className="space-y-2">
-        <Label htmlFor="display_name">
-          Display name <span className="text-destructive">*</span>
-        </Label>
-        <Input
-          id="display_name"
-          name="display_name"
-          placeholder="e.g. Alex Chen"
-          defaultValue={profile.display_name ?? ""}
-          required
-          minLength={2}
-          maxLength={60}
-          autoFocus
-        />
-        <p className="text-xs text-muted-foreground">
-          This is how your name appears across the site.
+    <div className="space-y-6">
+      {/* Live welcome — fills in as the user types their name */}
+      <div className="text-center space-y-2">
+        <h1 className="font-serif text-3xl md:text-4xl font-normal tracking-tight leading-tight">
+          Welcome
+          <span
+            className={
+              "inline-block transition-all duration-200 " +
+              (firstName ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1")
+            }
+            aria-live="polite"
+          >
+            {firstName ? <>, <span className="text-primary">{firstName}</span></> : null}
+          </span>
+          <span>.</span>
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          A few quick details and you&apos;re ready to start contributing.
         </p>
       </div>
+
+      <form action={action} className="space-y-6">
+        {state?.error && (
+          <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
+            {state.error}
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <Label htmlFor="display_name">
+            Display name <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="display_name"
+            name="display_name"
+            placeholder="e.g. Alex Chen"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            required
+            minLength={2}
+            maxLength={60}
+            autoFocus
+          />
+          <p className="text-xs text-muted-foreground">
+            This is how your name appears across the site.
+          </p>
+        </div>
 
       <div className="space-y-2">
         <Label htmlFor="username">
@@ -97,8 +124,10 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
         <p className="text-xs text-muted-foreground">Optional. A sentence or two helps others know who you are.</p>
       </div>
 
-      <SubmitButton />
+        <SubmitButton />
+      </form>
 
+      {/* Skip — kept as a separate form to avoid nesting <form>s, which is invalid HTML. */}
       <form action={skipOnboarding}>
         <button
           type="submit"
@@ -107,6 +136,6 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
           Skip for now
         </button>
       </form>
-    </form>
+    </div>
   );
 }
