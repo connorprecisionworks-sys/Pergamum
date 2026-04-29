@@ -45,12 +45,32 @@ export function Footer() {
           <div className="space-y-4">
             <span className="label-mono">[ Built by ]</span>
             <p className="text-[13px] text-foreground-muted leading-relaxed">
-              Community-powered and free forever — no paywalls, no sign-up
-              required to browse.
+              Community-powered and free forever. No paywalls, no pro tier.
             </p>
             <p className="label-mono">
               &copy; {new Date().getFullYear()} Pergamum
             </p>
+          </div>
+        </div>
+
+        {/* Legal row — thin and quiet at the bottom */}
+        <div className="mt-12 pt-6 border-t border-border/60 flex items-center justify-between gap-4 flex-wrap">
+          <span className="label-mono">
+            &copy; {new Date().getFullYear()} Pergamum
+          </span>
+          <div className="flex items-center gap-5">
+            <Link
+              href="/privacy"
+              className="text-xs text-foreground-muted hover:text-foreground transition-colors"
+            >
+              Privacy
+            </Link>
+            <a
+              href="mailto:connor.precisionworks@gmail.com"
+              className="text-xs text-foreground-muted hover:text-foreground transition-colors"
+            >
+              Contact
+            </a>
           </div>
         </div>
       </div>

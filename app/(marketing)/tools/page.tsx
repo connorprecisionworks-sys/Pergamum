@@ -58,7 +58,6 @@ export default async function ToolsPage() {
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl">
             The best free (or freemium) AI tools, curated and community-maintained.
-            No paywalls, no sign-up required to browse.
           </p>
         </div>
 

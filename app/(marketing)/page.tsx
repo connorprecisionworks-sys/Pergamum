@@ -60,7 +60,7 @@ export default async function LandingPage() {
             <TypewriterHero />
 
             <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
-              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier, no signup to read.
+              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
             </p>
 
             {/* CTAs — left-aligned, primary verb + secondary text-link */}
