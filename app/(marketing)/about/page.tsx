@@ -1,68 +1,12 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ParallaxFigure } from "@/components/brand/parallax-figure";
 
 export const metadata: Metadata = {
   title: "About Pergamum",
   description:
     "Pergamum was an ancient library that refused to be gatekept. Two thousand years later, this is the same idea.",
 };
-
-// ── Inline figure with image + caption ──────────────────────────
-// Real intrinsic dimensions are passed in so next/image avoids layout shift.
-function Figure({
-  src,
-  alt,
-  width,
-  height,
-  caption,
-  attribution,
-  attributionHref,
-  priority = false,
-}: {
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-  caption: string;
-  attribution: string;
-  attributionHref?: string;
-  priority?: boolean;
-}) {
-  return (
-    <figure className="my-12 md:my-14">
-      <div className="relative w-full overflow-hidden rounded-lg border border-border/60 bg-muted/30">
-        <Image
-          src={src}
-          alt={alt}
-          width={width}
-          height={height}
-          sizes="(max-width: 768px) 100vw, 680px"
-          priority={priority}
-          className="w-full h-auto"
-        />
-      </div>
-      <figcaption className="mt-3 text-[13px] text-muted-foreground italic leading-snug max-w-[60ch]">
-        {caption}
-        <span className="not-italic text-muted-foreground/60">
-          {" "}—{" "}
-          {attributionHref ? (
-            <a
-              href={attributionHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-muted-foreground underline-offset-4 hover:underline"
-            >
-              {attribution}
-            </a>
-          ) : (
-            attribution
-          )}
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
 
 export default function AboutPage() {
   return (
@@ -102,12 +46,13 @@ export default function AboutPage() {
           Treated animal skin, scraped thin and stretched. More expensive than papyrus, more durable, and entirely outside Egypt&apos;s control. The library kept growing. By the second century BCE, Pergamum held an estimated two hundred thousand volumes — open to scholars from anywhere in the Mediterranean, copied freely, shared across the known world.
         </p>
 
-        <Figure
+        <ParallaxFigure
           src="/about/library.jpg"
           alt="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch."
           width={1596}
           height={900}
           priority
+          direction="left"
           caption="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch. The reading rooms sat above the city, overlooking the Aegean."
           attribution="Friedrich Thiersch, 1882. Public domain via Wikimedia Commons."
           attributionHref="https://commons.wikimedia.org/wiki/File:Acropolis_of_Pergamon_-_Friedrich_Thierch_-_1882.jpg"
@@ -133,11 +78,12 @@ export default function AboutPage() {
           Crafts get better faster when the people doing them can see each other&apos;s work.
         </p>
 
-        <Figure
+        <ParallaxFigure
           src="/about/parchment.jpg"
           alt="A leaf of aged parchment, the writing surface invented at Pergamum."
           width={5184}
           height={3456}
+          direction="right"
           caption="Parchment — Pergamum's invention. It outlived the city by a thousand years and copied half of what we still know about antiquity."
           attribution="Wikimedia Commons"
           attributionHref="https://commons.wikimedia.org/wiki/Category:Parchment"
@@ -159,11 +105,12 @@ export default function AboutPage() {
           If you&apos;ve got a prompt that earns its keep, the library belongs to the people who fill it.
         </p>
 
-        <Figure
+        <ParallaxFigure
           src="/about/acropolis.jpg"
           alt="The ruins of the Pergamon Acropolis as they stand today, in Bergama, Turkey."
           width={1200}
           height={770}
+          direction="left"
           caption="The acropolis at Pergamum today. The library is gone but its catalogue lives on, scattered across the libraries it shared with."
           attribution="Wikimedia Commons"
           attributionHref="https://commons.wikimedia.org/wiki/Category:Pergamon_Acropolis"
