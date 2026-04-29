@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus, Trash2, Loader2, Eye, EyeOff, Info, Braces } from "lucide-react";
+import { Plus, Trash2, Loader2, Eye, EyeOff, Info, Braces, HelpCircle, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,14 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, normalizeTags, substituteVariables } from "@/lib/utils";
 import { track } from "@/lib/analytics";
@@ -221,6 +229,11 @@ export function SubmitForm({
     }
   };
 
+  // Watch every form value so the preview dialog renders in real-time.
+  const previewTitle = watch("title") ?? "";
+  const previewDescription = watch("description") ?? "";
+  const previewModelTags = watch("model_tags") ?? [];
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* First-timer welcome banner */}
@@ -232,6 +245,63 @@ export function SubmitForm({
           </p>
         </div>
       )}
+
+      {/* Help link — opens a short "how to write a great prompt" dialog */}
+      <Dialog>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            How to write a great prompt
+          </button>
+        </DialogTrigger>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="font-serif text-2xl font-normal">
+              How to write a great prompt
+            </DialogTitle>
+            <DialogDescription className="sr-only">
+              A short guide to writing prompts on Pergamum.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-5 text-sm leading-relaxed text-foreground">
+            <p>
+              A useful prompt has three things: a clear instruction, enough context to do the job, and variables for the parts that change.
+            </p>
+            <div className="space-y-3">
+              <p>
+                <span className="font-semibold">1. Be specific.</span>{" "}
+                <span className="text-muted-foreground">
+                  &ldquo;Write a marketing email for a SaaS founder, casual tone&rdquo; beats &ldquo;write an email.&rdquo;
+                </span>
+              </p>
+              <p>
+                <span className="font-semibold">2. Use {`{{variables}}`} for the parts that change.</span>{" "}
+                <span className="text-muted-foreground">
+                  Topic, tone, audience — anything someone might want to swap. We turn each one into a live input.
+                </span>
+              </p>
+              <p>
+                <span className="font-semibold">3. Pick a clear title.</span>{" "}
+                <span className="text-muted-foreground">
+                  &ldquo;Customer interview synthesizer&rdquo; beats &ldquo;My new prompt.&rdquo;
+                </span>
+              </p>
+              <p>
+                <span className="font-semibold">4. Preview before you submit.</span>{" "}
+                <span className="text-muted-foreground">
+                  Use the &ldquo;Preview as published&rdquo; button at the bottom of this form to see exactly what other people will see.
+                </span>
+              </p>
+            </div>
+            <p className="text-xs text-muted-foreground pt-2 border-t border-border/60">
+              Every prompt is reviewed before going live (usually under an hour).
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Title */}
       <div className="space-y-2">
@@ -528,15 +598,116 @@ Code:
         </div>
       )}
 
-      <div className="flex gap-3">
-        <Button
-          type="submit"
-          disabled={loading}
-          className=""
-        >
+      <div className="flex flex-wrap items-center gap-3">
+        <Button type="submit" disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           Submit prompt
         </Button>
+
+        {/* Preview as published — opens a dialog rendering the prompt as visitors will see it */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button type="button" variant="outline" disabled={loading}>
+              <Eye className="h-4 w-4 mr-1.5" />
+              Preview as published
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground">
+                Preview — this is what other people will see
+              </DialogTitle>
+              <DialogDescription className="sr-only">
+                A preview of how this prompt will look on its public page.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 pt-2">
+              {/* Title + meta */}
+              <div className="space-y-3">
+                <h2 className="font-serif text-3xl md:text-4xl font-normal leading-[1.1] tracking-[-0.02em]">
+                  {previewTitle.trim() || (
+                    <span className="text-muted-foreground/60">Untitled prompt</span>
+                  )}
+                </h2>
+                {previewDescription.trim() && (
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    {previewDescription}
+                  </p>
+                )}
+                <div className="flex items-center gap-2 flex-wrap pt-1">
+                  {(previewModelTags.length > 0 ? previewModelTags : ["any"]).map((m) => (
+                    <span
+                      key={m}
+                      className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium capitalize"
+                    >
+                      {m}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Variable inputs (read-only mockup) */}
+              {detectedVars.length > 0 && (
+                <div className="rounded-lg border border-border/60 p-4 space-y-3">
+                  <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground font-medium">
+                    Fillable inputs
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {detectedVars.map((v) => {
+                      const meta = (watchedVariables ?? []).find((w) => w.name === v);
+                      return (
+                        <div key={v} className="space-y-1">
+                          <label className="text-xs text-muted-foreground font-mono">
+                            {v}
+                          </label>
+                          <div className="border border-border rounded-md px-3 py-2 text-sm text-muted-foreground bg-muted/30">
+                            {meta?.default || `Type a ${v}…`}
+                          </div>
+                          {meta?.description && (
+                            <p className="text-xs text-muted-foreground">
+                              {meta.description}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Prompt body */}
+              <div className="space-y-2">
+                <p className="text-[10px] tracking-[0.18em] uppercase text-muted-foreground font-medium">
+                  Prompt
+                </p>
+                <pre className="rounded-lg border border-border/60 bg-muted/30 p-4 font-mono text-sm whitespace-pre-wrap leading-relaxed">
+                  {previewBody.trim() || (
+                    <span className="text-muted-foreground/60">
+                      Your prompt body will appear here.
+                    </span>
+                  )}
+                </pre>
+              </div>
+
+              {/* Mock copy button (decorative — disabled) */}
+              <div className="flex items-center gap-3 pt-1">
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium opacity-70 cursor-not-allowed"
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  Copy filled prompt
+                </button>
+                <span className="text-xs text-muted-foreground">
+                  (Disabled in preview — works on the live page.)
+                </span>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         <Button
           type="button"
           variant="ghost"
