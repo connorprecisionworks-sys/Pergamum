@@ -58,7 +58,7 @@ export default async function LandingPage() {
 
           {/* Text content — narrowed on lg so the absolute card stack on the right
               doesn't crash into it. Expands on xl when there's more breathing room. */}
-          <div className="flex flex-col gap-7 md:gap-9 max-w-[640px] lg:max-w-[540px] xl:max-w-[600px]">
+          <div className="flex flex-col gap-7 md:gap-9 max-w-[640px] lg:max-w-[460px] xl:max-w-[560px]">
             <TypewriterHero />
 
             <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
@@ -85,7 +85,7 @@ export default async function LandingPage() {
             edge. Section's overflow-hidden clips the off-screen portion, giving the
             "screenshot-runs-off-the-page" feel. Hidden below lg. */}
         <div
-          className="hidden lg:block absolute top-1/2 -translate-y-1/2 right-[-100px] xl:right-[-160px] w-[520px] pointer-events-none z-10"
+          className="hidden lg:block absolute top-1/2 -translate-y-1/2 right-[-160px] xl:right-[-200px] lg:w-[620px] xl:w-[720px] pointer-events-none z-10"
           aria-hidden="true"
         >
           <HeroPromptStack prompts={(teasePrompts as PromptWithAuthor[] | null) ?? []} />
