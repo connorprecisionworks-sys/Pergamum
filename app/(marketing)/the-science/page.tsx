@@ -155,20 +155,21 @@ const CALLOUTS = [
 export default function TheSciencePage() {
   return (
     <article className="px-6 md:px-10 lg:px-16 py-16 md:py-24">
-      {/* ── Editorial header ── */}
+      {/* ── Editorial header — clinical, not slogan-y ── */}
       <header className="max-w-[760px] mx-auto mb-16 md:mb-20">
         <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-5">
-          Field guide · April 2026 · ~6 min read
+          Research · April 2026 · 6 min read
         </p>
-        <h1 className="font-serif text-[clamp(2.75rem,6.4vw,4.75rem)] font-normal leading-[1.02] tracking-[-0.025em] text-foreground">
-          Prompts are software. <span className="italic text-primary">Treat them that way.</span>
+        <h1 className="font-serif text-[clamp(2.5rem,5.6vw,4.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-foreground">
+          How prompt structure changes model behaviour.
         </h1>
-        <p className="mt-7 text-[19px] md:text-[21px] text-muted-foreground leading-[1.55]">
-          We&apos;ve all written a vague prompt and spent twenty minutes trying to fix it. There&apos;s a body of research from the last four years that explains exactly why that happens — and what to do instead. This is a short tour of it, with the numbers.
+        <p className="mt-7 text-[18px] md:text-[20px] text-muted-foreground leading-[1.55] max-w-[640px]">
+          Three peer-reviewed studies measured the effect of structured prompts on model performance. We summarise what each one found, what it implies for the prompts you write, and where the evidence stops.
         </p>
-        <div className="mt-9 flex items-center gap-3 text-sm text-muted-foreground">
-          <span className="inline-block h-px w-10 bg-border" aria-hidden="true" />
-          <span>The Pergamum team</span>
+        <div className="mt-10 flex items-center gap-4 text-[13px] text-muted-foreground">
+          <span>Pergamum Research</span>
+          <span className="inline-block h-px w-6 bg-border" aria-hidden="true" />
+          <span className="tabular-nums">29 April 2026</span>
         </div>
       </header>
 
