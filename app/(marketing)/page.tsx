@@ -5,6 +5,7 @@ import { FadeSection } from "@/components/brand/fade-section";
 import { LiveDemo } from "@/components/brand/live-demo";
 import { TypewriterHero } from "@/components/brand/typewriter-hero";
 import { FeaturedPrompts } from "@/components/brand/featured-prompts";
+import { HeroPromptStack } from "@/components/brand/hero-prompt-stack";
 import { createClient } from "@/lib/supabase/server";
 import type { PromptWithAuthor } from "@/lib/types/database";
 
@@ -55,27 +56,32 @@ export default async function LandingPage() {
             Now live
           </div>
 
-          {/* Headline + subhead in a constrained editorial column */}
-          <div className="max-w-[760px] flex flex-col gap-7 md:gap-9">
-            <TypewriterHero />
+          {/* Two-column layout at lg+: text on left, animated prompt stack on right */}
+          <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-12 lg:gap-16 items-center">
+            <div className="flex flex-col gap-7 md:gap-9 max-w-[640px]">
+              <TypewriterHero />
 
-            <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
-              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
-            </p>
+              <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
+                A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
+              </p>
 
-            {/* CTAs — left-aligned, primary verb + secondary text-link */}
-            <div className="flex items-center gap-7 flex-wrap pt-2">
-              <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
-                <Link href="/prompts">Browse the library</Link>
-              </Button>
-              <Link
-                href="/auth/signup"
-                className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
-              >
-                Contribute a prompt
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-              </Link>
+              {/* CTAs — left-aligned, primary verb + secondary text-link */}
+              <div className="flex items-center gap-7 flex-wrap pt-2">
+                <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
+                  <Link href="/prompts">Browse the library</Link>
+                </Button>
+                <Link
+                  href="/auth/signup"
+                  className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  Contribute a prompt
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
+
+            {/* Floating prompt stack — fills the right side at lg+ */}
+            <HeroPromptStack prompts={(teasePrompts as PromptWithAuthor[] | null) ?? []} />
           </div>
         </div>
 
