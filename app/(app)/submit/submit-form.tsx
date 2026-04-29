@@ -33,7 +33,21 @@ import { slugify, normalizeTags, substituteVariables } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import type { Category, Prompt } from "@/lib/types/database";
 
-const MODEL_OPTIONS = ["any", "claude", "gpt-4", "gemini", "llama", "mistral", "stable-diffusion", "dall-e", "midjourney"];
+// Granular model tiers — keeps "any" as the catch-all, and groups by provider.
+// Tier names (Opus, Sonnet, Haiku, GPT-5, etc.) so this stays valid across version bumps.
+const MODEL_OPTIONS = [
+  "any",
+  // Anthropic
+  "claude-opus", "claude-sonnet", "claude-haiku",
+  // OpenAI
+  "gpt-5", "gpt-4.1", "gpt-4o", "o1", "o3-mini",
+  // Google
+  "gemini-pro", "gemini-flash",
+  // Open-weights and others
+  "llama", "mistral", "grok", "deepseek", "perplexity",
+  // Image / multimodal
+  "midjourney", "dall-e", "stable-diffusion", "flux",
+];
 
 const promptSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(120),

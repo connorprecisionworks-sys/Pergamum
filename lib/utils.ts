@@ -75,29 +75,55 @@ export function relativeTime(dateStr: string): string {
   return `${years}y ago`;
 }
 
+// Provider colour palettes — same family shares a hue, so a row of model badges
+// reads as a grouped visual signal.
+const C_ANTHROPIC  = "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400";
+const C_OPENAI     = "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400";
+const C_GOOGLE     = "bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400";
+const C_META       = "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400";
+const C_MISTRAL    = "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400";
+const C_XAI        = "bg-slate-100 text-slate-800 dark:bg-slate-800/40 dark:text-slate-300";
+const C_DEEPSEEK   = "bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400";
+const C_PERPLEXITY = "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400";
+const C_IMAGE      = "bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-400";
+const C_NEUTRAL    = "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300";
+
 export const MODEL_DISPLAY: Record<string, { label: string; color: string }> = {
-  claude: {
-    label: "Claude",
-    color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
-  },
-  "gpt-4": {
-    label: "GPT-4",
-    color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
-  },
-  gemini: {
-    label: "Gemini",
-    color: "bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-400",
-  },
-  llama: {
-    label: "Llama",
-    color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
-  },
-  mistral: {
-    label: "Mistral",
-    color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400",
-  },
-  any: {
-    label: "Any model",
-    color: "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  },
+  // Generic
+  any: { label: "Any model", color: C_NEUTRAL },
+
+  // Anthropic — tiers, not pinned versions, so these stay valid across releases.
+  "claude-opus":   { label: "Claude Opus",   color: C_ANTHROPIC },
+  "claude-sonnet": { label: "Claude Sonnet", color: C_ANTHROPIC },
+  "claude-haiku":  { label: "Claude Haiku",  color: C_ANTHROPIC },
+
+  // OpenAI — the tier name IS the version (GPT-5, GPT-4o, o1) so we pin.
+  "gpt-5":   { label: "GPT-5",    color: C_OPENAI },
+  "gpt-4.1": { label: "GPT-4.1",  color: C_OPENAI },
+  "gpt-4o":  { label: "GPT-4o",   color: C_OPENAI },
+  "o1":      { label: "o1",       color: C_OPENAI },
+  "o3-mini": { label: "o3-mini",  color: C_OPENAI },
+
+  // Google
+  "gemini-pro":   { label: "Gemini Pro",   color: C_GOOGLE },
+  "gemini-flash": { label: "Gemini Flash", color: C_GOOGLE },
+
+  // Open-weights and others
+  "llama":      { label: "Llama",      color: C_META },
+  "mistral":    { label: "Mistral",    color: C_MISTRAL },
+  "grok":       { label: "Grok",       color: C_XAI },
+  "deepseek":   { label: "DeepSeek",   color: C_DEEPSEEK },
+  "perplexity": { label: "Perplexity", color: C_PERPLEXITY },
+
+  // Image / multimodal
+  "midjourney":       { label: "Midjourney",       color: C_IMAGE },
+  "dall-e":           { label: "DALL-E",           color: C_IMAGE },
+  "stable-diffusion": { label: "Stable Diffusion", color: C_IMAGE },
+  "flux":             { label: "Flux",             color: C_IMAGE },
+
+  // Backward-compat: any prompt still tagged with the old generic family
+  // names continues to render correctly.
+  "claude": { label: "Claude (any)", color: C_ANTHROPIC },
+  "gpt-4":  { label: "GPT-4 (any)",  color: C_OPENAI },
+  "gemini": { label: "Gemini (any)", color: C_GOOGLE },
 };

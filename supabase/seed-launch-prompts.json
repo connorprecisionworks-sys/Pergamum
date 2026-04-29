@@ -1,0 +1,322 @@
+[
+  {
+    "title": "Code reviewer (TypeScript)",
+    "description": "A senior-engineer-style code review. Cites line numbers, suggests concrete fixes, skips nitpicks unless they matter.",
+    "body": "You are a senior TypeScript engineer doing a code review. The code is below.\n\nReview it for:\n\n1. Correctness — bugs, edge cases, race conditions, off-by-one errors\n2. Type safety — uses of `any`, missing types, unsafe casts, narrowing gaps\n3. Performance — O(n²) where O(n) is possible, unnecessary re-renders, blocking I/O\n4. Readability — naming, structure, where a comment would actually help\n\nOutput as a markdown list. Be specific: cite line numbers, suggest the actual fix in code, not just \"this is bad.\" Skip nitpicks unless they affect correctness or readability significantly.\n\nIf the code is genuinely fine, say so — don't manufacture issues.\n\nCode:\n{{code}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-opus",
+      "claude-sonnet",
+      "gpt-5",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "typescript",
+      "code-review",
+      "engineering"
+    ]
+  },
+  {
+    "title": "PR description from a diff",
+    "description": "Turns a git diff into a structured PR description. Plain, honest, no fluff.",
+    "body": "You are writing the description for a pull request. The diff is below.\n\nOutput a markdown PR description with these sections:\n\n## What\nOne sentence, plain language, what this PR does.\n\n## Why\nThe problem this solves. If linked to an issue, reference it.\n\n## How\nBullet list of the key changes. Skip mechanical changes (formatting, imports). Focus on logic and intent.\n\n## Testing\nWhat you did to verify this works. Be honest — \"I ran it locally and tried X, Y, Z\" is fine if that's all.\n\n## Risk\nWhat could break, who might be affected. \"Low risk\" only if it actually is.\n\nTone: matter-of-fact. No emojis. No \"I'm thrilled to introduce.\" No padding.\n\nDiff:\n{{diff}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-haiku",
+      "gpt-4.1",
+      "gpt-4o"
+    ],
+    "tags": [
+      "pull-request",
+      "git",
+      "engineering"
+    ]
+  },
+  {
+    "title": "SQL query optimizer",
+    "description": "Explains a SQL query in plain English, identifies real performance issues, and rewrites it for your database.",
+    "body": "You are a senior database engineer. Below is a SQL query and the schema of the relevant tables.\n\nDo three things:\n\n1. Explain in plain English what this query does. One paragraph.\n\n2. Identify performance issues — missing indexes, full table scans, redundant subqueries, suboptimal joins, N+1 patterns. Be specific.\n\n3. Rewrite the query for {{database}} (or note if the optimization is database-agnostic). Show before/after with a one-line comment on what changed.\n\nIf the query is already good, say so — don't manufacture optimizations.\n\nSchema:\n{{schema}}\n\nQuery:\n{{query}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-opus",
+      "gpt-5",
+      "o1"
+    ],
+    "tags": [
+      "sql",
+      "performance",
+      "database"
+    ]
+  },
+  {
+    "title": "API endpoint scaffolder",
+    "description": "Generates a production-ready API endpoint with validation, auth, error handling, and types — ready to paste in.",
+    "body": "You are a senior backend engineer. I need a {{method}} endpoint at {{path}} for a {{framework}} app.\n\nGenerate the complete endpoint with:\n\n1. Input validation — use the framework's idiomatic approach (Zod for Express/Next, Pydantic for FastAPI, etc.)\n2. Authentication and authorization checks where they make sense\n3. Proper error handling with meaningful status codes (400 client error, 401 auth, 403 forbidden, 404 not-found, 500 only for genuinely unexpected)\n4. TypeScript types or Python type hints\n5. A short top comment explaining what this endpoint does\n\nBehavior I need:\n{{behavior}}\n\nOutput the full file content, ready to paste in. Add a one-line comment above any non-obvious choice.",
+    "category": "Coding",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-opus",
+      "gpt-4.1",
+      "gpt-5"
+    ],
+    "tags": [
+      "api",
+      "backend",
+      "scaffolding"
+    ]
+  },
+  {
+    "title": "Bug report triage",
+    "description": "Turns a vague bug report into a triaged ticket with repro steps, severity, and a starting guess at the cause.",
+    "body": "You are a senior engineer triaging a bug report. The report is below — it might be from a user, a Slack message, a support ticket, or stream-of-consciousness from a teammate.\n\nOutput:\n\n**Repro steps** — numbered, minimal. If the steps aren't given, list the questions that would get them.\n\n**Expected behavior** — what should happen.\n\n**Actual behavior** — what's happening instead.\n\n**Severity** — P0 (production down), P1 (major feature broken for many), P2 (annoying but workaround exists), P3 (cosmetic). Justify the level in one sentence.\n\n**Likely cause** — your honest guess at where to start looking. Speculation is fine — mark it as such.\n\nIf the report is too vague to triage, list the specific questions to ask. Don't invent details.\n\nReport:\n{{report}}",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1",
+      "gpt-4o"
+    ],
+    "tags": [
+      "bugs",
+      "triage",
+      "support"
+    ]
+  },
+  {
+    "title": "Customer interview synthesizer",
+    "description": "Turns raw interview notes into prioritized pain points, surprises, and one concrete next action.",
+    "body": "You are a senior product researcher. Below are notes from a customer interview.\n\nOutput:\n\n**Top three pain points**, in priority order. For each: one-sentence statement of the pain, plus the direct quote (or paraphrase) from the notes that supports it.\n\n**Surprising things** — anything the customer said that contradicts your assumptions about this segment, or that you wouldn't have expected. Skip if nothing notable came up.\n\n**One concrete {{deliverable}}** — based on the strongest pain point. Be specific.\n\n**Open questions** — things you'd want to ask in a follow-up. Don't pad — only list questions you genuinely couldn't answer from these notes.\n\nTone: {{tone}}.\n\nNotes:\n{{notes}}",
+    "category": "Research",
+    "model_tags": [
+      "claude-opus",
+      "claude-sonnet"
+    ],
+    "tags": [
+      "user-research",
+      "interviews",
+      "product"
+    ]
+  },
+  {
+    "title": "Meeting notes to action items",
+    "description": "Strips a messy meeting note into clean decisions, owned action items, and open questions.",
+    "body": "You are a chief of staff turning raw meeting notes into a clean follow-up.\n\nOutput:\n\n**Decisions made** — bullet list, each one a single sentence. Skip topics that were discussed but not decided.\n\n**Action items** — table format: who, what, by when. If owner or deadline isn't clear, mark it [TBD] — don't invent.\n\n**Open questions** — things that came up but weren't resolved. These are work for the next meeting.\n\n**For the record** — important context shared in the meeting that future-you would want to remember. Skip if nothing notable.\n\nTone: matter-of-fact. No play-by-play of who said what unless it's load-bearing.\n\nNotes:\n{{notes}}",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-haiku",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "meetings",
+      "productivity",
+      "action-items"
+    ]
+  },
+  {
+    "title": "Marketing email opener — 5 variations",
+    "description": "Five different opening lines for a marketing email — five different angles, no clichés, each under 18 words.",
+    "body": "You are a marketing copywriter. Write five variations of an opening line for an email about {{product_or_topic}}.\n\nConstraints:\n- Each opener is a single sentence, max 18 words.\n- Each one uses a different angle: a stat, a question, a contrarian take, a story setup, a direct value prop.\n- No \"I hope this email finds you well.\" No \"In today's fast-paced world.\" No greetings — assume the subject line and salutation are separate.\n- Audience: {{audience}}.\n\nOutput as a numbered list with the angle in brackets after each line.",
+    "category": "Marketing",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1",
+      "gpt-4o",
+      "gemini-pro"
+    ],
+    "tags": [
+      "email",
+      "marketing",
+      "copywriting"
+    ]
+  },
+  {
+    "title": "Cold email first line — personalized",
+    "description": "Three personalized cold-email openers based on a real LinkedIn or website excerpt. No flattery, no fabrications.",
+    "body": "You are a B2B salesperson writing a personalized first line for a cold email. The recipient's LinkedIn or website excerpt is below.\n\nWrite three first-line options that:\n\n1. Show you actually read the source — reference something specific (a project, a post, a milestone)\n2. Are not flattery — pick something concrete, not \"loved your post!\"\n3. Lead naturally into a value prop for {{my_product}}, without being pushy\n\nEach option is a single sentence, max 25 words. Output as a numbered list with a one-sentence note on why each one would work.\n\nIf the source is too thin to personalize from, say so — don't manufacture details.\n\nSource:\n{{source}}",
+    "category": "Marketing",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1",
+      "gpt-4o"
+    ],
+    "tags": [
+      "cold-email",
+      "sales",
+      "outreach"
+    ]
+  },
+  {
+    "title": "Product spec from a one-liner",
+    "description": "Turns a one-line product idea into a real spec — user, problem, MVP scope, and what to skip for v1.",
+    "body": "You are a senior PM. Turn the following one-liner into a structured product spec.\n\nOutput:\n\n**What we're building** — restate the one-liner in two sentences, more concrete.\n\n**Who it's for** — primary user. Be specific: not \"users\", but \"Series A founders managing a 15-person team.\"\n\n**The problem** — what's broken today, why existing solutions don't solve it.\n\n**Success metric** — one concrete number we'd watch to know this worked.\n\n**MVP scope** — bullet list of the smallest version that could ship. Lean toward fewer.\n\n**Out of scope (for v1)** — things that are tempting but skip-for-now. Important to name them so they don't creep in.\n\n**Open questions** — what we don't know yet that we'd need to answer before building.\n\nIf the one-liner is too vague to spec, list the questions you'd ask. Don't invent details.\n\nOne-liner:\n{{idea}}",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-opus",
+      "gpt-5",
+      "o1"
+    ],
+    "tags": [
+      "product",
+      "spec",
+      "pm"
+    ]
+  },
+  {
+    "title": "Release notes from commits",
+    "description": "Turns a git log into clean release notes — highlights, new, improved, fixed, breaking. No 'we are thrilled.'",
+    "body": "You are a developer relations engineer writing release notes. The git log is below.\n\nOutput release notes for {{audience}} at version {{version}}.\n\nSections (skip any that don't apply):\n\n**Highlights** — 1-3 things users will notice. Lead with the biggest. Skip mechanical things.\n\n**New** — added features. Each one a single sentence.\n\n**Improved** — performance, UX, copy improvements. One sentence each.\n\n**Fixed** — bug fixes. Group similar ones. Don't list every commit.\n\n**Breaking changes** — anything users have to adapt to. Be specific.\n\nTone: {{tone}}. No emojis. No \"we're excited to announce.\" Just say what changed.\n\nGit log:\n{{git_log}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-haiku",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "release-notes",
+      "devrel",
+      "changelog"
+    ]
+  },
+  {
+    "title": "Tweet thread from a blog post",
+    "description": "Turns a long-form blog post into a tight X thread that earns the click and invites the read.",
+    "body": "You are a writer turning a blog post into an X (Twitter) thread.\n\nOutput a {{length}}-tweet thread that:\n\n1. The first tweet earns the click — a hook that's specific, not \"I learned X today, here's what I learned.\"\n2. Each subsequent tweet stands alone but invites the next.\n3. Include the strongest 1-2 quotes from the post verbatim, with attribution to the post.\n4. The last tweet links back to the full post.\n\nEach tweet stays under 280 chars (ideally 200-250). No emojis unless the post uses them. No \"🧵\" — assume people know it's a thread.\n\nPost:\n{{post}}",
+    "category": "Marketing",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "twitter",
+      "content",
+      "marketing"
+    ]
+  },
+  {
+    "title": "Brand voice rewriter",
+    "description": "Rewrites text in your brand voice without padding, without clichés, and without changing the meaning.",
+    "body": "You are a copy editor. Rewrite the following text in our brand voice.\n\nOur voice is: {{voice_description}}\n\nRules:\n- Preserve the meaning exactly. Don't add or remove information.\n- Don't use phrases that are clichéd in our industry. Avoid \"leverage\", \"synergy\", \"best-in-class\", \"enterprise-grade\", \"next-generation.\"\n- Match the original's length within 15%. Don't pad.\n- Active voice over passive.\n\nOutput the rewritten version only. After it, add a single line: \"Changes:\" followed by 2-3 bullets describing what shifted (tone, structure, word choice).\n\nOriginal:\n{{text}}",
+    "category": "Writing",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-opus",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "copy-editing",
+      "brand",
+      "writing"
+    ]
+  },
+  {
+    "title": "OKR drafter",
+    "description": "Turns a goal into proper OKRs — one ambitious objective, 3-4 measurable key results, with leading indicators.",
+    "body": "You are a senior leader turning a goal into measurable OKRs.\n\nGoal: {{goal}}\nTime period: {{period}}\nTeam: {{team}}\n\nDraft:\n\n**Objective** — one sentence, qualitative, ambitious. Should describe a destination, not a metric.\n\n**Key Results** — 3 to 4. Each one is a number you can measure. Each one has a baseline and a target. Each one would tell you, on its own, whether you got closer to the objective.\n\nFor each KR also list:\n- Data source — where you'd track it from\n- Leading indicator — one signal you could watch weekly\n- Most likely failure mode — the metric goes up but the objective doesn't\n\nIf the goal is too vague to OKR, list the questions you'd ask first. Don't invent.",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-opus",
+      "gpt-5",
+      "o1"
+    ],
+    "tags": [
+      "okrs",
+      "leadership",
+      "planning"
+    ]
+  },
+  {
+    "title": "Architecture Decision Record (ADR)",
+    "description": "Writes a full Architecture Decision Record — context, decision, alternatives, consequences, open questions.",
+    "body": "You are a senior engineer writing an Architecture Decision Record (ADR) for the following decision.\n\nFormat (markdown):\n\n# ADR-{{number}}: {{title}}\n\n**Status**: Proposed | Accepted | Superseded by ADR-NNN\n\n**Context**: What's the situation forcing a decision? What constraints exist? Be specific. 2-4 paragraphs.\n\n**Decision**: What did we choose? State it directly. One paragraph.\n\n**Alternatives considered**: At least 2-3. For each: what it was, why we didn't pick it. One sentence each.\n\n**Consequences**: What becomes easier? What becomes harder? Be honest about the downsides.\n\n**Open questions**: Things we still don't know. Mark them clearly.\n\nDecision input:\n{{description}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-opus",
+      "gpt-5",
+      "o1"
+    ],
+    "tags": [
+      "architecture",
+      "adr",
+      "engineering"
+    ]
+  },
+  {
+    "title": "Performance review — peer or report",
+    "description": "Turns raw observations into a structured perf review — specific strengths, fixable growth areas, real calibration.",
+    "body": "You are writing a performance review for a peer or report. Below are the raw observations.\n\nOutput a structured review:\n\n**Strengths (specific):** 2-3 things this person did well, with at least one concrete example each. \"Strong communicator\" doesn't count — show me the moment.\n\n**Growth areas (specific):** 1-2 things to work on. Concrete, behavioral, fixable. Avoid personality criticism. Avoid \"needs to be more proactive\" — show me the situation.\n\n**Outsized contributions:** Anything they did clearly above their level or scope. Skip if nothing applies.\n\n**Calibration note:** Where does this person sit relative to their level? Meeting / exceeding / needs improvement. One sentence.\n\nTone: honest, specific, supportive. Avoid corporate hedging. If something was bad, say it was bad and how to fix it.\n\nObservations:\n{{observations}}",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-opus",
+      "claude-sonnet"
+    ],
+    "tags": [
+      "performance-review",
+      "leadership",
+      "feedback"
+    ]
+  },
+  {
+    "title": "Job description writer",
+    "description": "Writes a real job description — concrete responsibilities, soft requirements, transparent comp. No 'Ninja' titles.",
+    "body": "You are an experienced hiring manager. Write a job description for a {{seniority}} {{role}} on a {{team_type}} team.\n\nOutput:\n\n**Title** — exact, no fluff. No \"Ninja\", \"Rockstar\", \"Wizard.\"\n\n**About the role (3-4 sentences)** — what this person will actually do day-to-day. Lead with the work, not the company.\n\n**You'll** — 5-7 specific things they'll be doing. Each starts with a verb. Skip \"wear many hats.\"\n\n**You probably** — required-ish skills. Use \"probably\" and \"likely\" rather than hard requirements unless they really are. Cap at 6.\n\n**Bonus** — nice-to-haves. Cap at 4. Skip if not needed.\n\n**Compensation** — placeholder bracket: $[low] – $[high] + equity if applicable. Tell the reader what's negotiable.\n\n**How to apply** — specific instructions.\n\nSkip \"we are an equal opportunity employer\" boilerplate. Skip the company values section unless it's genuinely differentiating.\n\nContext:\n{{context}}",
+    "category": "Productivity",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "hiring",
+      "recruiting",
+      "job-description"
+    ]
+  },
+  {
+    "title": "Documentation writer — function or API",
+    "description": "Writes proper docs for a function or API endpoint — summary, params, returns, examples, real gotchas.",
+    "body": "You are a developer writing documentation for the following function or API endpoint. The implementation is below.\n\nOutput documentation as a markdown block:\n\n**Summary** — one sentence, what it does. Lead with the verb.\n\n**When to use it** — typical scenarios. 2-3 short bullets. Skip if obvious.\n\n**Parameters** — table: name, type, required, description, example value. Don't pad — every column must have content.\n\n**Returns** — type and what it represents. If error states are possible, list them with what causes each.\n\n**Example** — minimal working example. A second one if there's a simple case and an advanced case.\n\n**Gotchas** — anything non-obvious. Skip if nothing applies. Don't manufacture warnings.\n\nImplementation:\n{{implementation}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-sonnet",
+      "gpt-4.1",
+      "gpt-4o"
+    ],
+    "tags": [
+      "documentation",
+      "api-docs",
+      "technical-writing"
+    ]
+  },
+  {
+    "title": "Content brief from a topic",
+    "description": "Turns a topic into a real content brief — title options, hook, outline, sources, and the distinctive angle.",
+    "body": "You are a content strategist. Turn the topic below into a brief that a writer could actually use.\n\nTopic: {{topic}}\nTarget audience: {{audience}}\nWord count target: {{word_count}}\nFormat: {{format}}\n\nOutput:\n\n**Working title** — 3 options.\n\n**Hook (the why-now)** — why this topic matters this quarter, this year, or in the current moment.\n\n**Reader takeaway** — one sentence answering \"what does the reader walk away knowing or doing?\"\n\n**Outline** — H2-level sections with 1-2 sentence summaries. Should support the takeaway, not list \"Background / Body / Conclusion.\"\n\n**Sources to consult** — papers, books, people, datasets. Include if you know specific ones; otherwise list types of sources to find. Don't fabricate citations.\n\n**Distinctive angle** — what makes this piece different from the other 100 articles on this topic. If you can't think of one, say so — that's a sign the piece needs a sharper angle before writing.",
+    "category": "Writing",
+    "model_tags": [
+      "claude-sonnet",
+      "claude-opus",
+      "gpt-4.1"
+    ],
+    "tags": [
+      "content",
+      "briefs",
+      "strategy"
+    ]
+  },
+  {
+    "title": "Refactor planner",
+    "description": "Plans a refactor against a specific constraint — small reviewable steps, real dependencies, what to skip.",
+    "body": "You are a senior engineer planning a refactor. The code is below, along with the constraint we're refactoring against.\n\nConstraint: {{constraint}}\n(Examples: \"needs to support pagination\", \"needs to be testable in isolation\", \"needs to handle 10x the volume\")\n\nOutput:\n\n**Diagnosis** — what's making this hard right now. Be specific: cite line numbers or function names.\n\n**Refactor plan** — numbered steps. Each step:\n- Is small enough to ship as one PR\n- Leaves the system working at every step (no big-bang rewrites)\n- States what changes and why\n\n**Order of operations** — which step unlocks which. Identify dependencies.\n\n**Risks** — what could break, what tests would catch it.\n\n**What I'd skip** — tempting changes that don't serve the constraint. Naming them upfront prevents scope creep.\n\nCode:\n{{code}}",
+    "category": "Coding",
+    "model_tags": [
+      "claude-opus",
+      "gpt-5",
+      "o1"
+    ],
+    "tags": [
+      "refactoring",
+      "engineering",
+      "code-quality"
+    ]
+  }
+]
