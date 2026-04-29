@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -7,45 +8,57 @@ export const metadata: Metadata = {
     "Pergamum was an ancient library that refused to be gatekept. Two thousand years later, this is the same idea.",
 };
 
-// ── Image placeholders ────────────────────────────────────────────
-// Each placeholder is a styled <figure> with a caption. Drop a real image
-// into /public/about/<filename>.jpg, then swap the <ImagePlaceholder> for an
-// <Image src="/about/library.jpg" ...> from next/image. The captions stay.
-function ImagePlaceholder({
+// ── Inline figure with image + caption ──────────────────────────
+// Real intrinsic dimensions are passed in so next/image avoids layout shift.
+function Figure({
+  src,
+  alt,
+  width,
+  height,
   caption,
   attribution,
-  aspect = "aspect-[16/9]",
+  attributionHref,
+  priority = false,
 }: {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
   caption: string;
-  attribution?: string;
-  aspect?: string;
+  attribution: string;
+  attributionHref?: string;
+  priority?: boolean;
 }) {
   return (
     <figure className="my-12 md:my-14">
-      <div
-        className={`${aspect} w-full rounded-lg border border-border/60 bg-muted/40 flex items-center justify-center overflow-hidden relative`}
-        aria-hidden="true"
-      >
-        {/* Subtle decorative texture so the placeholder doesn't read as 'broken image' */}
-        <div
-          className="absolute inset-0 opacity-[0.05]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 1px, transparent 12px)",
-            color: "hsl(var(--foreground))",
-          }}
+      <div className="relative w-full overflow-hidden rounded-lg border border-border/60 bg-muted/30">
+        <Image
+          src={src}
+          alt={alt}
+          width={width}
+          height={height}
+          sizes="(max-width: 768px) 100vw, 680px"
+          priority={priority}
+          className="w-full h-auto"
         />
-        <span className="relative text-[11px] tracking-[0.22em] uppercase text-muted-foreground/70 font-medium">
-          Image placeholder
-        </span>
       </div>
       <figcaption className="mt-3 text-[13px] text-muted-foreground italic leading-snug max-w-[60ch]">
         {caption}
-        {attribution && (
-          <span className="not-italic text-muted-foreground/60">
-            {" "}— {attribution}
-          </span>
-        )}
+        <span className="not-italic text-muted-foreground/60">
+          {" "}—{" "}
+          {attributionHref ? (
+            <a
+              href={attributionHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-muted-foreground underline-offset-4 hover:underline"
+            >
+              {attribution}
+            </a>
+          ) : (
+            attribution
+          )}
+        </span>
       </figcaption>
     </figure>
   );
@@ -89,9 +102,15 @@ export default function AboutPage() {
           Treated animal skin, scraped thin and stretched. More expensive than papyrus, more durable, and entirely outside Egypt&apos;s control. The library kept growing. By the second century BCE, Pergamum held an estimated two hundred thousand volumes — open to scholars from anywhere in the Mediterranean, copied freely, shared across the known world.
         </p>
 
-        <ImagePlaceholder
-          caption="The Library of Pergamon, an artist's reconstruction. The reading rooms sat on the city's acropolis, overlooking the Aegean."
-          attribution="Drop a real image at /public/about/library.jpg"
+        <Figure
+          src="/about/library.jpg"
+          alt="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch."
+          width={1596}
+          height={900}
+          priority
+          caption="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch. The reading rooms sat above the city, overlooking the Aegean."
+          attribution="Friedrich Thiersch, 1882. Public domain via Wikimedia Commons."
+          attributionHref="https://commons.wikimedia.org/wiki/File:Acropolis_of_Pergamon_-_Friedrich_Thierch_-_1882.jpg"
         />
 
         <p className="font-serif italic text-[19px] md:text-[21px] leading-[1.5] text-foreground/90 border-l-2 border-primary/60 pl-6 py-1 my-10">
@@ -114,10 +133,14 @@ export default function AboutPage() {
           Crafts get better faster when the people doing them can see each other&apos;s work.
         </p>
 
-        <ImagePlaceholder
-          caption="A leaf of medieval parchment. Pergamum's invention outlived the city by a thousand years and copied half of what we still know about antiquity."
-          attribution="Drop a real image at /public/about/parchment.jpg"
-          aspect="aspect-[3/2]"
+        <Figure
+          src="/about/parchment.jpg"
+          alt="A leaf of aged parchment, the writing surface invented at Pergamum."
+          width={5184}
+          height={3456}
+          caption="Parchment — Pergamum's invention. It outlived the city by a thousand years and copied half of what we still know about antiquity."
+          attribution="Wikimedia Commons"
+          attributionHref="https://commons.wikimedia.org/wiki/Category:Parchment"
         />
 
         <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.015em] mt-16 mb-3">
@@ -136,10 +159,14 @@ export default function AboutPage() {
           If you&apos;ve got a prompt that earns its keep, the library belongs to the people who fill it.
         </p>
 
-        <ImagePlaceholder
-          caption="The acropolis at Pergamum today. The library is gone but its catalog lives on, scattered across the libraries it shared with."
-          attribution="Drop a real image at /public/about/acropolis.jpg"
-          aspect="aspect-[16/9]"
+        <Figure
+          src="/about/acropolis.jpg"
+          alt="The ruins of the Pergamon Acropolis as they stand today, in Bergama, Turkey."
+          width={1200}
+          height={770}
+          caption="The acropolis at Pergamum today. The library is gone but its catalogue lives on, scattered across the libraries it shared with."
+          attribution="Wikimedia Commons"
+          attributionHref="https://commons.wikimedia.org/wiki/Category:Pergamon_Acropolis"
         />
       </div>
 
