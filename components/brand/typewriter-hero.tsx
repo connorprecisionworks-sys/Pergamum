@@ -75,16 +75,16 @@ export function TypewriterHero() {
   }, []);
 
   return (
-    <h1 className="font-serif font-normal text-foreground text-[clamp(2.5rem,7.2vw,5rem)] leading-[1.04] tracking-[-0.03em]">
+    <h1 className="font-serif font-normal text-foreground text-[clamp(2.25rem,6.4vw,4.5rem)] leading-[1.02] tracking-[-0.025em]">
       Prompts for
       <br />
-      <span className="inline-flex items-baseline text-primary">
+      <span className="inline-flex items-baseline text-primary italic">
         <span className="whitespace-pre" aria-live="polite">
           {word}
         </span>
         <span
           aria-hidden="true"
-          className="inline-block w-[3px] h-[0.85em] bg-primary translate-y-[10%] ml-1 animate-pulse"
+          className="inline-block w-[3px] h-[0.8em] bg-primary translate-y-[12%] ml-1.5 not-italic animate-pulse"
         />
       </span>
     </h1>

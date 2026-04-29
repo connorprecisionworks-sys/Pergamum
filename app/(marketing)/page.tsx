@@ -37,12 +37,12 @@ export default async function LandingPage() {
   return (
     <>
       {/* ─────────────────────────────────────────────
-          Section 1: Hero — centered, ~90vh, restrained
+          Section 1: Hero — left-aligned editorial, ~85vh
       ───────────────────────────────────────────── */}
-      <section className="relative flex flex-col items-center justify-center min-h-[80vh] md:min-h-[88vh] px-6 pt-32 md:pt-40 pb-24 md:pb-28 overflow-hidden">
-        {/* Single ambient violet glow at top — sole decorative element */}
+      <section className="relative flex flex-col justify-center min-h-[78vh] md:min-h-[85vh] px-6 md:px-12 lg:px-20 pt-28 md:pt-36 pb-20 md:pb-24 overflow-hidden">
+        {/* Soft ambient violet glow — pushed to the right to balance the left-aligned text */}
         <div
-          className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] pointer-events-none opacity-[0.55]"
+          className="absolute -top-32 right-[-200px] w-[820px] h-[600px] pointer-events-none opacity-[0.55]"
           style={{
             background:
               "radial-gradient(ellipse at center, hsl(var(--primary) / 0.10) 0%, transparent 60%)",
@@ -50,39 +50,39 @@ export default async function LandingPage() {
           aria-hidden="true"
         />
 
-        <div className="relative w-full max-w-[720px] mx-auto text-center flex flex-col items-center gap-8 md:gap-10">
-          {/* Eyebrow */}
-          <div className="flex items-center gap-3 text-[11px] md:text-xs font-medium tracking-[0.22em] uppercase text-muted-foreground">
+        <div className="relative w-full max-w-[1180px] mx-auto">
+          {/* Eyebrow — top-left */}
+          <div className="flex items-center gap-2.5 text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-10 md:mb-14">
             <span className="inline-block h-[5px] w-[5px] rounded-full bg-primary" aria-hidden="true" />
             Now live
-            <span className="inline-block h-[5px] w-[5px] rounded-full bg-primary" aria-hidden="true" />
           </div>
 
-          {/* Headline — typewriter cycle through use cases */}
-          <TypewriterHero />
+          {/* Headline + subhead in a constrained editorial column */}
+          <div className="max-w-[760px] flex flex-col gap-7 md:gap-9">
+            <TypewriterHero />
 
-          {/* Subhead — concrete, two short clauses */}
-          <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[560px]">
-            A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier, no signup to read.
-          </p>
+            <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
+              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier, no signup to read.
+            </p>
 
-          {/* CTAs — primary verb + secondary text-link */}
-          <div className="flex items-center justify-center gap-7 flex-wrap pt-1">
-            <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
-              <Link href="/prompts">Browse the library</Link>
-            </Button>
-            <Link
-              href="/auth/signup"
-              className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
-            >
-              Contribute a prompt
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
+            {/* CTAs — left-aligned, primary verb + secondary text-link */}
+            <div className="flex items-center gap-7 flex-wrap pt-2">
+              <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
+                <Link href="/prompts">Browse the library</Link>
+              </Button>
+              <Link
+                href="/auth/signup"
+                className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
+              >
+                Contribute a prompt
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Stats baseline — subtle, anchors the bottom */}
-        <div className="absolute bottom-8 md:bottom-10 inset-x-0 text-center pointer-events-none">
+        {/* Stats line — bottom-left, anchors the section without competing */}
+        <div className="absolute bottom-8 md:bottom-10 left-6 md:left-12 lg:left-20 pointer-events-none">
           <span className="label-mono">
             [ {pc} prompt{pc !== 1 ? "s" : ""} &nbsp;·&nbsp; {cc} categor{cc !== 1 ? "ies" : "y"} &nbsp;·&nbsp; {uc} contributor{uc !== 1 ? "s" : ""} ]
           </span>
