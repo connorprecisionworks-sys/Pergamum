@@ -79,31 +79,43 @@ Quotes in > blockquotes. End with a "Key tensions" section.
 [TRANSCRIPT 1] …`;
 
 // ── Five building blocks ──────────────────────────────────────────
+// Each block has a basic example (always shown) and a `whyItMatters` line
+// that fades in on hover, explaining what bad output the block prevents.
 const BLOCKS = [
   {
     label: "Role / persona",
     description: "Sets the model's frame of reference and the knowledge it draws on.",
     example: '"You are a senior TypeScript engineer reviewing a pull request."',
+    whyItMatters:
+      "Without a role, the model defaults to a generic helpful assistant. With one, it draws on a much narrower slice of its training and writes accordingly.",
   },
   {
     label: "Context",
     description: "The facts the model needs to avoid guessing them itself.",
     example: '"The codebase uses strict ESLint and targets Node 20."',
+    whyItMatters:
+      "Missing context is the most common cause of wrong-but-confident answers. Spell out the facts so the model doesn't fill in plausible-sounding ones.",
   },
   {
     label: "Task",
     description: "A single unambiguous instruction. One task per prompt.",
     example: '"Refactor the function below to eliminate the nested conditionals."',
+    whyItMatters:
+      "Two tasks in one prompt usually means one of them gets a half-effort answer. Split them. Ask one thing at a time, well.",
   },
   {
     label: "Constraints",
     description: "Boundaries that prevent unwanted outputs before they happen.",
     example: '"Do not change the function signature or return type."',
+    whyItMatters:
+      "Constraints upfront beat corrections after the fact. Every \"don't\" you list saves one round-trip you would have spent fixing it.",
   },
   {
     label: "Output format",
     description: "Tells the model exactly what shape the answer should take.",
     example: '"Return only the refactored function — no explanation."',
+    whyItMatters:
+      "If you don't say what you want back, you'll get markdown when you wanted JSON, paragraphs when you wanted bullets, and a polite preface either way.",
   },
 ];
 
@@ -249,29 +261,54 @@ export default function TheSciencePage() {
       </section>
 
       <section className="max-w-[1100px] mx-auto mb-24 md:mb-32">
-        <ol className="space-y-3">
+        <ol className="space-y-1">
           {BLOCKS.map((block, i) => (
             <li
               key={block.label}
-              className="grid grid-cols-[auto_1fr] gap-x-6 md:gap-x-10 gap-y-1 py-5 border-b border-border/50 last:border-0"
+              tabIndex={0}
+              className="group relative grid grid-cols-[auto_1fr] gap-x-6 md:gap-x-10 gap-y-1 py-6 px-3 md:px-5 border-b border-border/50 last:border-0 cursor-default outline-none transition-[background-color,padding,transform] duration-300 ease-out hover:bg-primary/[0.04] focus-visible:bg-primary/[0.04] hover:md:pl-7 focus-visible:md:pl-7"
             >
-              <span className="font-serif text-2xl md:text-3xl text-muted-foreground/50 tabular-nums leading-none pt-1">
+              {/* Violet rule that grows from 0 → 3px on hover/focus */}
+              <span
+                aria-hidden="true"
+                className="absolute left-0 top-3 bottom-3 w-[3px] bg-primary scale-y-0 origin-center transition-transform duration-300 ease-out group-hover:scale-y-100 group-focus-visible:scale-y-100"
+              />
+
+              <span className="font-serif text-2xl md:text-3xl text-muted-foreground/50 tabular-nums leading-none pt-1 transition-colors duration-300 group-hover:text-primary group-focus-visible:text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>
+
               <div className="space-y-2">
-                <p className="font-serif text-xl md:text-2xl text-foreground tracking-tight leading-tight">
+                <p className="font-serif text-xl md:text-2xl text-foreground tracking-tight leading-tight transition-colors duration-300 group-hover:text-primary group-focus-visible:text-primary">
                   {block.label}
                 </p>
                 <p className="text-[15px] text-foreground/75 leading-relaxed max-w-[60ch]">
                   {block.description}
                 </p>
-                <p className="text-[12.5px] font-mono text-muted-foreground/90 mt-2 max-w-[60ch]">
+                <p className="text-[12.5px] font-mono text-muted-foreground/90 mt-2 max-w-[60ch] transition-colors duration-300 group-hover:text-foreground/85 group-focus-visible:text-foreground/85">
                   {block.example}
+                </p>
+
+                {/* "Why it matters" — fades + slides in on hover/focus */}
+                <p
+                  className="
+                    text-[14px] italic text-foreground/70 leading-relaxed max-w-[58ch]
+                    overflow-hidden
+                    max-h-0 opacity-0 mt-0
+                    transition-[max-height,opacity,margin-top] duration-300 ease-out
+                    group-hover:max-h-32 group-hover:opacity-100 group-hover:mt-3
+                    group-focus-visible:max-h-32 group-focus-visible:opacity-100 group-focus-visible:mt-3
+                  "
+                >
+                  {block.whyItMatters}
                 </p>
               </div>
             </li>
           ))}
         </ol>
+        <p className="text-xs text-muted-foreground mt-6 px-3 md:px-5">
+          Hover any row to see why the block matters.
+        </p>
       </section>
 
       {/* ── 3. The research ── */}

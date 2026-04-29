@@ -11,45 +11,69 @@ import {
   Cell,
 } from "recharts";
 
-const VIOLET = "hsl(263, 70%, 50%)";
-const MUTED  = "hsl(0, 0%, 40%)";
+// Brand violet (matches --primary at hsl(263 70% 50%) in light, hsl(263 75% 65%) in dark).
+// Recharts can't read CSS vars directly, so we use mid-tone fixed colors that work in both modes.
+const VIOLET = "hsl(263, 70%, 55%)";
+// Neutral grays that read on both cream and near-black backgrounds.
+const NEUTRAL_BAR = "hsl(0, 0%, 70%)";
+const AXIS_TEXT   = "hsl(0, 0%, 55%)";
+const GRID        = "hsl(0, 0%, 55% / 0.18)";
 
 interface ChartProps {
   data: { label: string; value: number }[];
   unit?: string;
 }
 
+// ── Theme-aware tooltip — uses Tailwind classes so it auto-adapts to light/dark.
+function CustomTooltip({
+  active,
+  payload,
+  label,
+  unit = "%",
+}: {
+  active?: boolean;
+  payload?: { value: number }[];
+  label?: string;
+  unit?: string;
+}) {
+  if (!active || !payload || !payload.length) return null;
+  return (
+    <div className="rounded-md border border-border bg-card px-3 py-2 text-xs shadow-sm">
+      <p className="text-muted-foreground mb-0.5">{label}</p>
+      <p className="font-mono font-medium text-foreground tabular-nums">
+        {payload[0].value}
+        {unit}
+      </p>
+    </div>
+  );
+}
+
 function SimpleBarChart({ data, unit = "%" }: ChartProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={data} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,88%)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke={GRID} vertical={false} />
         <XAxis
           dataKey="label"
-          tick={{ fontSize: 12, fill: MUTED }}
+          tick={{ fontSize: 12, fill: AXIS_TEXT }}
           axisLine={false}
           tickLine={false}
         />
         <YAxis
           tickFormatter={(v) => `${v}${unit}`}
-          tick={{ fontSize: 11, fill: MUTED }}
+          tick={{ fontSize: 11, fill: AXIS_TEXT }}
           axisLine={false}
           tickLine={false}
           domain={[0, "auto"]}
         />
         <Tooltip
-          formatter={(v) => [`${v}${unit}`, ""]}
-          contentStyle={{
-            fontSize: 12,
-            borderRadius: 6,
-            border: "1px solid hsl(40,10%,88%)",
-            boxShadow: "none",
-          }}
-          cursor={{ fill: "hsl(40,18%,92%)" }}
+          content={<CustomTooltip unit={unit} />}
+          // Cursor is the hover-highlight rectangle behind the bar — keep it subtle and theme-neutral.
+          cursor={{ fill: "hsl(263, 70%, 55% / 0.10)" }}
         />
         <Bar dataKey="value" radius={[3, 3, 0, 0]} maxBarSize={64}>
           {data.map((_, i) => (
-            <Cell key={i} fill={i === data.length - 1 ? VIOLET : "hsl(0,0%,80%)"} />
+            <Cell key={i} fill={i === data.length - 1 ? VIOLET : NEUTRAL_BAR} />
           ))}
         </Bar>
       </BarChart>
