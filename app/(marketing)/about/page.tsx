@@ -82,23 +82,27 @@ export default function AboutPage() {
       {/* ── Body ── */}
       <div className="max-w-[680px] mx-auto text-[17px] leading-[1.75] text-foreground/85 space-y-7">
         <p>
-          Pergamum was a city in ancient Anatolia, on the western edge of what is now Turkey. In its time it had one of the largest libraries in the world — second only to Alexandria&apos;s, and on a good day, possibly larger.
+          Pergamum sat on a 335-metre hill above the Caicus river plain in northwest Anatolia — the modern town of Bergama, Turkey. The acropolis at the top of the hill held the temples, the palaces, a theatre cut into the slope at one of the steepest angles in the ancient world, and the library. A city built vertical, in the way Hellenistic cities tended to be when they wanted to project power.
         </p>
 
         <p>
-          The story of how it got that big is the part worth telling.
+          It was a small kingdom. The Attalid dynasty that built it spanned only about a hundred and fifty years, from 281 to 133 BCE. Five kings, all of them unusually invested in scholarship and the arts. Eumenes II — the second-to-last — is the one who built the library. He spent his reign accumulating books, sculptors, and reputation in roughly equal measure, and by his death in 159 BCE the library was the second-largest in the world. The largest was at Alexandria, in Ptolemaic Egypt.
+        </p>
+
+        <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.015em] mt-16 mb-3">
+          The papyrus embargo.
+        </h2>
+
+        <p>
+          The growth was alarming enough to Alexandria that Egypt cut off papyrus exports. Egypt held a near-monopoly on papyrus production — the plant grew along the Nile and almost nowhere else — and every library on Earth depended on it. The intent of the embargo was straightforward: starve Pergamum&apos;s library of the material it needed to grow.
         </p>
 
         <p>
-          The library at Alexandria was the dominant one in the Mediterranean. Pergamum was building fast and starting to threaten that dominance. Egypt — which controlled the world&apos;s supply of papyrus, the writing surface every library on Earth depended on — cut off exports. The intent was straightforward: starve Pergamum&apos;s library of the material it needed to grow.
+          Pergamum responded by perfecting parchment instead.
         </p>
 
         <p>
-          Pergamum invented parchment instead.
-        </p>
-
-        <p>
-          Treated animal skin, scraped thin and stretched. More expensive than papyrus, more durable, and entirely outside Egypt&apos;s control. The library kept growing. By the second century BCE, Pergamum held an estimated two hundred thousand volumes — open to scholars from anywhere in the Mediterranean, copied freely, shared across the known world.
+          Treated animal skin, scraped thin and stretched. More expensive to produce than papyrus, more durable, and entirely outside Egypt&apos;s control. Animal-skin writing surfaces had existed before, in Persia and Mesopotamia, but Pergamum&apos;s artisans turned the process into something industrial. The Romans called the result <em>charta pergamena</em> — &ldquo;paper of Pergamum.&rdquo; The English word <em>parchment</em> is a direct descendant. The substance is still named for the city, two thousand years after the city stopped existing.
         </p>
 
         <Figure
@@ -107,7 +111,7 @@ export default function AboutPage() {
           width={1596}
           height={900}
           priority
-          caption="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch. The reading rooms sat above the city, overlooking the Aegean."
+          caption="The Acropolis of Pergamon, an 1882 architectural reconstruction by Friedrich Thiersch. The library, the temple of Athena, the theatre, and the royal palaces sat above the city, overlooking the Aegean."
           attribution="Friedrich Thiersch, 1882. Public domain via Wikimedia Commons."
           attributionHref="https://commons.wikimedia.org/wiki/File:Acropolis_of_Pergamon_-_Friedrich_Thierch_-_1882.jpg"
         />
@@ -117,19 +121,19 @@ export default function AboutPage() {
         </p>
 
         <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.015em] mt-16 mb-3">
-          Two thousand years later.
+          What was inside.
         </h2>
 
         <p>
-          The same fight is playing out with prompts.
+          Vitruvius, the Roman architect, described the design of the Pergamum library in <em>De Architectura</em>. The reading rooms were arranged around a central courtyard, with porticoes lined by statues of poets and philosophers — a curated lineage of the figures who had built the literary tradition the library was preserving. The walls were doubled, with air gaps in between, an early attempt at humidity control to keep the parchment from rotting in the Aegean summers.
         </p>
 
         <p>
-          A prompt is a small thing — a paragraph, sometimes two. But prompts compound. The good ones get re-used hundreds of times by the people who write them, and thousands of times by the people who borrow them. Prompt engineering is a craft now: writers, engineers, researchers, marketers, founders, and a long tail of consultants are all converging on the same kinds of patterns.
+          By the second century BCE, per Plutarch, the collection had reached an estimated two hundred thousand volumes. Open to scholars from anywhere in the Mediterranean. Copied freely. Shared across the known world. For a kingdom of about two hundred thousand people total, it was an astonishing fraction of the population&apos;s output going into a single shared resource.
         </p>
 
         <p>
-          Crafts get better faster when the people doing them can see each other&apos;s work.
+          Pergamum was a research city as much as a political one. It had a sanctuary of Asclepius — the god of medicine — that doubled as one of the most famous healing centres in antiquity, with a sacred spring and a tunnel where patients underwent dream-incubation therapy. Galen, the physician whose writings would dominate Western medicine for the next fifteen hundred years, was born there in 129 CE and trained at the Asclepieion before going to Rome.
         </p>
 
         <Figure
@@ -137,25 +141,39 @@ export default function AboutPage() {
           alt="A leaf of aged parchment, the writing surface invented at Pergamum."
           width={5184}
           height={3456}
-          caption="Parchment — Pergamum's invention. It outlived the city by a thousand years and copied half of what we still know about antiquity."
+          caption="Parchment. Pergamum's invention outlived the city by a thousand years and copied half of what we still know about classical antiquity."
           attribution="Wikimedia Commons"
           attributionHref="https://commons.wikimedia.org/wiki/Category:Parchment"
         />
 
         <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.015em] mt-16 mb-3">
-          Why we named it Pergamum.
+          What happened to it.
         </h2>
 
         <p>
-          The name wasn&apos;t accidental. The original Pergamum existed because someone decided knowledge shouldn&apos;t be gatekept, and then built the infrastructure to prove it — even when proving it required inventing a new substance to write on.
+          The Attalid dynasty ended quietly. Attalus III died childless in 133 BCE and willed the entire kingdom — library included — to Rome. The wealth that flooded into the Roman treasury when the bequest was settled was so large that it became part of the political crisis that produced the Gracchi reforms a few years later. Pergamum became the Roman province of Asia.
         </p>
 
         <p>
-          That&apos;s the entire pitch of this site. A library, in the old sense of the word: a place where the work of the people who came before you is on the shelves, available to anyone who walks in. You read it, you copy it, you adapt it, you put your own version back on the shelf.
+          The library outlived the dynasty by about a century. Plutarch — writing two hundred years after the fact, so take it with the appropriate salt — claims that Mark Antony eventually gave the collection, still around two hundred thousand volumes, to Cleopatra, to replenish what had been lost when the Library of Alexandria caught fire. Whether that actually happened or was Roman propaganda about Antony&apos;s recklessness is debated.
         </p>
 
         <p>
-          If you&apos;ve got a prompt that earns its keep, the library belongs to the people who fill it.
+          The Great Altar of Pergamon — built around 160 BCE under Eumenes II, with a 113-metre frieze depicting the battle of the gods and the giants — was excavated by German archaeologists in the late 19th century and rebuilt inside Berlin&apos;s Pergamon Museum, where it still stands.
+        </p>
+
+        <Figure
+          src="/about/altar.jpg"
+          alt="The Great Altar of Pergamon, reassembled inside Berlin's Pergamon Museum."
+          width={5184}
+          height={3456}
+          caption="The Great Altar of Pergamon, reassembled inside Berlin's Pergamon Museum. The 113-metre frieze around its base depicts the Gigantomachy — the mythological battle of the Olympian gods against the giants."
+          attribution="Wikimedia Commons"
+          attributionHref="https://commons.wikimedia.org/wiki/Category:Pergamon_Altar"
+        />
+
+        <p>
+          The acropolis itself is a UNESCO site. The library, the parchment workshops, the Asclepieion, the theatre cut into the cliff — all of it is in ruins now, walkable, photographable, and, for the moment, free to visit.
         </p>
 
         <Figure
@@ -163,10 +181,18 @@ export default function AboutPage() {
           alt="The ruins of the Pergamon Acropolis as they stand today, in Bergama, Turkey."
           width={1200}
           height={770}
-          caption="The acropolis at Pergamum today. The library is gone but its catalogue lives on, scattered across the libraries it shared with."
+          caption="The acropolis at Pergamum today. The library is gone, but its catalogue lives on — scattered across the libraries it freely shared with for two centuries."
           attribution="Wikimedia Commons"
           attributionHref="https://commons.wikimedia.org/wiki/Category:Pergamon_Acropolis"
         />
+
+        <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.15] tracking-[-0.015em] mt-16 mb-3">
+          Why we named it Pergamum.
+        </h2>
+
+        <p>
+          The original Pergamum existed because someone decided knowledge shouldn&apos;t be gatekept, and then built the infrastructure to prove it — even when proving it required inventing a new substance to write on. That&apos;s the entire reason this site is named after it. A library, in the old sense of the word.
+        </p>
       </div>
 
       {/* ── Footer note + nav back ── */}
