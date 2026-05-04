@@ -36,8 +36,11 @@ const bodySchema = z.object({
  * the model occasionally adds extra fields, exceeds caps, or misnames the
  * discriminator, and we'd rather forgive than 502 the user.
  */
+type YesNoQuestion = { id: string; text: string };
+
 type ConverseResponse =
   | { kind: "question"; text: string }
+  | { kind: "yesno"; questions: YesNoQuestion[] }
   | {
       kind: "ready";
       blurb: string;
@@ -58,11 +61,28 @@ function normaliseConverseResponse(raw: unknown): ConverseResponse | null {
   if (!raw || typeof raw !== "object") return null;
   const j = raw as Record<string, unknown>;
 
-  // Question shape — needs a non-empty text. Discriminator can be slightly
-  // off ("ask", "clarify"), so we accept any of those plus the canonical.
   const kind = typeof j.kind === "string" ? j.kind.toLowerCase() : "";
+
+  // Yes/no questions — first-turn clarification cards.
+  const yesnoLikeKind =
+    kind === "yesno" || kind === "yes_no" || kind === "questions" || kind === "clarify";
+  if (yesnoLikeKind && Array.isArray(j.questions)) {
+    const questions: YesNoQuestion[] = j.questions
+      .filter((q): q is Record<string, unknown> => !!q && typeof q === "object")
+      .map((q, i) => ({
+        id: typeof q.id === "string" && q.id.trim() ? q.id.trim() : `q${i + 1}`,
+        text: asString(q.text ?? q.question, 200).trim(),
+      }))
+      .filter((q) => q.text.length > 0)
+      .slice(0, 3);
+    if (questions.length > 0) {
+      return { kind: "yesno", questions };
+    }
+  }
+
+  // Free-form question shape — kept for back-compat with older system prompts.
   const questionLikeKind =
-    kind === "question" || kind === "ask" || kind === "clarify";
+    kind === "question" || kind === "ask";
   const text = asString(j.text ?? j.question, 1000).trim();
   if (questionLikeKind && text) {
     return { kind: "question", text };
@@ -97,14 +117,22 @@ function normaliseConverseResponse(raw: unknown): ConverseResponse | null {
   return null;
 }
 
-const SYSTEM_PROMPT = `You are a prompt-engineering coach. The user describes something they want an AI to do for them. Your job is to produce a finished, structured prompt they can copy and use.
+const SYSTEM_PROMPT = `You are a prompt-engineering assistant. The user describes something they want an AI to do for them. Your job is to produce a finished, structured prompt they can copy and use.
 
-You always reply in strict JSON, with one of these two shapes:
+You always reply in strict JSON, with one of these shapes:
 
-1. When you need more information to write a good prompt:
-   { "kind": "question", "text": "<one short, specific question>" }
+1. yesno — Use this on the FIRST turn when the user has just submitted their brief and there is no existing draft yet. Generate 2 or 3 short yes/no clarifying questions that would meaningfully change how the prompt is designed.
+   { "kind": "yesno", "questions": [
+     { "id": "q1", "text": "<short yes/no question>" },
+     { "id": "q2", "text": "<short yes/no question>" }
+   ] }
 
-2. When you have enough to produce a finished prompt:
+2. ready — Use this when:
+   - The user has answered the yes/no questions in a follow-up message
+   - The user explicitly asked to skip the questions
+   - The user is refining an existing draft (current draft was supplied)
+   - The brief is so specific that no clarification is needed
+
    {
      "kind": "ready",
      "blurb": "<one short conversational sentence — e.g. 'Here's a prompt you can use.' or 'Updated — try this version.'>",
@@ -116,12 +144,17 @@ You always reply in strict JSON, with one of these two shapes:
      "output_format": "<concrete shape — format, length, structure>"
    }
 
-Rules:
-- Default to "ready". Only ask a question when the goal is genuinely ambiguous and you couldn't pick a sensible default. Never ask more than 2 questions total before producing a prompt — if you've already asked once, lean toward generating.
-- Ask only ONE question at a time. Make it short, friendly, plain English. No numbered lists.
-- Use {{variable_name}} for any input that will change run-to-run (transcripts, names, numbers, etc). Don't put real example values in the prompt — those go in the context as placeholders.
-- If a previous draft exists in the conversation and the user is asking for a change, return "ready" with the revised blocks. Preserve everything they didn't ask to change.
-- Never include preamble, explanation, or markdown fences in your reply. Pure JSON only.`;
+Rules for yes/no questions:
+- Each question must be answerable with yes or no — no scales, no either/or
+- Maximum 3 questions, prefer 2 — pick the most impactful design forks, not trivia
+- Phrase positively so "yes" usually means "include this" or "prefer this"
+- Keep each question under 12 words
+
+Rules for ready prompts:
+- Use {{variable_name}} for any input that will change run-to-run (transcripts, names, numbers, etc.). Don't put real example values in the prompt — those go in context as placeholders.
+- If a previous draft exists in the conversation and the user is refining, return "ready" with the revised blocks. Preserve everything they didn't ask to change.
+
+Never include preamble, explanation, or markdown fences. Pure JSON only.`;
 
 export async function POST(request: Request) {
   const supabase = await createClient();

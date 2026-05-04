@@ -55,6 +55,9 @@ type Result = {
   output_format: string;
 };
 
+type YesNoQuestion = { id: string; text: string };
+type AnswerValue = "yes" | "no";
+
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
@@ -62,6 +65,11 @@ type ChatMessage = {
   // When the assistant message accompanies a finished prompt, this is set
   // so we can render the prompt card right under that message.
   resultSnapshot?: Result;
+  // When the assistant turn is a set of yes/no clarification cards.
+  questions?: YesNoQuestion[];
+  // Filled in as the user clicks Yes/No on the cards above; once all are
+  // answered we collapse the card into a compact summary line.
+  answers?: Record<string, AnswerValue>;
 };
 
 interface BuilderProps {
@@ -258,7 +266,18 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error ?? "Something went wrong");
 
-      if (data.kind === "question") {
+      if (data.kind === "yesno" && Array.isArray(data.questions) && data.questions.length > 0) {
+        setMessages((m) => [
+          ...m,
+          {
+            id: newId(),
+            role: "assistant",
+            content: "A couple of quick yes/no questions before I write it:",
+            questions: data.questions as YesNoQuestion[],
+            answers: {},
+          },
+        ]);
+      } else if (data.kind === "question") {
         setMessages((m) => [
           ...m,
           { id: newId(), role: "assistant", content: data.text },
@@ -295,6 +314,46 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
       // Re-focus so the user can keep typing.
       requestAnimationFrame(() => inputRef.current?.focus());
     }
+  };
+
+  // ─── Yes/No answer handling ────────────────────────────────────
+  // When the assistant returns a set of yes/no questions, each card has
+  // Yes/No buttons. Clicking one records the answer; once all questions in
+  // a single message are answered, we auto-submit a synthesised follow-up
+  // user message containing the answers, and the assistant generates the
+  // finished prompt.
+  const answerQuestion = (messageId: string, questionId: string, value: AnswerValue) => {
+    let shouldSubmit = false;
+    let submitText = "";
+
+    setMessages((m) => {
+      const next = m.map((msg) => {
+        if (msg.id !== messageId || !msg.questions) return msg;
+        const newAnswers = { ...(msg.answers ?? {}), [questionId]: value };
+        // If every question in this message is now answered, prepare to send.
+        const allAnswered = msg.questions.every((q) => newAnswers[q.id]);
+        if (allAnswered) {
+          shouldSubmit = true;
+          submitText = msg.questions
+            .map((q) => `${newAnswers[q.id] === "yes" ? "Yes" : "No"} — ${q.text}`)
+            .join("\n");
+        }
+        return { ...msg, answers: newAnswers };
+      });
+      return next;
+    });
+
+    if (shouldSubmit) {
+      // Defer one tick so the answer state renders before the AI's reply.
+      requestAnimationFrame(() => {
+        void send(submitText);
+      });
+    }
+  };
+
+  // "Skip — just generate" — bypasses any pending yes/no questions.
+  const skipQuestions = () => {
+    void send("Skip the questions and just generate the prompt with reasonable defaults.");
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -488,7 +547,13 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
         )}
 
         {messages.map((m) => (
-          <ChatBubble key={m.id} message={m} />
+          <ChatBubble
+            key={m.id}
+            message={m}
+            onAnswer={answerQuestion}
+            onSkip={skipQuestions}
+            thinking={thinking}
+          />
         ))}
 
         {thinking && (
@@ -652,18 +717,104 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
 
 // ─── Sub-components ───────────────────────────────────────────────
 
-function ChatBubble({ message }: { message: ChatMessage }) {
+interface ChatBubbleProps {
+  message: ChatMessage;
+  onAnswer?: (messageId: string, questionId: string, value: AnswerValue) => void;
+  onSkip?: () => void;
+  thinking?: boolean;
+}
+
+function ChatBubble({ message, onAnswer, onSkip, thinking }: ChatBubbleProps) {
   const isUser = message.role === "user";
+  const hasQuestions = !!message.questions && message.questions.length > 0;
+  const allAnswered =
+    hasQuestions &&
+    !!message.answers &&
+    message.questions!.every((q) => message.answers![q.id]);
+
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[88%] rounded-2xl px-4 py-2.5 text-[14px] leading-[1.55] ${
+        className={`${hasQuestions ? "max-w-full w-full" : "max-w-[88%]"} rounded-2xl px-4 py-2.5 text-[14px] leading-[1.55] ${
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-background-subtle text-foreground"
         }`}
       >
         <p className="whitespace-pre-wrap break-words">{message.content}</p>
+
+        {/* Yes/No clarification cards */}
+        {hasQuestions && !allAnswered && (
+          <div className="mt-3 space-y-2">
+            {message.questions!.map((q) => {
+              const ans = message.answers?.[q.id];
+              return (
+                <div
+                  key={q.id}
+                  className="rounded-lg border border-border/60 bg-card p-3 flex items-center justify-between gap-3"
+                >
+                  <p className="text-[13.5px] text-foreground leading-snug flex-1">
+                    {q.text}
+                  </p>
+                  <div className="flex gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      disabled={!!ans || thinking}
+                      onClick={() => onAnswer?.(message.id, q.id, "yes")}
+                      className={`h-7 px-3 rounded-md text-[12px] font-medium transition-colors ${
+                        ans === "yes"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-background-subtle text-foreground hover:bg-primary/10 hover:text-primary disabled:opacity-50"
+                      }`}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      disabled={!!ans || thinking}
+                      onClick={() => onAnswer?.(message.id, q.id, "no")}
+                      className={`h-7 px-3 rounded-md text-[12px] font-medium transition-colors ${
+                        ans === "no"
+                          ? "bg-foreground text-background"
+                          : "bg-background-subtle text-foreground hover:bg-foreground/10 disabled:opacity-50"
+                      }`}
+                    >
+                      No
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            {onSkip && (
+              <button
+                type="button"
+                onClick={onSkip}
+                disabled={thinking}
+                className="text-[12px] text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline mt-1"
+              >
+                Skip — just generate it
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Compact summary once all questions are answered */}
+        {hasQuestions && allAnswered && (
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {message.questions!.map((q) => (
+              <span
+                key={q.id}
+                className="inline-flex items-center gap-1 rounded-full bg-card border border-border/60 px-2 py-0.5 text-[11px] text-muted-foreground"
+              >
+                <span className="font-medium text-foreground">
+                  {message.answers![q.id] === "yes" ? "Yes" : "No"}
+                </span>
+                <span className="truncate max-w-[260px]">— {q.text}</span>
+              </span>
+            ))}
+          </div>
+        )}
+
         {message.resultSnapshot && (
           <div className="mt-3">
             <ResultCard result={message.resultSnapshot} />
