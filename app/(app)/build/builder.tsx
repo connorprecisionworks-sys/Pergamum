@@ -180,6 +180,10 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
   const [copied, setCopied] = useState(false);
   const [isSaving, startSaving] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  // True when an unanswered yes/no question set is active. The QuestionView
+  // takes over the page when this is true; the normal builder layout returns
+  // once the user finishes (Continue on last question) or skips.
+  const [inQuestionFlow, setInQuestionFlow] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -277,6 +281,8 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
             answers: {},
           },
         ]);
+        // Take over the screen with the full-page question UI.
+        setInQuestionFlow(true);
       } else if (data.kind === "question") {
         setMessages((m) => [
           ...m,
@@ -317,42 +323,35 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
   };
 
   // ─── Yes/No answer handling ────────────────────────────────────
-  // When the assistant returns a set of yes/no questions, each card has
-  // Yes/No buttons. Clicking one records the answer; once all questions in
-  // a single message are answered, we auto-submit a synthesised follow-up
-  // user message containing the answers, and the assistant generates the
-  // finished prompt.
+  // The full-screen QuestionView walks the user through each question one
+  // at a time. answerQuestion just records the choice; the QuestionView
+  // calls submitAnswers() when the user clicks Continue on the last
+  // question, which then sends the synthesised answers to the AI.
   const answerQuestion = (messageId: string, questionId: string, value: AnswerValue) => {
-    let shouldSubmit = false;
-    let submitText = "";
-
-    setMessages((m) => {
-      const next = m.map((msg) => {
+    setMessages((m) =>
+      m.map((msg) => {
         if (msg.id !== messageId || !msg.questions) return msg;
-        const newAnswers = { ...(msg.answers ?? {}), [questionId]: value };
-        // If every question in this message is now answered, prepare to send.
-        const allAnswered = msg.questions.every((q) => newAnswers[q.id]);
-        if (allAnswered) {
-          shouldSubmit = true;
-          submitText = msg.questions
-            .map((q) => `${newAnswers[q.id] === "yes" ? "Yes" : "No"} — ${q.text}`)
-            .join("\n");
-        }
-        return { ...msg, answers: newAnswers };
-      });
-      return next;
-    });
+        return {
+          ...msg,
+          answers: { ...(msg.answers ?? {}), [questionId]: value },
+        };
+      })
+    );
+  };
 
-    if (shouldSubmit) {
-      // Defer one tick so the answer state renders before the AI's reply.
-      requestAnimationFrame(() => {
-        void send(submitText);
-      });
-    }
+  const submitAnswers = (messageId: string) => {
+    const msg = messages.find((m) => m.id === messageId);
+    if (!msg || !msg.questions || !msg.answers) return;
+    const text = msg.questions
+      .map((q) => `${msg.answers![q.id] === "yes" ? "Yes" : "No"} — ${q.text}`)
+      .join("\n");
+    setInQuestionFlow(false);
+    void send(text);
   };
 
   // "Skip — just generate" — bypasses any pending yes/no questions.
   const skipQuestions = () => {
+    setInQuestionFlow(false);
     void send("Skip the questions and just generate the prompt with reasonable defaults.");
   };
 
@@ -465,6 +464,27 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
   };
 
   // ─── Render ────────────────────────────────────────────────────
+  // Find an active question set (questions exist but user hasn't finished
+  // answering all of them yet). When one is active and inQuestionFlow is on,
+  // we render the full-screen QuestionView in place of the normal builder.
+  const activeQuestionsMessage = inQuestionFlow
+    ? [...messages].reverse().find(
+        (m) => m.questions && m.questions.length > 0
+      ) ?? null
+    : null;
+
+  if (activeQuestionsMessage) {
+    return (
+      <QuestionView
+        message={activeQuestionsMessage}
+        onAnswer={answerQuestion}
+        onSubmit={submitAnswers}
+        onSkip={skipQuestions}
+        thinking={thinking}
+      />
+    );
+  }
+
   return (
     <div className="max-w-[760px] mx-auto">
       {/* Top bar — minimal: new prompt + drafts dropdown */}
@@ -837,6 +857,129 @@ function ResultCard({ result }: { result: Result }) {
       <pre className="font-mono text-[12px] leading-[1.6] whitespace-pre-wrap break-words text-foreground/90 max-h-[320px] overflow-y-auto">
         {assembled}
       </pre>
+    </div>
+  );
+}
+
+// ─── Full-screen question view ────────────────────────────────────
+// Compform-inspired full-page experience for the yes/no clarification
+// stage. One question at a time, big serif headline, two stacked option
+// boxes, Continue button, "1 of N" counter. Skip link at the bottom.
+
+interface QuestionViewProps {
+  message: ChatMessage;
+  onAnswer: (messageId: string, questionId: string, value: AnswerValue) => void;
+  onSubmit: (messageId: string) => void;
+  onSkip: () => void;
+  thinking: boolean;
+}
+
+function QuestionView({ message, onAnswer, onSubmit, onSkip, thinking }: QuestionViewProps) {
+  const questions = message.questions ?? [];
+  const total = questions.length;
+  const [index, setIndex] = useState(0);
+
+  // Defensive — don't crash if we somehow have no questions.
+  if (total === 0) return null;
+
+  const current = questions[Math.min(index, total - 1)];
+  const answer = message.answers?.[current.id];
+  const isLast = index >= total - 1;
+  const canContinue = !!answer && !thinking;
+
+  const onContinue = () => {
+    if (!canContinue) return;
+    if (isLast) {
+      onSubmit(message.id);
+    } else {
+      setIndex((i) => Math.min(i + 1, total - 1));
+    }
+  };
+
+  const onBack = () => {
+    setIndex((i) => Math.max(0, i - 1));
+  };
+
+  return (
+    <div className="min-h-[calc(100vh-200px)] flex flex-col px-4 md:px-6 max-w-[920px] mx-auto">
+      {/* Top — small label and skip link */}
+      <div className="flex items-start justify-between pt-2 pb-10">
+        <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground font-medium tabular-nums">
+          Builder · Question {index + 1} of {total}
+        </p>
+        <button
+          type="button"
+          onClick={onSkip}
+          disabled={thinking}
+          className="text-[12px] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+        >
+          Skip questions →
+        </button>
+      </div>
+
+      {/* Question */}
+      <div className="flex-1 flex flex-col justify-center py-6">
+        <h2 className="font-serif text-[clamp(2rem,4.4vw,3rem)] font-normal leading-[1.1] tracking-[-0.02em] mb-10 max-w-[800px]">
+          {current.text}
+        </h2>
+
+        <div className="space-y-3 max-w-[680px]">
+          {(["yes", "no"] as const).map((value) => {
+            const selected = answer === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => onAnswer(message.id, current.id, value)}
+                disabled={thinking}
+                aria-pressed={selected}
+                className={`w-full text-left px-6 py-5 rounded-xl border transition-all ${
+                  selected
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-card hover:border-foreground/40 hover:bg-background-subtle text-foreground"
+                } disabled:opacity-50`}
+              >
+                <span className="text-[17px] font-medium">
+                  {value === "yes" ? "Yes" : "No"}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Bottom — hint, back, continue */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-8 pb-4 border-t border-border/40">
+        <p className="text-sm text-muted-foreground">
+          {answer ? (isLast ? "Hit Continue to generate your prompt." : "Hit Continue for the next question.") : "Tap an option to continue."}
+        </p>
+        <div className="flex items-center gap-2">
+          {index > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onBack}
+              disabled={thinking}
+              className="h-10 px-4 text-sm"
+            >
+              Back
+            </Button>
+          )}
+          <Button
+            type="button"
+            onClick={onContinue}
+            disabled={!canContinue}
+            className="h-10 px-6 gap-1.5"
+          >
+            {thinking && isLast ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <ArrowRight className="h-4 w-4" />
+            )}
+            {isLast ? (thinking ? "Generating…" : "Generate prompt") : "Continue"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
