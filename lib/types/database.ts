@@ -485,6 +485,56 @@ export type Database = {
           }
         ];
       };
+      prompt_drafts: {
+        Row: {
+          id: string;
+          author_id: string;
+          title: string | null;
+          goal: string | null;
+          role: string;
+          context: string;
+          task: string;
+          constraints: string;
+          output_format: string;
+          examples: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          author_id: string;
+          title?: string | null;
+          goal?: string | null;
+          role?: string;
+          context?: string;
+          task?: string;
+          constraints?: string;
+          output_format?: string;
+          examples?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          title?: string | null;
+          goal?: string | null;
+          role?: string;
+          context?: string;
+          task?: string;
+          constraints?: string;
+          output_format?: string;
+          examples?: Json;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prompt_drafts_author_id_fkey";
+            columns: ["author_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -559,6 +609,13 @@ export type Vote = Database["public"]["Tables"]["votes"]["Row"];
 export type Comment = Database["public"]["Tables"]["comments"]["Row"];
 export type Tool = Database["public"]["Tables"]["tools"]["Row"];
 export type Report = Database["public"]["Tables"]["reports"]["Row"];
+export type PromptDraft = Database["public"]["Tables"]["prompt_drafts"]["Row"];
+
+/** A single few-shot example attached to a prompt draft. */
+export interface PromptExample {
+  input: string;
+  output: string;
+}
 
 export type PromptStatus = "draft" | "published" | "flagged" | "removed";
 export type ReportStatus = "open" | "resolved";

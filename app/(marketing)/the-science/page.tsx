@@ -440,23 +440,38 @@ export default function TheSciencePage() {
           What this means for you
         </p>
         <h2 className="font-serif text-[clamp(1.75rem,3.6vw,2.5rem)] font-normal leading-[1.1] tracking-[-0.02em]">
-          Write the prompt you wish you&apos;d been handed.
+          Design the prompt once. Run it forever.
         </h2>
         <p className="text-[17px] leading-[1.7] text-foreground/85">
-          The prompts you write today are tools you&apos;ll use a thousand times. Treat each one like a piece of software: name it, version it, share it, improve it. The first one you save is worth maybe an hour. The hundredth is worth a month.
+          The prompts worth designing aren&apos;t the one-offs — those are
+          faster to type fresh than to engineer. The ones worth designing are
+          the ones you&apos;ll run again next Tuesday, and the Tuesday after
+          that. Two minutes of structure today saves thirty seconds × the next
+          fifty runs. Plus you don&apos;t have to remember the few-shot
+          examples in week three. Plus your teammate doesn&apos;t have to
+          reinvent it.
         </p>
         <p className="text-[17px] leading-[1.7] text-foreground/85">
-          That&apos;s what Pergamum is for. It&apos;s a free, open library of prompts — the ones that actually earn their keep. Every prompt has its variables broken out as fillable inputs, every one is tagged for the model it was tuned on, and every one is yours to copy, fork, and remix.
+          That&apos;s what Pergamum is for. It&apos;s a free, open library for
+          the prompts that earn their keep. Every prompt has its variables
+          broken out as fillable inputs, every one is tagged for the model it
+          was tuned on, and every one is yours to copy, fork, and remix.
         </p>
       </section>
 
       <section className="max-w-[760px] mx-auto border-t border-border/60 pt-12 mt-8 flex items-center gap-5 flex-wrap">
         <Button size="lg" asChild className="h-12 px-7 text-[15px]">
-          <Link href="/prompts">Browse the library</Link>
+          <Link href="/build">Design a prompt</Link>
         </Button>
         <Link
-          href="/submit"
+          href="/prompts"
           className="inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
+        >
+          Browse the library →
+        </Link>
+        <Link
+          href="/submit"
+          className="inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground hover:text-foreground transition-colors"
         >
           Submit your own →
         </Link>

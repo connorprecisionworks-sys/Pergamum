@@ -74,6 +74,12 @@ interface SubmitFormProps {
   isAdmin: boolean;
   isFirstPrompt: boolean;
   forkedFrom?: Pick<Prompt, "id" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
+  /**
+   * Pre-fill values without the "fork" relationship — used when handing off
+   * a draft from /build into the submit form. Behaves like forkedFrom for
+   * defaults, but does not set forked_from_id on insert.
+   */
+  seed?: Pick<Prompt, "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
 }
 
 export function SubmitForm({
@@ -82,12 +88,15 @@ export function SubmitForm({
   isAdmin,
   isFirstPrompt,
   forkedFrom,
+  seed,
 }: SubmitFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  // forkedFrom takes precedence over seed when both are somehow present.
+  const prefill = forkedFrom ?? seed ?? null;
   const [selectedModels, setSelectedModels] = useState<string[]>(
-    forkedFrom?.model_tags ?? ["any"]
+    prefill?.model_tags ?? ["any"]
   );
 
   const {
@@ -101,12 +110,12 @@ export function SubmitForm({
     resolver: zodResolver(promptSchema),
     defaultValues: {
       variables: [],
-      model_tags: forkedFrom?.model_tags ?? ["any"],
-      title: forkedFrom ? `Remix: ${forkedFrom.title}` : "",
-      description: forkedFrom?.description ?? "",
-      body: forkedFrom?.body ?? "",
-      category_id: forkedFrom?.category_id ?? "",
-      tags: forkedFrom?.tags?.join(", ") ?? "",
+      model_tags: prefill?.model_tags ?? ["any"],
+      title: forkedFrom ? `Remix: ${forkedFrom.title}` : seed?.title ?? "",
+      description: prefill?.description ?? "",
+      body: prefill?.body ?? "",
+      category_id: prefill?.category_id ?? "",
+      tags: prefill?.tags?.join(", ") ?? "",
     },
   });
 
@@ -367,7 +376,7 @@ export function SubmitForm({
             Category <span className="text-destructive">*</span>
           </Label>
           <Select
-            defaultValue={forkedFrom?.category_id ?? undefined}
+            defaultValue={prefill?.category_id ?? undefined}
             onValueChange={(v) => setValue("category_id", v)}
           >
             <SelectTrigger id="category" aria-describedby={errors.category_id ? "cat-error" : undefined}>
