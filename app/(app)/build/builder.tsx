@@ -591,38 +591,48 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
         </div>
       )}
 
-      {/* Input — no helper microcopy. Placeholder carries its weight. */}
-      <form onSubmit={handleSubmit} className="mt-3">
-        <div className="relative">
-          <Textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            rows={2}
-            placeholder={
-              hasResult
-                ? "Refine — e.g. 'make the tone more casual'"
-                : "e.g. summarize customer interview transcripts into a research brief grouped by theme"
-            }
-            disabled={thinking}
-            className="pr-14 text-[14px] leading-relaxed resize-none"
-          />
-          <Button
-            type="submit"
-            size="icon"
-            disabled={thinking || !input.trim()}
-            className="absolute bottom-2 right-2 h-9 w-9"
-            aria-label="Send"
-          >
-            {thinking ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-      </form>
+      {/* Input — empty state only. After a result exists, refinements
+          happen via the RefineChips panel below the artifact, so this
+          textarea would just compete with that surface. */}
+      {!hasResult && (
+        <form onSubmit={handleSubmit} className="mt-3">
+          <div className="relative">
+            <Textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              rows={2}
+              placeholder="e.g. summarize customer interview transcripts into a research brief grouped by theme"
+              disabled={thinking}
+              className="pr-14 text-[14px] leading-relaxed resize-none"
+            />
+            <Button
+              type="submit"
+              size="icon"
+              disabled={thinking || !input.trim()}
+              className="absolute bottom-2 right-2 h-9 w-9"
+              aria-label="Send"
+            >
+              {thinking ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+        </form>
+      )}
+
+      {/* Refine via chips — replaces the chat-style refinement input. Each
+          chip sends a preset adjustment to the AI; the small custom field
+          below is the escape hatch for anything the chips don't cover. */}
+      {hasResult && (
+        <RefineChips
+          thinking={thinking}
+          onRefine={(text) => void send(text)}
+        />
+      )}
 
       {/* Tools — only meaningful once there's a prompt */}
       {hasResult && (
@@ -688,27 +698,6 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
               )}
             </div>
           </div>
-
-          {/* Conversation history — only if there's actually anything to show */}
-          {messages.length > 1 && (
-            <details className="group">
-              <summary className="cursor-pointer list-none text-[12px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
-                <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
-                <span>Show conversation</span>
-              </summary>
-              <div className="mt-3 rounded-xl border border-border/40 bg-background-subtle p-4 space-y-4 max-h-[50vh] overflow-y-auto">
-                {messages.map((m) => (
-                  <ChatBubble
-                    key={m.id}
-                    message={m}
-                    onAnswer={answerQuestion}
-                    onSkip={skipQuestions}
-                    thinking={thinking}
-                  />
-                ))}
-              </div>
-            </details>
-          )}
 
           {/* Edit manually — short label */}
           <details
@@ -916,7 +905,12 @@ function QuestionView({ message, onAnswer, onSubmit, onSkip, thinking }: Questio
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex flex-col px-4 md:px-6 max-w-[920px] mx-auto">
+    // Fixed overlay covering the full viewport below the global nav (h-14).
+    // Stops the page header above the builder from pushing the question
+    // out of view — the user shouldn't ever need to scroll to read the
+    // question they just got.
+    <div className="fixed inset-0 top-14 z-30 bg-background overflow-y-auto">
+      <div className="min-h-full flex flex-col px-4 md:px-6 max-w-[920px] mx-auto py-6">
       {/* Top — small label and skip link */}
       <div className="flex items-start justify-between pt-2 pb-10">
         <p className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground font-medium tabular-nums">
@@ -995,7 +989,93 @@ function QuestionView({ message, onAnswer, onSubmit, onSkip, thinking }: Questio
           </Button>
         </div>
       </div>
+      </div>
     </div>
+  );
+}
+
+// ─── Refine chips (replaces chat-style refinement input) ─────────
+// Common refinements as one-click chips. Each chip dispatches a preset
+// natural-language refinement to the AI. The small custom input below
+// is the escape hatch for anything the chips don't cover.
+
+interface RefineChip {
+  label: string;
+  message: string;
+  group: "length" | "tone" | "structure" | "scope";
+}
+
+const REFINE_CHIPS: RefineChip[] = [
+  { label: "Shorter",        message: "Make the prompt and its expected output shorter.",                group: "length" },
+  { label: "Longer",         message: "Add more detail to the context and constraints.",                  group: "length" },
+  { label: "More casual",    message: "Make the tone of the role and constraints more casual.",          group: "tone" },
+  { label: "More formal",    message: "Make the tone of the role and constraints more formal and direct.", group: "tone" },
+  { label: "More specific",  message: "Make the role and constraints more specific. Narrow the scope.",   group: "scope" },
+  { label: "More flexible",  message: "Loosen the constraints so the model has more room to adapt.",       group: "scope" },
+  { label: "Add bullets",    message: "Reformat the constraints as a bulleted list of explicit do/don't rules.", group: "structure" },
+  { label: "Add an example", message: "Suggest one short input/output example that fits this prompt.",      group: "structure" },
+];
+
+interface RefineChipsProps {
+  thinking: boolean;
+  onRefine: (message: string) => void;
+}
+
+function RefineChips({ thinking, onRefine }: RefineChipsProps) {
+  const [custom, setCustom] = useState("");
+
+  const submitCustom = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = custom.trim();
+    if (!trimmed) return;
+    onRefine(trimmed);
+    setCustom("");
+  };
+
+  return (
+    <section className="mt-6 space-y-3">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-medium">
+          Refine
+        </p>
+        <p className="text-[11px] text-muted-foreground">
+          Click a chip — or type a custom request below.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {REFINE_CHIPS.map((chip) => (
+          <button
+            key={chip.label}
+            type="button"
+            onClick={() => onRefine(chip.message)}
+            disabled={thinking}
+            className="inline-flex items-center h-8 px-3 rounded-full border border-border/60 bg-card text-[13px] text-foreground hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {chip.label}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={submitCustom} className="flex items-center gap-2 pt-1">
+        <Input
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          placeholder="Custom — e.g. 'cite specific line numbers'"
+          disabled={thinking}
+          className="h-9 text-[13px]"
+        />
+        <Button
+          type="submit"
+          variant="outline"
+          size="sm"
+          disabled={thinking || !custom.trim()}
+          className="h-9 px-4 shrink-0"
+        >
+          {thinking ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Apply"}
+        </Button>
+      </form>
+    </section>
   );
 }
 
