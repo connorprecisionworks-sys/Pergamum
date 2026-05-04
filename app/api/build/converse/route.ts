@@ -31,22 +31,71 @@ const bodySchema = z.object({
   current: currentDraftSchema.optional(),
 });
 
-const responseSchema = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("question"),
-    text: z.string().min(1).max(500),
-  }),
-  z.object({
-    kind: z.literal("ready"),
-    blurb: z.string().min(1).max(400),
-    title: z.string().max(120),
-    role: z.string(),
-    context: z.string(),
-    task: z.string(),
-    constraints: z.string(),
-    output_format: z.string(),
-  }),
-]);
+/**
+ * Permissive shape detection for the model's reply. We don't strict-parse —
+ * the model occasionally adds extra fields, exceeds caps, or misnames the
+ * discriminator, and we'd rather forgive than 502 the user.
+ */
+type ConverseResponse =
+  | { kind: "question"; text: string }
+  | {
+      kind: "ready";
+      blurb: string;
+      title: string;
+      role: string;
+      context: string;
+      task: string;
+      constraints: string;
+      output_format: string;
+    };
+
+function asString(v: unknown, max = 8000): string {
+  if (typeof v !== "string") return "";
+  return v.length > max ? v.slice(0, max) : v;
+}
+
+function normaliseConverseResponse(raw: unknown): ConverseResponse | null {
+  if (!raw || typeof raw !== "object") return null;
+  const j = raw as Record<string, unknown>;
+
+  // Question shape — needs a non-empty text. Discriminator can be slightly
+  // off ("ask", "clarify"), so we accept any of those plus the canonical.
+  const kind = typeof j.kind === "string" ? j.kind.toLowerCase() : "";
+  const questionLikeKind =
+    kind === "question" || kind === "ask" || kind === "clarify";
+  const text = asString(j.text ?? j.question, 1000).trim();
+  if (questionLikeKind && text) {
+    return { kind: "question", text };
+  }
+
+  // Ready shape — we'll accept it even if `kind` is missing as long as we
+  // see at least one of the structural fields populated.
+  const role = asString(j.role);
+  const context = asString(j.context);
+  const task = asString(j.task);
+  const constraints = asString(j.constraints);
+  const output_format = asString(j.output_format ?? j.output ?? j.format);
+  const anyReady =
+    role || context || task || constraints || output_format;
+
+  if (anyReady) {
+    return {
+      kind: "ready",
+      blurb: asString(j.blurb ?? j.summary ?? j.message, 600) || "Here's your prompt.",
+      title: asString(j.title, 200),
+      role,
+      context,
+      task,
+      constraints,
+      output_format,
+    };
+  }
+
+  // Pure question fallback — if there's a text field but kind was off, treat it as a question.
+  if (text) return { kind: "question", text };
+
+  return null;
+}
 
 const SYSTEM_PROMPT = `You are a prompt-engineering coach. The user describes something they want an AI to do for them. Your job is to produce a finished, structured prompt they can copy and use.
 
@@ -142,25 +191,38 @@ export async function POST(request: Request) {
     try {
       json = JSON.parse(raw);
     } catch {
+      // The model occasionally wraps JSON in code fences; strip and retry.
+      const stripped = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+      try {
+        json = JSON.parse(stripped);
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error("[converse] non-JSON response from model:", raw.slice(0, 600));
+        return NextResponse.json(
+          { error: "The model didn't return valid JSON. Try rephrasing." },
+          { status: 502 }
+        );
+      }
+    }
+
+    const normalised = normaliseConverseResponse(json);
+    if (!normalised) {
+      // eslint-disable-next-line no-console
+      console.error("[converse] unexpected response shape:", JSON.stringify(json).slice(0, 600));
       return NextResponse.json(
-        { error: "The model returned malformed JSON. Try rephrasing." },
+        { error: "The model returned an unexpected shape. Try sending again." },
         { status: 502 }
       );
     }
 
-    const validated = responseSchema.parse(json);
-    return NextResponse.json(validated);
+    return NextResponse.json(normalised);
   } catch (err) {
     if (err instanceof OpenAIError) {
       return NextResponse.json({ error: err.message }, { status: err.status });
     }
-    if (err instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "The model returned an unexpected shape. Try again." },
-        { status: 502 }
-      );
-    }
     const message = err instanceof Error ? err.message : "Builder failed";
+    // eslint-disable-next-line no-console
+    console.error("[converse] unexpected error:", err);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
