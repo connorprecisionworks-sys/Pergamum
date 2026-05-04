@@ -551,44 +551,47 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
         />
       </div>
 
-      {/* Chat thread */}
-      <div
-        ref={scrollRef}
-        className="rounded-xl border border-border/60 bg-card min-h-[260px] max-h-[50vh] overflow-y-auto p-5 md:p-6 space-y-5"
-      >
-        {messages.length === 0 && !thinking && (
-          <div className="text-center py-8 px-4">
-            <p className="text-sm text-muted-foreground max-w-[460px] mx-auto leading-relaxed">
-              Describe what you want this prompt to do — the kind of thing
-              you&apos;ll run again next week with new inputs. I&apos;ll ask
-              anything I need to and hand you a finished, structured prompt.
-            </p>
-          </div>
-        )}
+      {/* Main artifact area — switches based on whether a prompt exists */}
+      {hasResult ? (
+        <ResultArtifact result={result} examples={examples} />
+      ) : (
+        <div
+          ref={scrollRef}
+          className="rounded-xl border border-border/60 bg-card min-h-[220px] max-h-[50vh] overflow-y-auto p-5 md:p-6 space-y-5"
+        >
+          {messages.length === 0 && !thinking && (
+            <div className="text-center py-8 px-4">
+              <p className="text-sm text-muted-foreground max-w-[440px] mx-auto leading-relaxed">
+                Describe a task you&apos;ll run more than once. I&apos;ll ask
+                what I need to and hand back a structured prompt.
+              </p>
+            </div>
+          )}
 
-        {messages.map((m) => (
-          <ChatBubble
-            key={m.id}
-            message={m}
-            onAnswer={answerQuestion}
-            onSkip={skipQuestions}
-            thinking={thinking}
-          />
-        ))}
+          {messages.map((m) => (
+            <ChatBubble
+              key={m.id}
+              message={m}
+              onAnswer={answerQuestion}
+              onSkip={skipQuestions}
+              thinking={thinking}
+            />
+          ))}
 
-        {thinking && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="inline-flex gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.3s]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.15s]" />
-              <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce" />
-            </span>
-            <span>Thinking…</span>
-          </div>
-        )}
-      </div>
+          {thinking && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span className="inline-flex gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.3s]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce [animation-delay:-0.15s]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-bounce" />
+              </span>
+              <span>Thinking…</span>
+            </div>
+          )}
+        </div>
+      )}
 
-      {/* Input */}
+      {/* Input — no helper microcopy. Placeholder carries its weight. */}
       <form onSubmit={handleSubmit} className="mt-3">
         <div className="relative">
           <Textarea
@@ -599,7 +602,7 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
             rows={2}
             placeholder={
               hasResult
-                ? "Ask me to tweak something — e.g. 'make the tone more casual'"
+                ? "Refine — e.g. 'make the tone more casual'"
                 : "e.g. summarize customer interview transcripts into a research brief grouped by theme"
             }
             disabled={thinking}
@@ -619,20 +622,18 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
             )}
           </Button>
         </div>
-        <p className="text-[11px] text-muted-foreground mt-1.5 px-1">
-          Enter to send · Shift+Enter for a new line
-        </p>
       </form>
 
-      {/* Action toolbar — only meaningful once there's a prompt */}
+      {/* Tools — only meaningful once there's a prompt */}
       {hasResult && (
-        <div className="mt-6 space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="mt-6 space-y-4">
+          {/* One primary, the rest as quiet text buttons */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
             <Button
               type="button"
               onClick={onSendToLibrary}
               disabled={isSaving}
-              className="h-9 gap-1.5"
+              className="h-10 gap-1.5"
             >
               {isSaving ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -641,61 +642,75 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
               )}
               Send to library
             </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCopy}
-              className="h-9 gap-1.5"
-            >
-              {copied ? (
-                <Check className="h-3.5 w-3.5 text-emerald-500" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              Copy
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onSave()}
-              disabled={isSaving}
-              className="h-9 gap-1.5"
-            >
-              {isSaving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Save className="h-3.5 w-3.5" />
-              )}
-              Save draft
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onDownload}
-              className="h-9 gap-1.5"
-            >
-              <Download className="h-3.5 w-3.5" />
-              .md
-            </Button>
-            {draftId && (
-              <Button
+
+            <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
+              <button
                 type="button"
-                variant="ghost"
-                onClick={onDelete}
-                disabled={isDeleting}
-                className="h-9 gap-1.5 text-destructive hover:text-destructive ml-auto"
+                onClick={onCopy}
+                className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
               >
-                {isDeleting ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                {copied ? (
+                  <Check className="h-3 w-3 text-emerald-500" />
                 ) : (
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Copy className="h-3 w-3" />
                 )}
-                Delete
-              </Button>
-            )}
+                {copied ? "Copied" : "Copy"}
+              </button>
+              <span aria-hidden="true">·</span>
+              <button
+                type="button"
+                onClick={() => onSave()}
+                disabled={isSaving}
+                className="hover:text-foreground transition-colors disabled:opacity-50"
+              >
+                Save
+              </button>
+              <span aria-hidden="true">·</span>
+              <button
+                type="button"
+                onClick={onDownload}
+                className="hover:text-foreground transition-colors"
+              >
+                .md
+              </button>
+              {draftId && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <button
+                    type="button"
+                    onClick={onDelete}
+                    disabled={isDeleting}
+                    className="text-destructive/70 hover:text-destructive transition-colors disabled:opacity-50"
+                  >
+                    Delete
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Edit manually disclosure */}
+          {/* Conversation history — only if there's actually anything to show */}
+          {messages.length > 1 && (
+            <details className="group">
+              <summary className="cursor-pointer list-none text-[12px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
+                <ChevronDown className="h-3 w-3 transition-transform group-open:rotate-180" />
+                <span>Show conversation</span>
+              </summary>
+              <div className="mt-3 rounded-xl border border-border/40 bg-background-subtle p-4 space-y-4 max-h-[50vh] overflow-y-auto">
+                {messages.map((m) => (
+                  <ChatBubble
+                    key={m.id}
+                    message={m}
+                    onAnswer={answerQuestion}
+                    onSkip={skipQuestions}
+                    thinking={thinking}
+                  />
+                ))}
+              </div>
+            </details>
+          )}
+
+          {/* Edit manually — short label */}
           <details
             ref={manualEditorRef}
             className="group rounded-xl border border-border/60 bg-card overflow-hidden"
@@ -705,9 +720,6 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
             <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer list-none text-sm text-foreground/80 hover:bg-background-subtle transition-colors">
               <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
               <span>Edit manually</span>
-              <span className="text-xs text-muted-foreground ml-1">
-                — tweak the title or any of the 5 blocks directly
-              </span>
             </summary>
             <ManualEditor
               result={result}
@@ -717,15 +729,12 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
             />
           </details>
 
-          {/* Test it in-place — closes the loop with iterating-in-chat */}
+          {/* Test it — short label */}
           <details className="group rounded-xl border border-border/60 bg-card overflow-hidden">
             <summary className="flex items-center gap-2 px-4 py-3 cursor-pointer list-none text-sm text-foreground/80 hover:bg-background-subtle transition-colors">
               <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
               <FlaskConical className="h-3.5 w-3.5" />
               <span>Test it</span>
-              <span className="text-xs text-muted-foreground ml-1">
-                — fill in the {`{{variables}}`} and run the prompt against a real model
-              </span>
             </summary>
             <TestPanel assembled={assembled} />
           </details>
@@ -835,26 +844,32 @@ function ChatBubble({ message, onAnswer, onSkip, thinking }: ChatBubbleProps) {
           </div>
         )}
 
-        {message.resultSnapshot && (
-          <div className="mt-3">
-            <ResultCard result={message.resultSnapshot} />
-          </div>
-        )}
       </div>
     </div>
   );
 }
 
-function ResultCard({ result }: { result: Result }) {
-  const assembled = useMemo(() => assemble(result), [result]);
+// The current prompt rendered as a top-level document — no chat bubble, no
+// "Here's your prompt" framing, just the artifact itself.
+function ResultArtifact({
+  result,
+  examples,
+}: {
+  result: Result;
+  examples: PromptExample[];
+}) {
+  const assembled = useMemo(() => assemble(result, examples), [result, examples]);
   return (
-    <div className="rounded-lg border border-border/60 bg-card p-4 space-y-2 text-foreground">
-      {result.title && (
-        <p className="font-serif text-base text-foreground tracking-tight">
-          {result.title}
+    <div className="rounded-2xl border border-border/60 bg-card overflow-hidden">
+      <header className="px-6 md:px-7 py-5 border-b border-border/40">
+        <p className="text-[10px] tracking-[0.22em] uppercase text-muted-foreground font-medium mb-1.5">
+          Your prompt
         </p>
-      )}
-      <pre className="font-mono text-[12px] leading-[1.6] whitespace-pre-wrap break-words text-foreground/90 max-h-[320px] overflow-y-auto">
+        <h2 className="font-serif text-2xl md:text-[28px] font-normal leading-[1.15] tracking-[-0.01em] text-foreground">
+          {result.title || "Untitled"}
+        </h2>
+      </header>
+      <pre className="px-6 md:px-7 py-5 font-mono text-[13px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90 max-h-[60vh] overflow-y-auto">
         {assembled}
       </pre>
     </div>
