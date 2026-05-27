@@ -56,6 +56,13 @@ export default async function AdminPage() {
     .eq("status", "pending")
     .order("created_at", { ascending: true });
 
+  // Pending skills (Claude Code skill submissions awaiting review)
+  const { data: pendingSkills } = await serviceClient
+    .from("skills")
+    .select(`*, profiles:profiles!skills_author_id_fkey(id, username, display_name, contribution_count)`)
+    .eq("status", "pending")
+    .order("created_at", { ascending: true });
+
   return (
     <div className="container py-10">
       <div className="flex items-start justify-between mb-8">
@@ -73,11 +80,17 @@ export default async function AdminPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{(pending ?? []).length}</div>
             <div className="text-sm text-muted-foreground">Pending prompts</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-2xl font-bold">{(pendingSkills ?? []).length}</div>
+            <div className="text-sm text-muted-foreground">Pending skills</div>
           </CardContent>
         </Card>
         <Card>
@@ -100,6 +113,9 @@ export default async function AdminPage() {
             <TabsList>
               <TabsTrigger value="prompts">
                 Prompts ({(pending ?? []).length})
+              </TabsTrigger>
+              <TabsTrigger value="skills">
+                Skills ({(pendingSkills ?? []).length})
               </TabsTrigger>
               <TabsTrigger value="reports">
                 Reports ({(reports ?? []).length})
@@ -150,6 +166,59 @@ export default async function AdminPage() {
                       id={prompt.id}
                       authorId={prompt.author_id}
                     />
+                  </div>
+                ))
+              )}
+            </TabsContent>
+
+            <TabsContent value="skills" className="space-y-3 mt-0">
+              {(pendingSkills ?? []).length === 0 ? (
+                <p className="text-sm text-muted-foreground py-6 text-center">
+                  No skills awaiting review.
+                </p>
+              ) : (
+                (pendingSkills ?? []).map((skill) => (
+                  <div
+                    key={skill.id}
+                    className="flex items-start justify-between gap-4 p-4 border rounded-lg"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <Link
+                          href={`/skills/${skill.slug}`}
+                          className="font-medium text-sm hover:text-pergamum-600 transition-colors"
+                          target="_blank"
+                        >
+                          {skill.name}
+                        </Link>
+                        {skill.category && (
+                          <Badge variant="outline" className="text-xs capitalize">
+                            {skill.category}
+                          </Badge>
+                        )}
+                        {(skill.runtimes ?? []).map((rt: string) => (
+                          <Badge key={rt} variant="outline" className="text-xs">
+                            {rt}
+                          </Badge>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                        {skill.summary}
+                      </p>
+                      {skill.install_command && (
+                        <pre className="text-xs font-mono bg-muted px-2 py-1 rounded mb-2 overflow-x-auto whitespace-pre-wrap">
+                          {skill.install_command}
+                        </pre>
+                      )}
+                      <div className="text-xs text-muted-foreground">
+                        by{" "}
+                        <span className="font-medium">
+                          {(skill as unknown as { profiles: { username: string } }).profiles?.username}
+                        </span>{" "}
+                        · {relativeTime(skill.created_at)}
+                      </div>
+                    </div>
+                    <AdminActions type="skill" id={skill.id} />
                   </div>
                 ))
               )}

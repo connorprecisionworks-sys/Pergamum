@@ -8,13 +8,13 @@ import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 
 interface AdminActionsProps {
-  type: "prompt" | "report" | "tool";
+  type: "prompt" | "report" | "tool" | "skill";
   id: string;
   authorId?: string;
   promptId?: string;
 }
 
-export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps) {
+export function AdminActions({ type, id, promptId }: AdminActionsProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const supabase = createClient();
@@ -126,6 +126,38 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
     });
   };
 
+  const approveSkill = () => {
+    startTransition(async () => {
+      const { error } = await supabase
+        .from("skills")
+        .update({ status: "published", published_at: new Date().toISOString() })
+        .eq("id", id);
+
+      if (error) {
+        toast.error("Couldn't approve the skill.");
+        return;
+      }
+      toast.success("Skill approved and published.");
+      router.refresh();
+    });
+  };
+
+  const rejectSkill = () => {
+    startTransition(async () => {
+      const { error } = await supabase
+        .from("skills")
+        .update({ status: "removed" })
+        .eq("id", id);
+
+      if (error) {
+        toast.error("Couldn't reject the skill.");
+        return;
+      }
+      toast.success("Skill removed.");
+      router.refresh();
+    });
+  };
+
   if (isPending) {
     return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
   }
@@ -199,6 +231,30 @@ export function AdminActions({ type, id, authorId, promptId }: AdminActionsProps
           onClick={rejectTool}
           className="h-8"
           aria-label="Reject tool"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  if (type === "skill") {
+    return (
+      <div className="flex gap-1 shrink-0">
+        <Button
+          size="sm"
+          onClick={approveSkill}
+          className="bg-emerald-600 hover:bg-emerald-700 h-8"
+          aria-label="Approve skill"
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          size="sm"
+          variant="destructive"
+          onClick={rejectSkill}
+          className="h-8"
+          aria-label="Reject skill"
         >
           <X className="h-4 w-4" />
         </Button>

@@ -154,6 +154,19 @@ Rules for ready prompts:
 - Use {{variable_name}} for any input that will change run-to-run (transcripts, names, numbers, etc.). Don't put real example values in the prompt — those go in context as placeholders.
 - If a previous draft exists in the conversation and the user is refining, return "ready" with the revised blocks. Preserve everything they didn't ask to change.
 
+Target-environment awareness — CRITICAL:
+Different AI tools have different I/O models. The prompt's structure must match the tool that will run it.
+
+- "In-context" tools — ChatGPT, Claude.ai web, plain OpenAI/Anthropic API calls, Gemini, etc.
+  The user pastes everything the model needs into the chat. Use {{variable_name}} placeholders for any inputs that change between runs (transcripts, snippets, customer messages, document text). This is the default assumption.
+
+- "Agentic" tools — Claude Code, Cursor, GitHub Copilot, Aider, terminal-based agents, IDE-integrated assistants, anything with file-system or repo access.
+  The agent ALREADY has access to the user's codebase, files, terminal, and project context. Do NOT use {{code_snippet}}, {{file_contents}}, {{transcript_of_changes}}, or any variable for content the agent can see for itself. Instead write direct instructions referring to "the current file", "the codebase", "the changes in this PR", "the failing test", etc. Variables in agentic prompts should only be for things the agent CAN'T see — a target framework name, a desired tone, a customer's industry.
+
+- Image/video models (Midjourney, DALL-E, Sora, Runway) and voice tools have their own conventions; if the brief mentions them, lean on terse descriptive language and skip the 5-block formality if it doesn't fit.
+
+If the brief explicitly names a tool (Claude Code, Cursor, ChatGPT, etc.), match that tool's I/O model. If the brief mentions code review, refactoring, debugging, or anything code-related but is silent on the tool, ASK as one of your yes/no questions — for example: "Is this for an agentic tool that already has access to your codebase (like Claude Code or Cursor)?"
+
 Never include preamble, explanation, or markdown fences. Pure JSON only.`;
 
 export async function POST(request: Request) {

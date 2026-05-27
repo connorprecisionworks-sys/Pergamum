@@ -56,9 +56,12 @@ const promptSchema = z.object({
   category_id: z.string().min(1, "Please select a category"),
   model_tags: z.array(z.string()).min(1, "Select at least one model"),
   tags: z.string().optional(),
+  // Optional metadata rows for auto-detected variables. An empty row is
+  // allowed (and ignored on submit) so the "optional" section never blocks
+  // submission; a filled-in name must still be a valid identifier.
   variables: z.array(
     z.object({
-      name: z.string().min(1, "Variable name required").regex(/^\w+$/, "Only letters, numbers, underscores"),
+      name: z.string().regex(/^\w*$/, "Only letters, numbers, underscores"),
       description: z.string().optional(),
       default: z.string().optional(),
       type: z.enum(["text", "number", "select"]).default("text"),
@@ -67,6 +70,24 @@ const promptSchema = z.object({
 });
 
 type PromptFormValues = z.infer<typeof promptSchema>;
+
+/**
+ * Pull unique {{variable}} names out of a prompt body, in first-seen order.
+ * This is the single source of truth for which variables a prompt has — used
+ * both for the live "Variables found" UI and for what gets saved on submit.
+ */
+function detectVariableNames(body: string): string[] {
+  if (!body) return [];
+  const seen = new Set<string>();
+  const names: string[] = [];
+  for (const match of body.matchAll(/\{\{(\w+)\}\}/g)) {
+    if (!seen.has(match[1])) {
+      seen.add(match[1]);
+      names.push(match[1]);
+    }
+  }
+  return names;
+}
 
 interface SubmitFormProps {
   categories: Category[];
@@ -127,20 +148,11 @@ export function SubmitForm({
   const watchedBody = watch("body") ?? "";
   const watchedVariables = watch("variables") ?? [];
 
-  // Auto-detect {{variables}} in the prompt body and de-dupe in order of first occurrence.
-  const detectedVars = useMemo(() => {
-    if (!watchedBody) return [] as string[];
-    const seen = new Set<string>();
-    const out: string[] = [];
-    for (const match of watchedBody.matchAll(/\{\{(\w+)\}\}/g)) {
-      const name = match[1];
-      if (!seen.has(name)) {
-        seen.add(name);
-        out.push(name);
-      }
-    }
-    return out;
-  }, [watchedBody]);
+  // Auto-detect {{variables}} in the prompt body (live UI feedback).
+  const detectedVars = useMemo(
+    () => detectVariableNames(watchedBody),
+    [watchedBody]
+  );
 
   // Wire a real ref to the body textarea so we can insert at the caret.
   // react-hook-form's `register` returns its own ref — we layer ours on via callback.
@@ -210,6 +222,28 @@ export function SubmitForm({
       const status = needsReview ? "pending" : "published";
       const published_at = needsReview ? null : new Date().toISOString();
 
+      // The prompt body is the source of truth for which variables exist.
+      // Auto-detect them from the body, then enrich each with any optional
+      // metadata the author added under "Variable details" (matched by name).
+      // Previously only the manually-added metadata rows were saved, so a
+      // prompt with {{variables}} but no metadata rows was stored with an
+      // empty variables array — and rendered no inputs on its public page.
+      const detectedNames = detectVariableNames(values.body);
+      const variableMeta = new Map(
+        (values.variables ?? [])
+          .filter((v) => v.name)
+          .map((v) => [v.name, v] as const)
+      );
+      const variables = detectedNames.map((name) => {
+        const meta = variableMeta.get(name);
+        return {
+          name,
+          description: meta?.description || undefined,
+          default: meta?.default || undefined,
+          type: meta?.type ?? "text",
+        };
+      });
+
       const { data, error } = await supabase
         .from("prompts")
         .insert({
@@ -221,12 +255,7 @@ export function SubmitForm({
           category_id: values.category_id,
           model_tags: values.model_tags,
           tags: normalizeTags(values.tags ?? ""),
-          variables: (values.variables ?? []).map((v) => ({
-            name: v.name,
-            description: v.description || undefined,
-            default: v.default || undefined,
-            type: v.type,
-          })),
+          variables,
           status,
           published_at,
           forked_from_id: forkedFrom?.id ?? null,
