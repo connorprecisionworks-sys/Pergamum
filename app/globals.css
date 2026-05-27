@@ -185,3 +185,19 @@ button:active:not(:disabled) {
 ::-webkit-scrollbar-thumb:hover {
   background: #2a2a3d;
 }
+
+/* ── Editorial Light theme — pink curl draw-on-hover ──
+   Used by components/skills/themes/editorial-light.tsx. The path
+   starts hidden (offset = 1) and draws itself in when the parent
+   .editorial-curl-group is hovered. Two delays = staggered reveal. */
+.editorial-curl {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.4s ease-out;
+}
+.editorial-curl-group:hover .editorial-curl {
+  stroke-dashoffset: 0;
+}
+.editorial-curl-group:hover .editorial-curl-delay {
+  transition-delay: 300ms;
+}

@@ -52,7 +52,7 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
   return (
     <Link
       href={`/skills/${skill.slug}`}
-      className="group block relative overflow-hidden rounded-xl border border-zinc-200 bg-[#fafaf7] text-zinc-900 transition-shadow hover:shadow-[0_8px_32px_rgba(236,72,153,0.12)] animate-fade-in"
+      className="editorial-curl-group group block relative overflow-hidden rounded-xl border border-zinc-200 bg-[#fafaf7] text-zinc-900 transition-shadow hover:shadow-[0_8px_32px_rgba(236,72,153,0.12)] animate-fade-in"
       style={{ minHeight: 460 }}
     >
       {/* Decorative pink curls — draw themselves in on hover */}
@@ -68,12 +68,7 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
           strokeWidth="1.5"
           strokeLinecap="round"
           pathLength={1}
-          style={{
-            strokeDasharray: 1,
-            strokeDashoffset: 1,
-            transition: "stroke-dashoffset 1.4s ease-out",
-          }}
-          className="group-hover:[stroke-dashoffset:0]"
+          className="editorial-curl"
         />
       </svg>
 
@@ -89,12 +84,7 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
           strokeWidth="1.5"
           strokeLinecap="round"
           pathLength={1}
-          style={{
-            strokeDasharray: 1,
-            strokeDashoffset: 1,
-            transition: "stroke-dashoffset 1.4s ease-in 300ms",
-          }}
-          className="group-hover:[stroke-dashoffset:0] group-hover:[transition:stroke-dashoffset_1.4s_ease-out_300ms]"
+          className="editorial-curl editorial-curl-delay"
         />
       </svg>
 
