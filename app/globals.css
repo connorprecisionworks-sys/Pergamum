@@ -217,3 +217,56 @@ button:active:not(:disabled) {
   color: #ffffff;
   border-color: #ec4899;
 }
+
+/* ── Technical Dark theme (Remotion) ── */
+.technical-swoosh {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.8s ease-out, opacity 600ms ease;
+}
+.technical-dark-group:hover .technical-swoosh {
+  stroke-dashoffset: 0;
+  opacity: 0.32;
+}
+.technical-dark-group .technical-copy-btn {
+  transition: border-color 350ms ease, color 350ms ease, background 350ms ease;
+}
+.technical-dark-group:hover .technical-copy-btn {
+  border-color: #3b82f6;
+  color: #bfdbfe;
+}
+.technical-dark-group .technical-copy-btn:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+/* ── Warm Modern theme (Taste Skill) ── */
+.warm-mockup {
+  transform: rotate(8deg) translateY(0);
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms ease;
+}
+.warm-modern-group:hover .warm-mockup {
+  transform: rotate(4deg) translateY(-6px) translateX(-12px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14);
+}
+.warm-modern-group .warm-copy-btn {
+  transition: border-color 350ms ease, color 350ms ease, background 350ms ease;
+}
+.warm-modern-group:hover .warm-copy-btn {
+  border-color: #f97316;
+  color: #fed7aa;
+}
+.warm-modern-group .warm-copy-btn:hover {
+  background: #f97316;
+  color: #ffffff;
+  border-color: #f97316;
+}
+
+/* ── Minimal Editorial theme (Emil Kowalski) ── */
+.minimal-editorial-group .minimal-copy-btn {
+  transition: background 200ms ease, color 200ms ease;
+}
+.minimal-editorial-group:hover .minimal-copy-btn {
+  color: #a855f7;
+}

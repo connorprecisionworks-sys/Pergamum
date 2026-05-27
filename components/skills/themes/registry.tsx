@@ -1,6 +1,9 @@
 import type { ComponentType } from "react";
 import type { SkillWithAuthor } from "@/lib/types/database";
 import { EditorialLight } from "./editorial-light";
+import { TechnicalDark } from "./technical-dark";
+import { WarmModern } from "./warm-modern";
+import { MinimalEditorial } from "./minimal-editorial";
 
 export interface ThemeProps {
   skill: SkillWithAuthor;
@@ -16,7 +19,10 @@ export interface ThemeProps {
  * Vivid Hybrid card.
  */
 export const themeRegistry: Record<string, ComponentType<ThemeProps>> = {
-  "editorial-light": EditorialLight,
+  "editorial-light": EditorialLight,      // Impeccable — cream + italic serif + pink curls
+  "technical-dark": TechnicalDark,        // Remotion — black + bold sans + blue swoosh
+  "warm-modern": WarmModern,              // Taste Skill — cream + bold sans + orange accent
+  "minimal-editorial": MinimalEditorial,  // Emil Kowalski — white + plain sans + purple highlight
 };
 
 export function getTheme(themeId: string | null | undefined) {

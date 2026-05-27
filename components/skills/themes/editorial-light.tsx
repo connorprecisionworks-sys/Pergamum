@@ -94,18 +94,18 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
       </div>
 
       <div className="relative px-7 pt-16 pb-7 h-full flex flex-col">
-        {/* Title — big italic serif */}
+        {/* Title — dramatic italic display serif */}
         <h3
-          className="font-serif text-[44px] leading-[1.04] tracking-tight italic font-normal text-zinc-900 mb-2"
-          style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+          className="text-[52px] leading-[0.95] tracking-[-0.02em] italic font-normal text-zinc-900 mb-3"
+          style={{ fontFamily: "var(--font-serif), 'Tiempos Headline', 'Editorial New', Georgia, serif" }}
         >
           {skill.name}
         </h3>
 
-        {/* Subtitle — italic, lighter */}
+        {/* Subtitle — italic, lighter, also display */}
         <p
-          className="font-serif text-lg italic text-zinc-600 leading-snug mb-5"
-          style={{ fontFamily: "var(--font-serif), Georgia, serif" }}
+          className="text-[22px] italic text-zinc-600 leading-snug mb-5"
+          style={{ fontFamily: "var(--font-serif), 'Tiempos Headline', 'Editorial New', Georgia, serif" }}
         >
           {skill.summary.split(/[.—]/)[0].trim()}
         </p>
