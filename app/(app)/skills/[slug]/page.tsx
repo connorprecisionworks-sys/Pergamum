@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
 import { SkillVoteButtons } from "@/components/skills/skill-vote-buttons";
 import { SkillReportButton } from "@/components/skills/skill-report-button";
+import { SimilarSkills } from "@/components/skills/similar-skills";
 import { relativeTime, formatCount, categoryColor } from "@/lib/utils";
 import type { SkillWithAuthor, VoteValue } from "@/lib/types/database";
 
@@ -83,6 +84,30 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
       </Link>
 
       <article className="max-w-3xl mx-auto space-y-8">
+        {/* Hero image / loop */}
+        {typed.hero_image_url && (
+          <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg">
+            {typed.hero_loop_url ? (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster={typed.hero_poster_url ?? typed.hero_image_url}
+                className="w-full h-full object-cover"
+              >
+                <source src={typed.hero_loop_url} />
+              </video>
+            ) : (
+              <img
+                src={typed.hero_image_url}
+                alt={typed.name}
+                className="w-full h-full object-cover"
+              />
+            )}
+          </div>
+        )}
+
         {/* Hero header — same radial-gradient treatment as browse pages */}
         <div className="rounded-lg px-6 py-7 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] space-y-4">
           {/* Category dot + label | runtime badges */}
@@ -222,6 +247,9 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
             </div>
           </div>
         )}
+
+        {/* Similar skills */}
+        <SimilarSkills skill={typed} />
 
         {/* Footer actions */}
         <div className="flex items-center justify-between gap-3 flex-wrap pt-2">

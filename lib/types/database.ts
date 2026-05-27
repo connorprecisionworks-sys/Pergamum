@@ -344,6 +344,12 @@ export type Database = {
           status: string;
           trending_score: number;
           search_vector: string | null;
+          hero_image_url: string | null;
+          hero_loop_url: string | null;
+          hero_poster_url: string | null;
+          is_featured: boolean;
+          featured_priority: number;
+          theme_id: string | null;
           created_at: string;
           updated_at: string;
           published_at: string | null;
@@ -366,6 +372,12 @@ export type Database = {
           copies?: number;
           status?: string;
           trending_score?: number;
+          hero_image_url?: string | null;
+          hero_loop_url?: string | null;
+          hero_poster_url?: string | null;
+          is_featured?: boolean;
+          featured_priority?: number;
+          theme_id?: string | null;
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
@@ -386,6 +398,12 @@ export type Database = {
           copies?: number;
           status?: string;
           trending_score?: number;
+          hero_image_url?: string | null;
+          hero_loop_url?: string | null;
+          hero_poster_url?: string | null;
+          is_featured?: boolean;
+          featured_priority?: number;
+          theme_id?: string | null;
           updated_at?: string;
           published_at?: string | null;
         };

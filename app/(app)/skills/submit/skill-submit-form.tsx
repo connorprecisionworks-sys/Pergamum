@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Info, Loader2 } from "lucide-react";
+import { Film, Info, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,8 +22,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
 import { slugify, normalizeTags } from "@/lib/utils";
+import { HeroImagePrompt } from "./hero-image-prompt";
 
-// Same buckets used in /skills page filtering. Keep in sync.
 const SKILL_CATEGORIES = [
   { value: "agents", label: "Agents & automation" },
   { value: "coding", label: "Coding" },
@@ -41,6 +41,10 @@ const RUNTIME_OPTIONS = [
   { value: "cowork", label: "Cowork" },
   { value: "claude-api", label: "Claude API / SDK" },
 ];
+
+const HERO_IMAGE_MAX = 2 * 1024 * 1024; // 2 MB
+const HERO_LOOP_MAX = 5 * 1024 * 1024;  // 5 MB
+const HERO_LOOP_MAX_DURATION = 10;       // seconds
 
 const skillSchema = z
   .object({
@@ -75,15 +79,148 @@ interface SkillSubmitFormProps {
   isAdmin: boolean;
 }
 
+// ─── File dropzone ────────────────────────────────────────────────────────────
+
+interface DropzoneProps {
+  accept: string;
+  maxBytes: number;
+  label: string;
+  hint: string;
+  previewUrl: string | null;
+  previewType: "image" | "video";
+  onFile: (file: File) => void;
+  onClear: () => void;
+  error?: string;
+  required?: boolean;
+}
+
+function FileDropzone({
+  accept,
+  maxBytes,
+  label,
+  hint,
+  previewUrl,
+  previewType,
+  onFile,
+  onClear,
+  error,
+  required,
+}: DropzoneProps) {
+  const [dragging, setDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const processFile = (file: File) => {
+    if (file.size > maxBytes) {
+      toast.error(`File must be under ${Math.round(maxBytes / 1024 / 1024)} MB.`);
+      return;
+    }
+    onFile(file);
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={label}
+        onClick={() => inputRef.current?.click()}
+        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          const file = e.dataTransfer.files[0];
+          if (file) processFile(file);
+        }}
+        className={`relative aspect-[16/9] w-full overflow-hidden rounded-lg border-2 border-dashed transition-colors cursor-pointer select-none ${
+          dragging
+            ? "border-pergamum-400 bg-pergamum-50/10 dark:bg-pergamum-900/10"
+            : previewUrl
+            ? "border-border hover:border-foreground-subtle"
+            : "border-border hover:border-foreground-muted"
+        }`}
+      >
+        {previewUrl ? (
+          <>
+            {previewType === "video" ? (
+              <video
+                src={previewUrl}
+                className="absolute inset-0 w-full h-full object-cover"
+                muted
+                loop
+                autoPlay
+                playsInline
+              />
+            ) : (
+              <img
+                src={previewUrl}
+                alt="Hero preview"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
+            {/* Clear button */}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onClear(); }}
+              aria-label="Remove file"
+              className="absolute top-2 right-2 p-1 rounded-full bg-black/60 backdrop-blur-sm text-white/80 hover:text-white hover:bg-black/80 transition-colors z-10"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/50 to-transparent flex items-end px-3 pb-2">
+              <span className="font-mono text-[10px] text-white/60">
+                Click to replace · drag a new file
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-foreground-muted">
+            {previewType === "video" ? (
+              <Film className="h-7 w-7 opacity-30" />
+            ) : (
+              <Upload className="h-7 w-7 opacity-30" />
+            )}
+            <span className="text-sm font-medium">{label}</span>
+            <span className="text-xs opacity-60 text-center px-8">{hint}</span>
+          </div>
+        )}
+        <input
+          ref={inputRef}
+          type="file"
+          accept={accept}
+          className="sr-only"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) processFile(file);
+            e.target.value = "";
+          }}
+        />
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+// ─── Main form ────────────────────────────────────────────────────────────────
+
 export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [selectedRuntimes, setSelectedRuntimes] = useState<string[]>(["claude-code"]);
 
+  const [heroFile, setHeroFile] = useState<File | null>(null);
+  const [heroPreview, setHeroPreview] = useState<string | null>(null);
+  const [heroError, setHeroError] = useState<string | null>(null);
+
+  const [loopFile, setLoopFile] = useState<File | null>(null);
+  const [loopPreview, setLoopPreview] = useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<SkillFormValues>({
     resolver: zodResolver(skillSchema),
@@ -102,12 +239,87 @@ export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
     });
   };
 
-  const onSubmit = async (values: SkillFormValues) => {
-    setLoading(true);
+  const handleHeroFile = (file: File) => {
+    setHeroError(null);
+    if (heroPreview) URL.revokeObjectURL(heroPreview);
+    setHeroFile(file);
+    setHeroPreview(URL.createObjectURL(file));
+  };
+
+  const clearHero = () => {
+    if (heroPreview) URL.revokeObjectURL(heroPreview);
+    setHeroFile(null);
+    setHeroPreview(null);
+  };
+
+  const handleLoopFile = async (file: File) => {
+    // Validate duration via a temporary video element
+    const error = await new Promise<string | null>((resolve) => {
+      const url = URL.createObjectURL(file);
+      const vid = document.createElement("video");
+      vid.preload = "metadata";
+      vid.onloadedmetadata = () => {
+        URL.revokeObjectURL(url);
+        if (vid.duration > HERO_LOOP_MAX_DURATION) {
+          resolve(`Video must be ${HERO_LOOP_MAX_DURATION} seconds or shorter (yours is ${Math.round(vid.duration)}s).`);
+        } else {
+          resolve(null);
+        }
+      };
+      vid.onerror = () => { URL.revokeObjectURL(url); resolve("Couldn't read video file."); };
+      vid.src = url;
+    });
+
+    if (error) { toast.error(error); return; }
+
+    if (loopPreview) URL.revokeObjectURL(loopPreview);
+    setLoopFile(file);
+    setLoopPreview(URL.createObjectURL(file));
+  };
+
+  const clearLoop = () => {
+    if (loopPreview) URL.revokeObjectURL(loopPreview);
+    setLoopFile(null);
+    setLoopPreview(null);
+  };
+
+  const uploadFile = async (file: File): Promise<string> => {
     const supabase = createClient();
+    const ext = file.name.split(".").pop()?.toLowerCase() ?? "bin";
+    const path = `${authorId}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("skill-heroes")
+      .upload(path, file, { contentType: file.type });
+    if (error) throw error;
+    const { data } = supabase.storage.from("skill-heroes").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const onSubmit = async (values: SkillFormValues) => {
+    if (!heroFile) {
+      setHeroError("A hero image is required.");
+      return;
+    }
+
+    setLoading(true);
+
+    let heroImageUrl: string;
+    let heroLoopUrl: string | null = null;
 
     try {
-      // Slug + collision suffix
+      heroImageUrl = await uploadFile(heroFile);
+      if (loopFile) {
+        heroLoopUrl = await uploadFile(loopFile);
+      }
+    } catch {
+      toast.error("Hero upload failed — try a smaller file or check your connection.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+
       const base = slugify(values.name);
       const { data: existing } = await supabase
         .from("skills")
@@ -140,6 +352,9 @@ export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
           tags: normalizeTags(values.tags ?? ""),
           status,
           published_at,
+          hero_image_url: heroImageUrl,
+          hero_loop_url: heroLoopUrl,
+          hero_poster_url: null, // hero_image_url used as fallback at render time
         })
         .select("slug")
         .single();
@@ -161,8 +376,58 @@ export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
     }
   };
 
+  const [watchedName, watchedSummary, watchedSourceUrl] = watch([
+    "name",
+    "summary",
+    "source_url",
+  ]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
+      {/* Hero image */}
+      <div className="space-y-2">
+        <Label>
+          Hero image <span className="text-destructive">*</span>
+        </Label>
+        <FileDropzone
+          accept="image/png,image/jpeg,image/webp"
+          maxBytes={HERO_IMAGE_MAX}
+          label="Drop an image or click to browse"
+          hint="PNG · JPG · WebP · 2 MB max · 16:9 recommended (1600×900)"
+          previewUrl={heroPreview}
+          previewType="image"
+          onFile={handleHeroFile}
+          onClear={clearHero}
+          error={heroError ?? undefined}
+          required
+        />
+        <HeroImagePrompt
+          name={watchedName ?? ""}
+          summary={watchedSummary ?? ""}
+          sourceUrl={watchedSourceUrl ?? ""}
+        />
+      </div>
+
+      {/* Hero loop (optional) */}
+      <div className="space-y-2">
+        <Label>Hero loop <span className="text-foreground-muted font-normal">(optional)</span></Label>
+        <FileDropzone
+          accept="video/mp4,video/webm"
+          maxBytes={HERO_LOOP_MAX}
+          label="Drop a short video or click to browse"
+          hint="MP4 · WebM · 5 MB max · 10 seconds max"
+          previewUrl={loopPreview}
+          previewType="video"
+          onFile={handleLoopFile}
+          onClear={clearLoop}
+        />
+        <p className="text-xs text-muted-foreground">
+          A looping clip shown in the card. The hero image is used as the poster frame.
+        </p>
+      </div>
+
+      <Separator />
+
       {/* Name */}
       <div className="space-y-2">
         <Label htmlFor="name">
@@ -270,10 +535,7 @@ export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
         <Label htmlFor="install_command">Install command</Label>
         <Textarea
           id="install_command"
-          placeholder={`/plugin install your-plugin-name
-
-# or
-curl -fsSL https://example.com/install.sh | bash`}
+          placeholder={`/plugin install your-plugin-name\n\n# or\ncurl -fsSL https://example.com/install.sh | bash`}
           rows={5}
           className="font-mono text-sm"
           {...register("install_command")}
