@@ -129,10 +129,12 @@ export function PromptDetail({
               {relativeTime(prompt.published_at ?? prompt.created_at)}
             </span>
           </div>
-          <div className="flex items-center gap-1">
-            <Eye className="h-3 w-3 text-foreground-subtle" />
-            <span className="label-mono">{formatCount(prompt.views)} uses</span>
-          </div>
+          {(prompt.views ?? 0) >= 5 && (
+            <div className="flex items-center gap-1">
+              <Eye className="h-3 w-3 text-foreground-subtle" />
+              <span className="label-mono">{formatCount(prompt.views)} uses</span>
+            </div>
+          )}
         </div>
 
         {/* Tags */}

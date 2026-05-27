@@ -137,11 +137,11 @@ export function CommentSection({
             />
           ))}
         </div>
-      ) : (
-        <p className="text-sm text-muted-foreground py-4">
-          No comments yet — share your experience or suggest an improvement.
+      ) : currentUserId ? (
+        <p className="text-sm text-muted-foreground italic py-4">
+          Used this prompt? Drop a note about what worked, what you tweaked, or what you&apos;d improve.
         </p>
-      )}
+      ) : null}
 
       {/* Reply form */}
       {replyingTo && currentUserId && (
