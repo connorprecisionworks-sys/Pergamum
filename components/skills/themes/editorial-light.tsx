@@ -52,7 +52,7 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
   return (
     <Link
       href={`/skills/${skill.slug}`}
-      className="editorial-curl-group group block relative overflow-hidden rounded-xl border border-zinc-200 bg-[#fafaf7] text-zinc-900 transition-shadow hover:shadow-[0_8px_32px_rgba(236,72,153,0.12)] animate-fade-in"
+      className="editorial-curl-group group block relative overflow-hidden rounded-xl border border-zinc-200 bg-[#fafaf7] text-zinc-900 transition-[transform,box-shadow] duration-500 ease-out hover:scale-[1.01] hover:shadow-[0_12px_40px_rgba(236,72,153,0.18)] animate-fade-in"
       style={{ minHeight: 460 }}
     >
       {/* Decorative pink curls — draw themselves in on hover */}
@@ -143,7 +143,7 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
             <button
               onClick={handleCopy}
               aria-label="Copy install command"
-              className="font-mono text-[11px] text-zinc-400 hover:text-white bg-transparent border border-zinc-700 rounded px-2 py-0.5 transition-colors shrink-0"
+              className="editorial-copy-btn font-mono text-[11px] text-zinc-400 bg-transparent border border-zinc-700 rounded px-2 py-0.5 shrink-0"
             >
               {copied ? <span className="text-emerald-400">✓</span> : "copy"}
             </button>

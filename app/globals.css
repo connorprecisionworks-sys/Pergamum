@@ -201,3 +201,19 @@ button:active:not(:disabled) {
 .editorial-curl-group:hover .editorial-curl-delay {
   transition-delay: 300ms;
 }
+
+/* ── Editorial Light theme — copy button signals on card hover ──
+   The install copy button gets a pink border + brightens when the
+   whole card is hovered, signaling "this is the action." */
+.editorial-curl-group .editorial-copy-btn {
+  transition: border-color 350ms ease, color 350ms ease, background 350ms ease;
+}
+.editorial-curl-group:hover .editorial-copy-btn {
+  border-color: #ec4899;
+  color: #fbcfe8;
+}
+.editorial-curl-group .editorial-copy-btn:hover {
+  background: #ec4899;
+  color: #ffffff;
+  border-color: #ec4899;
+}
