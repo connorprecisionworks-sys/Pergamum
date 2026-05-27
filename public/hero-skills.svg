@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-label="Three Pergamum skill cards in a row, each with a category-colored left border, a title, a short summary, an install-command chip with a copy button, runtime pills, and tags. One card shows the copy button in its confirmed state.">
+  <defs>
+    <radialGradient id="bgGlow" cx="22%" cy="0%" r="62%">
+      <stop offset="0%" stop-color="#7c71ff" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#7c71ff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="c1"><rect x="56" y="220" width="480" height="440" rx="8"/></clipPath>
+    <clipPath id="c2"><rect x="560" y="220" width="480" height="440" rx="8"/></clipPath>
+    <clipPath id="c3"><rect x="1064" y="220" width="480" height="440" rx="8"/></clipPath>
+  </defs>
+
+  <rect width="1600" height="900" fill="#08080b"/>
+  <rect width="1600" height="900" fill="url(#bgGlow)"/>
+
+  <g clip-path="url(#c1)">
+    <rect x="56" y="220" width="480" height="440" fill="#0d0d11"/>
+    <rect x="56" y="220" width="3" height="440" fill="#d946ef"/>
+  </g>
+  <rect x="56" y="220" width="480" height="440" rx="8" fill="none" stroke="#1f1f24"/>
+
+  <circle cx="92" cy="256" r="4" fill="#d946ef"/>
+  <text x="104" y="260" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95" letter-spacing="2.5">DESIGN</text>
+  <text x="508" y="260" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#a399ff" text-anchor="end">↑ 1.2k</text>
+
+  <text x="88" y="310" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="500" fill="#e8e8ec">emil-design-eng</text>
+
+  <text x="88" y="356" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">Dynamic motion and design for webapps —</text>
+  <text x="88" y="380" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">the UI polish you wish your team would ship.</text>
+
+  <rect x="88" y="420" width="416" height="48" rx="6" fill="#16161b" stroke="#2a2a31"/>
+  <text x="104" y="450" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#d4d4dc">npx skills add emilkowalski/skill</text>
+  <rect x="440" y="430" width="56" height="28" rx="4" fill="transparent" stroke="#2a2a31"/>
+  <text x="468" y="449" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">copy</text>
+
+  <rect x="88" y="488" width="100" height="26" rx="13" fill="transparent" stroke="#2a2a31"/>
+  <text x="138" y="506" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">claude-code</text>
+
+  <text x="88" y="546" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="#8c8c95">#motion · #ui · #craft</text>
+
+  <line x1="88" y1="588" x2="504" y2="588" stroke="#1f1f24"/>
+
+  <circle cx="102" cy="618" r="10" fill="#1a1a20"/>
+  <text x="102" y="622" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#8c8c95" text-anchor="middle">EM</text>
+  <text x="124" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95">emil</text>
+  <text x="166" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#6e6e76">· 2d ago</text>
+
+  <g clip-path="url(#c2)">
+    <rect x="560" y="220" width="480" height="440" fill="#0d0d11"/>
+    <rect x="560" y="220" width="3" height="440" fill="#6f63d8"/>
+  </g>
+  <rect x="560" y="220" width="480" height="440" rx="8" fill="none" stroke="#1f1f24"/>
+
+  <circle cx="596" cy="256" r="4" fill="#6f63d8"/>
+  <text x="608" y="260" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95" letter-spacing="2.5">CODING</text>
+  <text x="1012" y="260" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#a399ff" text-anchor="end">↑ 847</text>
+
+  <text x="592" y="310" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="500" fill="#e8e8ec">PDF Toolkit</text>
+
+  <text x="592" y="356" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">Read, extract, merge, split and OCR PDF files</text>
+  <text x="592" y="380" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">end-to-end — from a single skill.</text>
+
+  <rect x="592" y="420" width="416" height="48" rx="6" fill="#16161b" stroke="#2a2a31"/>
+  <text x="608" y="450" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#d4d4dc">/plugin install anthropic-skills</text>
+  <rect x="932" y="430" width="68" height="28" rx="4" fill="transparent" stroke="#2e5e44"/>
+  <text x="966" y="449" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#7ed8a8" text-anchor="middle">✓ copied</text>
+
+  <rect x="592" y="488" width="100" height="26" rx="13" fill="transparent" stroke="#2a2a31"/>
+  <text x="642" y="506" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">claude-code</text>
+  <rect x="700" y="488" width="72" height="26" rx="13" fill="transparent" stroke="#2a2a31"/>
+  <text x="736" y="506" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">cowork</text>
+
+  <text x="592" y="546" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="#8c8c95">#pdf · #extraction · #docs</text>
+
+  <line x1="592" y1="588" x2="1008" y2="588" stroke="#1f1f24"/>
+
+  <circle cx="606" cy="618" r="10" fill="#1a1a20"/>
+  <text x="606" y="622" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#8c8c95" text-anchor="middle">AN</text>
+  <text x="628" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95">anthropic</text>
+  <text x="708" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#6e6e76">· 5d ago</text>
+
+  <g clip-path="url(#c3)">
+    <rect x="1064" y="220" width="480" height="440" fill="#0d0d11"/>
+    <rect x="1064" y="220" width="3" height="440" fill="#f59e0b"/>
+  </g>
+  <rect x="1064" y="220" width="480" height="440" rx="8" fill="none" stroke="#1f1f24"/>
+
+  <circle cx="1100" cy="256" r="4" fill="#f59e0b"/>
+  <text x="1112" y="260" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95" letter-spacing="2.5">MARKETING</text>
+  <text x="1516" y="260" font-family="ui-monospace, Menlo, monospace" font-size="14" fill="#a399ff" text-anchor="end">↑ 524</text>
+
+  <text x="1096" y="310" font-family="Fraunces, Georgia, serif" font-size="30" font-weight="500" fill="#e8e8ec">brandkit</text>
+
+  <text x="1096" y="356" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">Brand-kit image generation, logo systems,</text>
+  <text x="1096" y="380" font-family="system-ui, sans-serif" font-size="16" fill="#b8b8c0">and full identity decks on demand.</text>
+
+  <rect x="1096" y="420" width="416" height="48" rx="6" fill="#16161b" stroke="#2a2a31"/>
+  <text x="1112" y="450" font-family="ui-monospace, Menlo, monospace" font-size="15" fill="#d4d4dc">npx skills add Leonxlnx/taste-skill</text>
+  <rect x="1448" y="430" width="56" height="28" rx="4" fill="transparent" stroke="#2a2a31"/>
+  <text x="1476" y="449" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">copy</text>
+
+  <rect x="1096" y="488" width="100" height="26" rx="13" fill="transparent" stroke="#2a2a31"/>
+  <text x="1146" y="506" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#b8b8c0" text-anchor="middle">claude-code</text>
+
+  <text x="1096" y="546" font-family="ui-monospace, Menlo, monospace" font-size="13" fill="#8c8c95">#brand · #logo · #identity</text>
+
+  <line x1="1096" y1="588" x2="1512" y2="588" stroke="#1f1f24"/>
+
+  <circle cx="1110" cy="618" r="10" fill="#1a1a20"/>
+  <text x="1110" y="622" font-family="ui-monospace, Menlo, monospace" font-size="10" fill="#8c8c95" text-anchor="middle">LE</text>
+  <text x="1132" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#8c8c95">leon</text>
+  <text x="1170" y="622" font-family="ui-monospace, Menlo, monospace" font-size="12" fill="#6e6e76">· 1w ago</text>
+</svg>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Search, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { cn } from "@/lib/utils";
 import { SkillCard } from "@/components/skills/skill-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Button } from "@/components/ui/button";
@@ -26,8 +27,6 @@ interface SkillsPageProps {
 
 const PAGE_SIZE = 24;
 
-// Free-text categories so the directory doesn't have to share the
-// prompt taxonomy. Keep this in sync with the submit form options.
 const SKILL_CATEGORIES = [
   "agents",
   "coding",
@@ -43,10 +42,10 @@ const SKILL_CATEGORIES = [
 const RUNTIME_OPTIONS = ["claude-code", "cowork", "claude-api"];
 
 const SORT_OPTIONS = [
-  { value: "trending", label: "Trending" },
-  { value: "newest", label: "Newest" },
-  { value: "top", label: "Top all-time" },
-];
+  { value: "trending",  label: "Trending" },
+  { value: "newest",    label: "Newest" },
+  { value: "top",       label: "Top all-time" },
+] as const;
 
 export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps) {
   const params = await searchParams;
@@ -96,8 +95,8 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
 
   return (
     <div className="container py-8 max-w-[1280px]">
-      {/* Hero header */}
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      {/* Hero header with brand-tinted radial gradient */}
+      <div className="relative rounded-lg px-6 py-7 mb-8 flex flex-wrap items-end justify-between gap-4 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
         <div>
           <h1 className="font-serif text-[32px] font-medium tracking-h2">
             {params.q
@@ -128,17 +127,8 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
       </div>
 
       <div className="flex gap-8">
-        {/* Sidebar — server-rendered filter links (no client state needed) */}
-        <aside className="hidden lg:block w-52 shrink-0 space-y-7" aria-label="Filter skills">
-          <FilterGroup
-            title="Sort"
-            options={SORT_OPTIONS.map((o) => ({ label: o.label, value: o.value }))}
-            current={sort}
-            paramKey="sort"
-            defaultValue="trending"
-            searchParams={params}
-          />
-
+        {/* Sidebar — runtime + category only; sort moved to tabs */}
+        <aside className="hidden lg:block w-44 shrink-0 space-y-6" aria-label="Filter skills">
           <FilterGroup
             title="Runtime"
             options={RUNTIME_OPTIONS.map((r) => ({ label: r, value: r }))}
@@ -157,9 +147,27 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
         </aside>
 
         <div className="flex-1 min-w-0">
+          {/* Sort tabs — visible at all breakpoints */}
+          <div className="flex gap-1 mb-4 flex-wrap">
+            {SORT_OPTIONS.map(({ value, label }) => (
+              <Link
+                key={value}
+                href={buildSortUrl(params, value)}
+                className={cn(
+                  "font-mono text-[12px] uppercase tracking-[0.08em] px-3 py-1.5 rounded-md transition-colors",
+                  sort === value
+                    ? "bg-background-subtle text-foreground"
+                    : "text-foreground-muted hover:text-foreground"
+                )}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
           {skills && skills.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(skills as SkillWithAuthor[]).map((skill) => (
                   <SkillCard key={skill.id} skill={skill} />
                 ))}
@@ -211,24 +219,17 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
   );
 }
 
-/**
- * Tiny server-rendered filter list — no client JS, no router. Each option
- * is a plain link that toggles its param. Mirrors the prompts FilterSidebar
- * styling so the two pages feel like siblings.
- */
 function FilterGroup({
   title,
   options,
   current,
   paramKey,
-  defaultValue,
   searchParams,
 }: {
   title: string;
   options: { label: string; value: string }[];
   current: string;
   paramKey: string;
-  defaultValue?: string;
   searchParams: Record<string, string | undefined>;
 }) {
   const buildHref = (value: string) => {
@@ -236,41 +237,38 @@ function FilterGroup({
     for (const [k, v] of Object.entries(searchParams)) {
       if (v && k !== paramKey && k !== "page") p.set(k, v);
     }
-    if (value && value !== defaultValue) p.set(paramKey, value);
+    if (value) p.set(paramKey, value);
     const qs = p.toString();
     return qs ? `/skills?${qs}` : "/skills";
   };
 
-  const isCurrent = (value: string) => {
-    if (!current) return value === (defaultValue ?? "");
-    return current === value;
-  };
-
   return (
-    <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
-      <legend className="label-mono mb-3">[ {title} ]</legend>
+    <fieldset className="border-0 p-0 m-0 min-w-0">
+      <legend className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-2">
+        {title}
+      </legend>
       <div className="flex flex-col gap-0.5">
-        {!defaultValue && (
-          <Link
-            href={buildHref("")}
-            className={`text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors capitalize ${
-              !current
-                ? "bg-background-subtle text-foreground font-medium"
-                : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
-            }`}
-          >
-            All
-          </Link>
-        )}
+        <Link
+          href={buildHref("")}
+          className={cn(
+            "text-[13px] text-left px-3 py-1.5 flex items-center rounded-md transition-colors capitalize",
+            !current
+              ? "bg-background-subtle text-foreground font-medium"
+              : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
+          )}
+        >
+          All
+        </Link>
         {options.map((opt) => (
           <Link
             key={opt.value}
             href={buildHref(opt.value)}
-            className={`text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors capitalize ${
-              isCurrent(opt.value)
+            className={cn(
+              "text-[13px] text-left px-3 py-1.5 flex items-center rounded-md transition-colors capitalize",
+              current === opt.value
                 ? "bg-background-subtle text-foreground font-medium"
                 : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
-            }`}
+            )}
           >
             {opt.label}
           </Link>
@@ -278,6 +276,20 @@ function FilterGroup({
       </div>
     </fieldset>
   );
+}
+
+function buildSortUrl(
+  params: Record<string, string | undefined>,
+  sort: string
+): string {
+  const p = new URLSearchParams();
+  if (params.q) p.set("q", params.q);
+  if (params.category) p.set("category", params.category);
+  if (params.runtime) p.set("runtime", params.runtime);
+  if (params.tag) p.set("tag", params.tag);
+  if (sort !== "trending") p.set("sort", sort);
+  const qs = p.toString();
+  return qs ? `/skills?${qs}` : "/skills";
 }
 
 function buildUrl(

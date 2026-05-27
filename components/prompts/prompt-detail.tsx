@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import Link from "next/link";
 import { Eye, Flag, Tag, GitFork } from "lucide-react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import { CopyButton } from "./copy-button";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
-import { formatCount, relativeTime } from "@/lib/utils";
+import { formatCount, relativeTime, categoryColor } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { PromptWithAuthor, VoteValue, PromptVariable } from "@/lib/types/database";
 
@@ -30,6 +29,7 @@ export function PromptDetail({
   const [substitutedBody, setSubstitutedBody] = useState(prompt.body);
   const author = prompt.profiles;
   const category = prompt.categories;
+  const accentColor = categoryColor(category?.slug ?? null);
 
   const handleSubstitutedChange = useCallback((text: string) => {
     setSubstitutedBody(text);
@@ -65,15 +65,22 @@ export function PromptDetail({
 
   return (
     <article className="max-w-3xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="space-y-4">
+      {/* Hero header — same radial-gradient treatment as browse pages */}
+      <div className="rounded-lg px-6 py-7 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] space-y-4">
+        {/* Category dot + label | model badges */}
         <div className="flex flex-wrap items-center gap-2">
           {category && (
             <Link
               href={`/prompts?category=${category.slug}`}
-              className="text-sm font-medium text-pergamum-600 hover:text-pergamum-700"
+              className="flex items-center gap-2 group/cat"
             >
-              {category.name}
+              <span
+                className="inline-block w-[7px] h-[7px] rounded-full shrink-0"
+                style={{ backgroundColor: accentColor }}
+              />
+              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground-muted group-hover/cat:text-foreground transition-colors">
+                {category.name}
+              </span>
             </Link>
           )}
           {prompt.model_tags.map((m) => (
@@ -81,7 +88,7 @@ export function PromptDetail({
           ))}
         </div>
 
-        <h1 className="text-3xl font-bold tracking-tight">{prompt.title}</h1>
+        <h1 className="text-3xl font-medium tracking-tight">{prompt.title}</h1>
 
         {prompt.description && (
           <p className="text-muted-foreground text-lg leading-relaxed">
@@ -89,10 +96,10 @@ export function PromptDetail({
           </p>
         )}
 
-        {/* Author + meta */}
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
+        {/* Author + meta — label-mono treatment matching card footer */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 min-w-0">
+            <Avatar className="h-7 w-7 shrink-0">
               <AvatarImage
                 src={author?.avatar_url ?? undefined}
                 alt={author?.display_name ?? author?.username ?? ""}
@@ -101,22 +108,20 @@ export function PromptDetail({
                 {initials}
               </AvatarFallback>
             </Avatar>
-            <div className="text-sm">
-              <Link
-                href={`/u/${author?.username}`}
-                className="font-medium hover:text-pergamum-600 transition-colors"
-              >
-                {author?.display_name ?? author?.username}
-              </Link>
-              <span className="text-muted-foreground ml-2">
-                {relativeTime(prompt.published_at ?? prompt.created_at)}
-              </span>
-            </div>
+            <Link
+              href={`/u/${author?.username}`}
+              className="text-sm font-medium hover:text-pergamum-600 transition-colors"
+            >
+              {author?.display_name ?? author?.username}
+            </Link>
+            <span className="label-mono opacity-40">·</span>
+            <span className="label-mono">
+              {relativeTime(prompt.published_at ?? prompt.created_at)}
+            </span>
           </div>
-
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Eye className="h-4 w-4" />
-            <span>{formatCount(prompt.views)} uses</span>
+          <div className="flex items-center gap-1">
+            <Eye className="h-3 w-3 text-foreground-subtle" />
+            <span className="label-mono">{formatCount(prompt.views)} uses</span>
           </div>
         </div>
 
@@ -154,10 +159,10 @@ export function PromptDetail({
       {/* Prompt body */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
             Prompt
             {Array.isArray(prompt.variables) && prompt.variables.length > 0 && (
-              <span className="ml-2 text-pergamum-500 font-normal lowercase">
+              <span className="ml-2 text-pergamum-500 normal-case tracking-normal font-mono text-[11px]">
                 (live preview)
               </span>
             )}
@@ -172,8 +177,9 @@ export function PromptDetail({
           </div>
         </div>
 
-        <div className="relative rounded-xl border bg-zinc-50 dark:bg-zinc-900/50 overflow-hidden">
-          <pre className="prompt-body p-4 md:p-6 text-sm overflow-x-auto">
+        {/* Body container — same visual language as the install chip */}
+        <div className="relative bg-background-inset border border-border rounded-md overflow-hidden">
+          <pre className="prompt-body p-5 overflow-x-auto">
             {substitutedBody}
           </pre>
         </div>

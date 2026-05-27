@@ -297,19 +297,16 @@ export default function TheSciencePage() {
                   {block.example}
                 </p>
 
-                {/* "Why it matters" — fades + slides in on hover/focus */}
-                <p
-                  className="
-                    text-[14px] italic text-foreground/70 leading-relaxed max-w-[58ch]
-                    overflow-hidden
-                    max-h-0 opacity-0 mt-0
-                    transition-[max-height,opacity,margin-top] duration-300 ease-out
-                    group-hover:max-h-32 group-hover:opacity-100 group-hover:mt-3
-                    group-focus-visible:max-h-32 group-focus-visible:opacity-100 group-focus-visible:mt-3
-                  "
+                {/* "Why it matters" — fades + slides in on hover/focus; grid-rows avoids layout reflow */}
+                <div
+                  className="grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-300 ease-out group-hover:grid-rows-[1fr] group-hover:opacity-100 group-focus-visible:grid-rows-[1fr] group-focus-visible:opacity-100"
                 >
-                  {block.whyItMatters}
-                </p>
+                  <div className="overflow-hidden min-h-0 pt-3">
+                    <p className="text-[14px] italic text-foreground/70 leading-relaxed max-w-[58ch]">
+                      {block.whyItMatters}
+                    </p>
+                  </div>
+                </div>
               </div>
             </li>
           ))}

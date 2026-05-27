@@ -57,8 +57,8 @@ export default async function LeaderboardsPage() {
 
   return (
     <div className="container py-10 max-w-4xl">
-      <div className="mb-10">
-        <span className="label-mono">[ Rankings ]</span>
+      <div className="rounded-lg px-6 py-7 mb-10 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
+        <span className="label-mono">Rankings</span>
         <h1 className="font-serif text-[32px] md:text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
         <p className="text-foreground-muted mt-2">
           Top prompts and contributors on Pergamum.

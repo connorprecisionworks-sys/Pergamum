@@ -145,7 +145,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center gap-2 mb-6">
           <MessageSquare className="h-5 w-5" />
-          <h2 className="text-xl font-semibold">
+          <h2 className="text-xl font-medium">
             Comments{" "}
             {comments && comments.length > 0 && (
               <span className="text-muted-foreground font-normal text-base">

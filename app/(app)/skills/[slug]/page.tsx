@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
 import { SkillVoteButtons } from "@/components/skills/skill-vote-buttons";
 import { SkillReportButton } from "@/components/skills/skill-report-button";
-import { relativeTime, formatCount } from "@/lib/utils";
+import { relativeTime, formatCount, categoryColor } from "@/lib/utils";
 import type { SkillWithAuthor, VoteValue } from "@/lib/types/database";
 
 interface SkillPageProps {
@@ -53,7 +53,6 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
     notFound();
   }
 
-  // Fetch current user's vote on this skill
   let currentVote: VoteValue | null = null;
   if (user) {
     const { data } = await supabase
@@ -67,6 +66,8 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
 
   const typed = skill as SkillWithAuthor;
   const author = typed.profiles;
+  const accentColor = categoryColor(typed.category);
+
   const initials = author?.display_name
     ? author.display_name.slice(0, 2).toUpperCase()
     : author?.username?.slice(0, 2).toUpperCase() ?? "??";
@@ -82,37 +83,44 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
       </Link>
 
       <article className="max-w-3xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="space-y-4">
+        {/* Hero header — same radial-gradient treatment as browse pages */}
+        <div className="rounded-lg px-6 py-7 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] space-y-4">
+          {/* Category dot + label | runtime badges */}
           <div className="flex flex-wrap items-center gap-2">
             {typed.category && (
               <Link
                 href={`/skills?category=${encodeURIComponent(typed.category)}`}
-                className="text-sm font-medium text-pergamum-600 hover:text-pergamum-700 capitalize"
+                className="flex items-center gap-2 group/cat"
               >
-                {typed.category}
+                <span
+                  className="inline-block w-[7px] h-[7px] rounded-full shrink-0"
+                  style={{ backgroundColor: accentColor }}
+                />
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground-muted group-hover/cat:text-foreground transition-colors capitalize">
+                  {typed.category}
+                </span>
               </Link>
             )}
             {typed.runtimes.map((rt) => (
               <span
                 key={rt}
-                className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium"
+                className="font-mono text-[11px] border border-border rounded-full px-2 py-0.5 text-foreground-muted"
               >
                 {rt}
               </span>
             ))}
           </div>
 
-          <h1 className="text-3xl font-bold tracking-tight">{typed.name}</h1>
+          <h1 className="text-3xl font-medium tracking-tight">{typed.name}</h1>
 
           <p className="text-muted-foreground text-lg leading-relaxed">
             {typed.summary}
           </p>
 
-          {/* Author + meta */}
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
+          {/* Author + meta — label-mono treatment matching card footer */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex items-center gap-2 min-w-0">
+              <Avatar className="h-7 w-7 shrink-0">
                 <AvatarImage
                   src={author?.avatar_url ?? undefined}
                   alt={author?.display_name ?? author?.username ?? ""}
@@ -121,22 +129,18 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="text-sm">
-                <Link
-                  href={`/u/${author?.username}`}
-                  className="font-medium hover:text-pergamum-600 transition-colors"
-                >
-                  {author?.display_name ?? author?.username}
-                </Link>
-                <span className="text-muted-foreground ml-2">
-                  {relativeTime(typed.published_at ?? typed.created_at)}
-                </span>
-              </div>
+              <Link
+                href={`/u/${author?.username}`}
+                className="text-sm font-medium hover:text-pergamum-600 transition-colors"
+              >
+                {author?.display_name ?? author?.username}
+              </Link>
+              <span className="label-mono opacity-40">·</span>
+              <span className="label-mono">
+                {relativeTime(typed.published_at ?? typed.created_at)}
+              </span>
             </div>
-
-            <div className="text-xs text-muted-foreground">
-              {formatCount(typed.copies)} install copies
-            </div>
+            <span className="label-mono">{formatCount(typed.copies)} installs</span>
           </div>
 
           {/* Tags */}
@@ -158,11 +162,11 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
 
         <Separator />
 
-        {/* Install command — the headline action on this page */}
+        {/* Install command — headline action */}
         {typed.install_command && (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-3 flex-wrap">
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
                 Install
               </h2>
               <SkillVoteButtons
@@ -182,9 +186,9 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
 
         {/* External source link */}
         {typed.source_url && (
-          <div className="rounded-lg border border-border bg-background-subtle/40 p-4 flex items-center justify-between gap-3 flex-wrap">
+          <div className="rounded-md border border-border bg-background-subtle/40 p-4 flex items-center justify-between gap-3 flex-wrap">
             <div className="min-w-0">
-              <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+              <div className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-1">
                 Source
               </div>
               <a
@@ -205,14 +209,14 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
           </div>
         )}
 
-        {/* Inline SKILL.md preview */}
+        {/* SKILL.md preview — same container language as install chip */}
         {typed.readme && (
           <div className="space-y-3">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
               SKILL.md
             </h2>
-            <div className="rounded-xl border bg-zinc-50 dark:bg-zinc-900/50 overflow-hidden">
-              <pre className="p-4 md:p-6 text-sm overflow-x-auto whitespace-pre-wrap leading-relaxed font-mono">
+            <div className="bg-background-inset border border-border rounded-md overflow-hidden">
+              <pre className="p-5 md:p-6 text-sm overflow-x-auto whitespace-pre-wrap leading-relaxed font-mono">
                 {typed.readme}
               </pre>
             </div>

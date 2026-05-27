@@ -15,7 +15,7 @@ export default function LoginPage() {
           <Link href="/" className="inline-flex justify-center">
             <Logo variant="full" size="md" />
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome back</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Welcome back</h1>
           <p className="text-sm text-muted-foreground">
             Pick up where you left off.
           </p>

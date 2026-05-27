@@ -26,7 +26,7 @@ export default async function SubmitSkillPage() {
   return (
     <div className="container py-10 max-w-2xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Share a skill</h1>
+        <h1 className="text-3xl font-medium tracking-tight">Share a skill</h1>
         <p className="mt-2 text-muted-foreground">
           Got a Claude Code skill that&apos;s saved you time? Drop the install
           command, link to the source, and tell people what it does. We&apos;ll

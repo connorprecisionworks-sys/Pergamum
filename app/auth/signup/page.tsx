@@ -22,7 +22,7 @@ export default function SignupPage() {
           <Link href="/" className="inline-flex justify-center">
             <Logo variant="full" size="md" />
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight">Create your account</h1>
+          <h1 className="text-2xl font-medium tracking-tight">Create your account</h1>
           <p className="text-sm text-muted-foreground">
             Join the library — submit, vote, and save prompts.
           </p>

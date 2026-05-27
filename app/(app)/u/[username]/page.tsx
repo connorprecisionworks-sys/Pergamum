@@ -8,7 +8,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { PromptCard } from "@/components/prompts/prompt-card";
@@ -149,7 +148,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   return (
     <div className="container py-10 max-w-5xl">
       {/* ── Profile Header ─────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row gap-6 items-start mb-8">
+      <div className="rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] flex flex-col sm:flex-row gap-6 items-start">
         <Avatar className="h-20 w-20 shrink-0">
           <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.display_name ?? profile.username} />
           <AvatarFallback className="text-2xl bg-pergamum-100 text-pergamum-700">{initials}</AvatarFallback>
@@ -159,7 +158,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl font-bold font-serif">{profile.display_name ?? profile.username}</h1>
+                <h1 className="text-2xl font-medium font-serif">{profile.display_name ?? profile.username}</h1>
                 {profile.is_admin && <Badge variant="pergamum" className="text-xs">Admin</Badge>}
               </div>
               <p className="text-muted-foreground text-sm">@{profile.username}</p>
@@ -222,29 +221,36 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       </div>
 
       {/* ── Stats ──────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-        {[
-          { icon: Star, label: "Reputation", value: formatCount(profile.reputation) },
-          { icon: FileText, label: "Prompts", value: formatCount(prompts.length) },
-          { icon: ArrowUp, label: "Upvotes received", value: formatCount(profile.lifetime_upvotes_received ?? 0) },
-          { icon: Award, label: "Badges", value: userBadges.length.toString() },
-        ].map(({ icon: Icon, label, value }) => (
-          <Card key={label}>
-            <CardContent className="pt-4 pb-3">
-              <div className="flex items-center gap-1.5 text-muted-foreground mb-1">
-                <Icon className="h-3.5 w-3.5" />
-                <span className="text-xs">{label}</span>
-              </div>
-              <div className="text-xl font-bold">{value}</div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="border-t border-b border-border py-3 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2">
+        <div className="flex items-center gap-1.5">
+          <Star className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Reputation</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(profile.reputation)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <FileText className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Prompts</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(prompts.length)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <ArrowUp className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Upvotes</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(profile.lifetime_upvotes_received ?? 0)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <Award className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Badges</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{userBadges.length}</span>
+        </div>
       </div>
 
       {/* ── Badges ─────────────────────────────────────────────── */}
       {allBadges.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Badges</h2>
+          <h2 className="label-mono mb-3">Badges</h2>
           <BadgeShowcase allBadges={allBadges} earnedBadges={userBadges} />
         </div>
       )}
@@ -252,7 +258,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       {/* ── Featured prompt ────────────────────────────────────── */}
       {featuredPrompt && (
         <div className="mb-8">
-          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Featured</h2>
+          <h2 className="label-mono mb-3">Featured</h2>
           <div className="max-w-md">
             <PromptCard prompt={featuredPrompt} />
           </div>

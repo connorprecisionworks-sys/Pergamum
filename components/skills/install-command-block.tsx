@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check, Terminal } from "lucide-react";
+import { Copy, Terminal } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -23,10 +23,9 @@ export function InstallCommandBlock({ skillId, command, className }: InstallComm
     try {
       await navigator.clipboard.writeText(command);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      setTimeout(() => setCopied(false), 1600);
       toast.success("Install command copied to clipboard.");
 
-      // Vanity counter — fire-and-forget; UI doesn't depend on the result.
       void fetch("/api/skills/copy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -40,12 +39,12 @@ export function InstallCommandBlock({ skillId, command, className }: InstallComm
   return (
     <div
       className={cn(
-        "relative rounded-xl border border-border bg-zinc-50 dark:bg-zinc-900/60 overflow-hidden",
+        "relative rounded-md border border-border bg-background-inset overflow-hidden",
         className
       )}
     >
       <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-background-subtle/40">
-        <div className="flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase text-muted-foreground font-medium">
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground-subtle">
           <Terminal className="h-3.5 w-3.5" />
           <span>Install command</span>
         </div>
@@ -53,17 +52,14 @@ export function InstallCommandBlock({ skillId, command, className }: InstallComm
           onClick={handleCopy}
           aria-label="Copy install command"
           className={cn(
-            "inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border transition-colors",
+            "inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1.5 rounded-md border transition-colors",
             copied
-              ? "border-emerald-400 bg-emerald-50 text-emerald-700 dark:border-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400"
+              ? "border-pergamum-400/40 text-pergamum-400 dark:border-pergamum-500/30 dark:text-pergamum-400"
               : "border-border bg-background hover:bg-background-subtle text-foreground-muted"
           )}
         >
           {copied ? (
-            <>
-              <Check className="h-3.5 w-3.5" />
-              Copied
-            </>
+            <span>✓ copied</span>
           ) : (
             <>
               <Copy className="h-3.5 w-3.5" />
@@ -72,7 +68,7 @@ export function InstallCommandBlock({ skillId, command, className }: InstallComm
           )}
         </button>
       </div>
-      <pre className="p-4 font-mono text-sm overflow-x-auto whitespace-pre-wrap leading-relaxed">
+      <pre className="p-5 font-mono text-sm overflow-x-auto whitespace-pre-wrap leading-relaxed">
         {command}
       </pre>
     </div>

@@ -76,11 +76,9 @@ export default async function ToolsPage() {
             if (!catTools || catTools.length === 0) return null;
             return (
               <section key={cat}>
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <h2 className="label-mono mb-4 flex items-center gap-2">
                   {cat}
-                  <span className="text-sm font-normal text-muted-foreground">
-                    ({catTools.length})
-                  </span>
+                  <span className="opacity-50">({catTools.length})</span>
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {catTools.map((tool) => (
@@ -93,7 +91,7 @@ export default async function ToolsPage() {
 
           {others.length > 0 && (
             <section>
-              <h2 className="text-lg font-semibold mb-4">Other</h2>
+              <h2 className="label-mono mb-4">Other</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {others.map((tool) => (
                   <ToolCard key={tool.id} tool={tool} />

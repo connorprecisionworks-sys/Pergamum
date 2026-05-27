@@ -6,12 +6,6 @@ import { cn } from "@/lib/utils";
 import type { Category } from "@/lib/types/database";
 import { X } from "lucide-react";
 
-const SORT_OPTIONS = [
-  { value: "trending", label: "Trending"     },
-  { value: "newest",   label: "Newest"       },
-  { value: "top",      label: "Top all-time" },
-] as const;
-
 const MODEL_OPTIONS = ["claude", "gpt-4", "gemini", "llama", "mistral", "any"];
 
 interface FilterSidebarProps {
@@ -22,7 +16,6 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentSort     = searchParams.get("sort")     ?? "trending";
   const currentCategory = searchParams.get("category") ?? "";
   const currentModel    = searchParams.get("model")    ?? "";
 
@@ -42,16 +35,18 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
 
   const clearAll = () => router.push("/prompts");
 
-  const hasFilters = !!(currentCategory || currentModel || currentSort !== "trending");
+  const hasFilters = !!(currentCategory || currentModel);
 
   const activeStyle   = "bg-background-subtle text-foreground font-medium";
   const inactiveStyle = "text-foreground-muted hover:bg-background-subtle hover:text-foreground";
 
   return (
-    <aside className="w-full space-y-7" aria-label="Filter prompts">
+    <aside className="w-full space-y-6" aria-label="Filter prompts">
       {hasFilters && (
         <div className="flex items-center justify-between">
-          <span className="label-mono">Active filters</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
+            Active filters
+          </span>
           <button
             onClick={clearAll}
             aria-label="Clear all filters"
@@ -63,34 +58,16 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
         </div>
       )}
 
-      {/* Sort */}
-      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
-        <legend className="label-mono mb-3">[ Sort ]</legend>
-        <div className="flex flex-col gap-0.5">
-          {SORT_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => updateParam("sort", opt.value === "trending" ? "" : opt.value)}
-              className={cn(
-                "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
-                currentSort === opt.value ? activeStyle : inactiveStyle
-              )}
-              aria-pressed={currentSort === opt.value}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </fieldset>
-
       {/* Category */}
-      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
-        <legend className="label-mono mb-3">[ Category ]</legend>
+      <fieldset className="border-0 p-0 m-0 min-w-0">
+        <legend className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-2">
+          Category
+        </legend>
         <div className="flex flex-col gap-0.5">
           <button
             onClick={() => updateParam("category", "")}
             className={cn(
-              "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
+              "text-[13px] text-left px-3 py-2.5 md:py-1.5 flex items-center rounded-md transition-colors",
               !currentCategory ? activeStyle : inactiveStyle
             )}
             aria-pressed={!currentCategory}
@@ -104,7 +81,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
                 updateParam("category", currentCategory === cat.slug ? "" : cat.slug)
               }
               className={cn(
-                "text-[13px] text-left px-3 py-2.5 min-h-[44px] flex items-center rounded-md transition-colors",
+                "text-[13px] text-left px-3 py-2.5 md:py-1.5 flex items-center rounded-md transition-colors",
                 currentCategory === cat.slug ? activeStyle : inactiveStyle
               )}
               aria-pressed={currentCategory === cat.slug}
@@ -116,8 +93,10 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
       </fieldset>
 
       {/* Model */}
-      <fieldset className="border-0 p-0 m-0 min-w-0 space-y-2">
-        <legend className="label-mono mb-3">[ Model ]</legend>
+      <fieldset className="border-0 p-0 m-0 min-w-0">
+        <legend className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-2">
+          Model
+        </legend>
         <div className="flex flex-wrap gap-1.5">
           {MODEL_OPTIONS.map((model) => {
             const active = currentModel === model;
@@ -127,7 +106,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
                 onClick={() => updateParam("model", currentModel === model ? "" : model)}
                 aria-pressed={active}
                 className={cn(
-                  "label-mono px-2.5 py-2 min-h-[44px] rounded border transition-colors capitalize",
+                  "label-mono px-2.5 py-1.5 rounded border transition-colors capitalize",
                   active
                     ? "border-pergamum-500/60 text-pergamum-400 bg-pergamum-900/20"
                     : "border-border text-foreground-subtle hover:border-border-strong hover:text-foreground-muted"

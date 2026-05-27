@@ -1,8 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowUp, Eye, ExternalLink, Terminal } from "lucide-react";
+import { toast } from "sonner";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatCount, relativeTime } from "@/lib/utils";
+import { formatCount, relativeTime, categoryColor } from "@/lib/utils";
 import type { SkillWithAuthor } from "@/lib/types/database";
 
 interface SkillCardProps {
@@ -11,81 +14,128 @@ interface SkillCardProps {
 }
 
 export function SkillCard({ skill, className }: SkillCardProps) {
+  const [copied, setCopied] = useState(false);
   const author = skill.profiles;
+  const accentColor = categoryColor(skill.category);
+
   const initials = author?.display_name
     ? author.display_name.slice(0, 2).toUpperCase()
     : author?.username?.slice(0, 2).toUpperCase() ?? "??";
 
+  const handleCopy = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!skill.install_command) return;
+
+    navigator.clipboard
+      .writeText(skill.install_command)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1600);
+        toast.success("Install command copied to clipboard.");
+        fetch("/api/skills/copy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ skillId: skill.id }),
+        }).catch(() => {});
+      })
+      .catch(() => {
+        toast.error("Couldn't copy. Try selecting the text manually.");
+      });
+  };
+
   return (
     <Card
-      className={`group card-hover border-border bg-card animate-fade-in ${className ?? ""}`}
+      className={`group card-hover border-border bg-card animate-fade-in rounded-r-md rounded-l-none shadow-none ${className ?? ""}`}
+      style={{ borderLeftColor: accentColor, borderLeftWidth: "3px" }}
     >
       <CardContent className="p-5 pb-3">
-        {/* Category + runtime row */}
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
-          {skill.category && (
-            <Link
-              href={`/skills?category=${encodeURIComponent(skill.category)}`}
-              className="label-mono text-pergamum-500 hover:text-pergamum-400 transition-colors capitalize"
-            >
-              {skill.category}
-            </Link>
-          )}
-          {skill.runtimes.slice(0, 3).map((rt) => (
+        {/* Top row: dot + category label | upvote count */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2 min-w-0">
             <span
-              key={rt}
-              className="label-mono px-2 py-0.5 rounded bg-background-subtle text-foreground-muted"
-            >
-              {rt}
-            </span>
-          ))}
+              className="inline-block w-[7px] h-[7px] rounded-full shrink-0"
+              style={{ backgroundColor: accentColor }}
+            />
+            {skill.category && (
+              <Link
+                href={`/skills?category=${encodeURIComponent(skill.category)}`}
+                className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground-muted hover:text-foreground transition-colors truncate capitalize"
+              >
+                {skill.category}
+              </Link>
+            )}
+          </div>
+          <span className="font-mono text-[11px] text-pergamum-400 shrink-0 ml-2">
+            ↑ {formatCount(skill.upvotes)}
+          </span>
         </div>
 
         {/* Name */}
         <Link href={`/skills/${skill.slug}`}>
-          <h3 className="font-serif text-[17px] font-medium leading-snug tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
+          <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
             {skill.name}
           </h3>
         </Link>
 
         {/* Summary */}
-        <p className="text-[13px] text-foreground-muted line-clamp-2 leading-relaxed">
+        <p className="text-[14px] text-foreground-muted line-clamp-2 leading-[1.55]">
           {skill.summary}
         </p>
 
-        {/* Quick-glance install signal */}
-        <div className="flex items-center gap-3 mt-3 text-foreground-subtle">
-          {skill.install_command && (
-            <div className="flex items-center gap-1 label-mono">
-              <Terminal className="h-3 w-3" />
-              <span>CLI</span>
-            </div>
-          )}
-          {skill.source_url && (
-            <div className="flex items-center gap-1 label-mono">
-              <ExternalLink className="h-3 w-3" />
-              <span>Source</span>
-            </div>
-          )}
-        </div>
+        {/* Inline install command chip */}
+        {skill.install_command && (
+          <div className="flex items-center gap-2 mt-3 bg-background-inset border border-border rounded-md px-2.5 py-1.5">
+            <span className="font-mono text-[12px] text-foreground flex-1 truncate">
+              {skill.install_command}
+            </span>
+            <button
+              onClick={handleCopy}
+              aria-label="Copy install command"
+              className="font-mono text-[11px] text-foreground-muted hover:text-foreground bg-transparent border border-border rounded px-2 py-0.5 transition-colors shrink-0"
+            >
+              {copied ? (
+                <span className="text-pergamum-400">✓ copied</span>
+              ) : (
+                "copy"
+              )}
+            </button>
+          </div>
+        )}
 
-        {/* Tags */}
-        {skill.tags.length > 0 && (
+        {/* Runtime badges — outline pills, no fill */}
+        {skill.runtimes.length > 0 && (
           <div className="flex gap-1.5 mt-3 flex-wrap">
-            {skill.tags.slice(0, 4).map((tag) => (
-              <Link
-                key={tag}
-                href={`/skills?tag=${encodeURIComponent(tag)}`}
-                className="label-mono px-2 py-0.5 rounded bg-background-subtle hover:bg-background-inset hover:text-foreground-muted transition-colors"
+            {skill.runtimes.slice(0, 3).map((rt) => (
+              <span
+                key={rt}
+                className="font-mono text-[11px] border border-border rounded-full px-2 py-0.5 text-foreground-muted"
               >
-                #{tag}
-              </Link>
+                {rt}
+              </span>
             ))}
           </div>
         )}
+
+        {/* Tags — inline mono dot-separated */}
+        {skill.tags.length > 0 && (
+          <p className="mt-2 font-mono text-[11px] text-foreground-muted leading-relaxed">
+            {skill.tags.slice(0, 4).map((tag, i) => (
+              <span key={tag}>
+                {i > 0 && <span className="mx-1 opacity-40">·</span>}
+                <Link
+                  href={`/skills?tag=${encodeURIComponent(tag)}`}
+                  className="hover:text-foreground transition-colors"
+                >
+                  #{tag}
+                </Link>
+              </span>
+            ))}
+          </p>
+        )}
       </CardContent>
 
-      <CardFooter className="px-5 py-3 border-t border-border flex items-center justify-between">
+      <CardFooter className="px-5 py-3 border-t border-border flex items-center">
         <div className="flex items-center gap-2 min-w-0">
           <Avatar className="h-5 w-5 shrink-0">
             <AvatarImage
@@ -106,17 +156,6 @@ export function SkillCard({ skill, className }: SkillCardProps) {
           <span className="label-mono whitespace-nowrap">
             {relativeTime(skill.published_at ?? skill.created_at)}
           </span>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="flex items-center gap-1">
-            <ArrowUp className="h-3 w-3 text-foreground-subtle" />
-            <span className="label-mono">{formatCount(skill.upvotes)}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Eye className="h-3 w-3 text-foreground-subtle" />
-            <span className="label-mono">{formatCount(skill.views)}</span>
-          </div>
         </div>
       </CardFooter>
     </Card>

@@ -47,9 +47,6 @@ export function Footer() {
             <p className="text-[13px] text-foreground-muted leading-relaxed">
               Community-powered and free forever. No paywalls, no pro tier.
             </p>
-            <p className="label-mono">
-              &copy; {new Date().getFullYear()} Pergamum
-            </p>
           </div>
         </div>
 

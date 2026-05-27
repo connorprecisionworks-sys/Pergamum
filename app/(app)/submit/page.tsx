@@ -97,7 +97,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               <GitFork className="h-4 w-4" />
               <span>Remixing a prompt</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">Remix prompt</h1>
+            <h1 className="text-3xl font-medium tracking-tight">Remix prompt</h1>
             <p className="mt-2 text-muted-foreground">
               You&apos;re building on someone else&apos;s work — make it yours and give it a new title.
             </p>
@@ -108,7 +108,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
               <Wand2 className="h-4 w-4" />
               <span>From your builder draft</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight">Submit your draft</h1>
+            <h1 className="text-3xl font-medium tracking-tight">Submit your draft</h1>
             <p className="mt-2 text-muted-foreground">
               We pre-filled the form from your{" "}
               <Link href="/build" className="text-primary underline-offset-4 hover:underline">
@@ -119,7 +119,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           </>
         ) : (
           <>
-            <h1 className="text-3xl font-bold tracking-tight">Submit a prompt</h1>
+            <h1 className="text-3xl font-medium tracking-tight">Submit a prompt</h1>
             <p className="mt-2 text-muted-foreground">
               Share a prompt that&apos;s made your AI workflow better. Quality over
               quantity — the community will vote.

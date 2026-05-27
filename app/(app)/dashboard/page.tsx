@@ -75,13 +75,11 @@ export default async function DashboardPage() {
   if (hasNoPrompts) {
     return (
       <div className="container py-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              Welcome, {profile?.display_name ?? profile?.username}
-            </p>
-          </div>
+        <div className="rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
+          <h1 className="text-3xl font-medium tracking-tight">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">
+            Welcome, {profile?.display_name ?? profile?.username}
+          </p>
         </div>
 
         <Card className="max-w-lg mx-auto mt-16 text-center p-12">
@@ -92,7 +90,7 @@ export default async function DashboardPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-bold tracking-tight">Share your first prompt</h2>
+              <h2 className="text-2xl font-medium tracking-tight">Share your first prompt</h2>
               <p className="text-muted-foreground">
                 Contribute to the library and earn reputation with every upvote.
               </p>
@@ -111,9 +109,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="container py-10">
-      <div className="flex items-center justify-between mb-8">
+      <div className="rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+          <h1 className="text-3xl font-medium tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground mt-1">
             Welcome back, {profile?.display_name ?? profile?.username}
           </p>
@@ -157,53 +155,39 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <FileText className="h-4 w-4" />
-              <span className="text-sm">Published</span>
-            </div>
-            <div className="text-2xl font-bold">{published.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <Clock className="h-4 w-4" />
-              <span className="text-sm">In review</span>
-            </div>
-            <div className="text-2xl font-bold">{drafts.length}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <ArrowUp className="h-4 w-4" />
-              <span className="text-sm">Total upvotes</span>
-            </div>
-            <div className="text-2xl font-bold">{formatCount(totalUpvotes)}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-              <Eye className="h-4 w-4" />
-              <span className="text-sm">Total uses</span>
-            </div>
-            <div className="text-2xl font-bold">{formatCount(totalViews)}</div>
-          </CardContent>
-        </Card>
+      <div className="border-t border-b border-border py-3 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2">
+        <div className="flex items-center gap-1.5">
+          <FileText className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Published</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{published.length}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <Clock className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">In review</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{drafts.length}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <ArrowUp className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Upvotes</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalUpvotes)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <Eye className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Uses</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalViews)}</span>
+        </div>
         {typeof profile?.reputation === "number" && (
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                <Star className="h-4 w-4" />
-                <span className="text-sm">Reputation</span>
-              </div>
-              <div className="text-2xl font-bold">{profile.reputation}</div>
-            </CardContent>
-          </Card>
+          <>
+            <span className="opacity-40 text-foreground-subtle select-none">·</span>
+            <div className="flex items-center gap-1.5">
+              <Star className="h-3 w-3 text-foreground-subtle" />
+              <span className="label-mono text-foreground-subtle">Reputation</span>
+              <span className="font-mono text-[14px] text-foreground ml-1">{profile.reputation}</span>
+            </div>
+          </>
         )}
       </div>
 

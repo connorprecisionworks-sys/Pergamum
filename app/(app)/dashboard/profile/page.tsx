@@ -33,7 +33,7 @@ export default async function ProfileEditPage() {
         Back to dashboard
       </Link>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight font-serif">Edit profile</h1>
+        <h1 className="text-3xl font-medium tracking-tight font-serif">Edit profile</h1>
         <p className="text-muted-foreground mt-1">
           Your profile is public at{" "}
           <Link href={`/u/${profile.username}`} className="text-pergamum-600 hover:text-pergamum-700">

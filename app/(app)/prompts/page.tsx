@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { Search } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { cn } from "@/lib/utils";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { FilterSidebar } from "@/components/prompts/filter-sidebar";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -24,6 +26,12 @@ interface BrowsePageProps {
 }
 
 const PAGE_SIZE = 24;
+
+const SORT_OPTIONS = [
+  { value: "trending", label: "Trending" },
+  { value: "newest",   label: "Newest" },
+  { value: "top",      label: "Top all-time" },
+] as const;
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
   const params = await searchParams;
@@ -48,7 +56,6 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     )
     .eq("status", "published");
 
-  // Full-text search
   if (params.q) {
     query = query.textSearch("search_vector", params.q, {
       type: "websearch",
@@ -56,7 +63,6 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     });
   }
 
-  // Category filter
   if (params.category) {
     const cat = (categories as Category[] | null)?.find(
       (c) => c.slug === params.category
@@ -66,23 +72,19 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     }
   }
 
-  // Model filter
   if (params.model) {
     query = query.contains("model_tags", [params.model]);
   }
 
-  // Tag filter
   if (params.tag) {
     query = query.contains("tags", [params.tag]);
   }
 
-  // Sorting
   if (sort === "newest") {
     query = query.order("published_at", { ascending: false });
   } else if (sort === "top") {
     query = query.order("upvotes", { ascending: false });
   } else {
-    // Default: trending
     query = query.order("trending_score", { ascending: false });
   }
 
@@ -96,8 +98,8 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   return (
     <div className="container py-8 max-w-[1280px]">
-      {/* Page header */}
-      <div className="mb-8">
+      {/* Page header with brand-tinted radial gradient */}
+      <div className="relative rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
         <h1 className="font-serif text-[32px] font-medium tracking-h2">
           {params.q
             ? `Search: "${params.q}"`
@@ -116,7 +118,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
       <div className="flex gap-8">
         {/* Sidebar */}
-        <div className="hidden lg:block w-52 shrink-0">
+        <div className="hidden lg:block w-44 shrink-0">
           <Suspense fallback={null}>
             <FilterSidebar categories={(categories as Category[] | null) ?? []} />
           </Suspense>
@@ -124,7 +126,25 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
         {/* Prompt grid */}
         <div className="flex-1 min-w-0">
-          {/* Mobile filters — collapsed into a dialog */}
+          {/* Sort tabs — visible at all breakpoints */}
+          <div className="flex gap-1 mb-4 flex-wrap">
+            {SORT_OPTIONS.map(({ value, label }) => (
+              <Link
+                key={value}
+                href={buildSortUrl(params, value)}
+                className={cn(
+                  "font-mono text-[12px] uppercase tracking-[0.08em] px-3 py-1.5 rounded-md transition-colors",
+                  sort === value
+                    ? "bg-background-subtle text-foreground"
+                    : "text-foreground-muted hover:text-foreground"
+                )}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile filters */}
           <div className="lg:hidden mb-6">
             <Suspense fallback={null}>
               <FilterDialog categories={(categories as Category[] | null) ?? []} />
@@ -133,7 +153,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
           {prompts && prompts.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {(prompts as PromptWithAuthor[]).map((prompt) => (
                   <PromptCard key={prompt.id} prompt={prompt} />
                 ))}
@@ -180,6 +200,20 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       </div>
     </div>
   );
+}
+
+function buildSortUrl(
+  params: Record<string, string | undefined>,
+  sort: string
+): string {
+  const p = new URLSearchParams();
+  if (params.q) p.set("q", params.q);
+  if (params.category) p.set("category", params.category);
+  if (params.model) p.set("model", params.model);
+  if (params.tag) p.set("tag", params.tag);
+  if (sort !== "trending") p.set("sort", sort);
+  const qs = p.toString();
+  return qs ? `/prompts?${qs}` : "/prompts";
 }
 
 function buildUrl(

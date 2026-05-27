@@ -39,7 +39,7 @@ export default async function DashboardCollectionsPage({ searchParams }: PagePro
         Back to dashboard
       </Link>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight font-serif">My collections</h1>
+        <h1 className="text-3xl font-medium tracking-tight font-serif">My collections</h1>
         <p className="text-muted-foreground mt-1">Create and manage curated lists of prompts.</p>
       </div>
       <CollectionManager
