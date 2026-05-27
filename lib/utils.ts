@@ -39,6 +39,20 @@ export function substituteVariables(
   return body.replace(/\{\{(\w+)\}\}/g, (match, name) => values[name] ?? match);
 }
 
+/** Pull unique {{variable}} names out of a prompt body, in first-seen order. */
+export function detectVariableNames(body: string): string[] {
+  if (!body) return [];
+  const seen = new Set<string>();
+  const names: string[] = [];
+  for (const match of body.matchAll(/\{\{(\w+)\}\}/g)) {
+    if (!seen.has(match[1])) {
+      seen.add(match[1]);
+      names.push(match[1]);
+    }
+  }
+  return names;
+}
+
 /** Normalize comma-separated tags: lowercase, trimmed, deduped */
 export function normalizeTags(raw: string): string[] {
   return [

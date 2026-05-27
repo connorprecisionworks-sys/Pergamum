@@ -29,7 +29,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
-import { slugify, normalizeTags, substituteVariables } from "@/lib/utils";
+import { slugify, normalizeTags, substituteVariables, detectVariableNames } from "@/lib/utils";
 import { track } from "@/lib/analytics";
 import type { Category, Prompt } from "@/lib/types/database";
 
@@ -71,23 +71,6 @@ const promptSchema = z.object({
 
 type PromptFormValues = z.infer<typeof promptSchema>;
 
-/**
- * Pull unique {{variable}} names out of a prompt body, in first-seen order.
- * This is the single source of truth for which variables a prompt has — used
- * both for the live "Variables found" UI and for what gets saved on submit.
- */
-function detectVariableNames(body: string): string[] {
-  if (!body) return [];
-  const seen = new Set<string>();
-  const names: string[] = [];
-  for (const match of body.matchAll(/\{\{(\w+)\}\}/g)) {
-    if (!seen.has(match[1])) {
-      seen.add(match[1]);
-      names.push(match[1]);
-    }
-  }
-  return names;
-}
 
 interface SubmitFormProps {
   categories: Category[];

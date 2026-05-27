@@ -11,7 +11,7 @@ import { CopyButton } from "./copy-button";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
-import { formatCount, relativeTime, categoryColor } from "@/lib/utils";
+import { formatCount, relativeTime, categoryColor, detectVariableNames } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { PromptWithAuthor, VoteValue, PromptVariable } from "@/lib/types/database";
 
@@ -30,6 +30,16 @@ export function PromptDetail({
   const author = prompt.profiles;
   const category = prompt.categories;
   const accentColor = categoryColor(category?.slug ?? null);
+
+  // Merge stored variable metadata with body-detected names so prompts
+  // submitted before auto-detection was added still show the input form.
+  const stored = Array.isArray(prompt.variables)
+    ? (prompt.variables as unknown as PromptVariable[])
+    : [];
+  const storedByName = new Map(stored.map((v) => [v.name, v]));
+  const variables: PromptVariable[] = detectVariableNames(prompt.body).map(
+    (name) => storedByName.get(name) ?? { name, type: "text" }
+  );
 
   const handleSubstitutedChange = useCallback((text: string) => {
     setSubstitutedBody(text);
@@ -145,10 +155,10 @@ export function PromptDetail({
       <Separator />
 
       {/* Variables */}
-      {Array.isArray(prompt.variables) && prompt.variables.length > 0 && (
+      {variables.length > 0 && (
         <>
           <VariableForm
-            variables={prompt.variables as unknown as PromptVariable[]}
+            variables={variables}
             body={prompt.body}
             onSubstitutedChange={handleSubstitutedChange}
           />
@@ -161,7 +171,7 @@ export function PromptDetail({
         <div className="flex items-center justify-between">
           <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
             Prompt
-            {Array.isArray(prompt.variables) && prompt.variables.length > 0 && (
+            {variables.length > 0 && (
               <span className="ml-2 text-pergamum-500 normal-case tracking-normal font-mono text-[11px]">
                 (live preview)
               </span>
