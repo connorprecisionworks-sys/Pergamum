@@ -56,50 +56,38 @@ export default async function LandingPage() {
             Now live
           </div>
 
-          {/* Side-by-side at lg+: text left, skills image right. Stacks on mobile. */}
-          <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:gap-12 xl:gap-16 lg:items-center">
-            {/* Text column */}
-            <div className="flex flex-col gap-7 md:gap-9 max-w-[640px]">
-              <TypewriterHero />
+          {/* Text content — narrowed on lg so the absolute card stack on the right
+              doesn't crash into it. Expands on xl when there's more breathing room. */}
+          <div className="flex flex-col gap-7 md:gap-9 max-w-[640px] lg:max-w-[460px] xl:max-w-[560px]">
+            <TypewriterHero />
 
-              <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
-                A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
-              </p>
+            <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
+              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
+            </p>
 
-              {/* CTAs — left-aligned, primary verb + secondary text-link */}
-              <div className="flex items-center gap-7 flex-wrap pt-2">
-                <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
-                  <Link href="/prompts">Browse the library</Link>
-                </Button>
-                <Link
-                  href="/auth/signup"
-                  className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
-                >
-                  Contribute a prompt
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Skills image — visual proof of the install-command chip */}
-            <div className="w-full max-w-[720px]">
-              <div className="rounded-lg overflow-hidden border border-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/hero-skills.svg"
-                  alt="Three Pergamum skill cards showing install commands and one-click copy buttons."
-                  width="720"
-                  height="405"
-                  className="w-full h-auto block"
-                />
-              </div>
+            {/* CTAs — left-aligned, primary verb + secondary text-link */}
+            <div className="flex items-center gap-7 flex-wrap pt-2">
+              <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
+                <Link href="/prompts">Browse the library</Link>
+              </Button>
+              <Link
+                href="/auth/signup"
+                className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
+              >
+                Contribute a prompt
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
             </div>
           </div>
         </div>
 
-        {/* HeroPromptStack — kept in tree but hidden; SVG covers its visual role.
-            Real prompts surface in the FeaturedPrompts section below. */}
-        <div className="hidden" aria-hidden="true">
+        {/* Prompt-card stack — absolute overlay that extends past the right viewport
+            edge. Section's overflow-hidden clips the off-screen portion, giving the
+            "screenshot-runs-off-the-page" feel. Hidden below lg. */}
+        <div
+          className="hidden lg:block absolute top-1/2 -translate-y-1/2 right-[-160px] xl:right-[-200px] lg:w-[620px] xl:w-[720px] pointer-events-none z-10"
+          aria-hidden="true"
+        >
           <HeroPromptStack prompts={(teasePrompts as PromptWithAuthor[] | null) ?? []} />
         </div>
 
