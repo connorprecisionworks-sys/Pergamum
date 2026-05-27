@@ -84,9 +84,14 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
                 </Link>
               )}
             </div>
-            <span className="font-mono text-[11px] text-pergamum-400 shrink-0 ml-2">
-              ↑ {formatCount(skill.upvotes)}
-            </span>
+            <div className="flex items-center gap-2 shrink-0 ml-2">
+              <span className="font-mono text-[11px] text-foreground-subtle">
+                ⤓ {formatCount(skill.copies)}
+              </span>
+              <span className="font-mono text-[11px] text-pergamum-400">
+                ↑ {formatCount(skill.upvotes)}
+              </span>
+            </div>
           </div>
 
           <Link href={`/skills/${skill.slug}`}>

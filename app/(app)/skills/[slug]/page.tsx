@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, Tag } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -52,6 +52,22 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
 
   if (!skill || (skill.status !== "published" && skill.author_id !== user?.id)) {
     notFound();
+  }
+
+  // Fire-and-forget view increment. Service-role bypasses RLS so anonymous
+  // visitors are counted. Wrapped in try/catch so a tracking failure never
+  // breaks page rendering.
+  if (skill.status === "published") {
+    try {
+      const adminSb = await createServiceClient();
+      void adminSb
+        .from("skills")
+        .update({ views: (skill.views ?? 0) + 1 })
+        .eq("id", skill.id)
+        .then(() => {});
+    } catch {
+      // Silent — view tracking is best-effort.
+    }
   }
 
   let currentVote: VoteValue | null = null;
@@ -165,7 +181,11 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                 {relativeTime(typed.published_at ?? typed.created_at)}
               </span>
             </div>
-            <span className="label-mono">{formatCount(typed.copies)} installs</span>
+            <div className="flex items-center gap-3">
+              <span className="label-mono">{formatCount(typed.copies)} installs</span>
+              <span className="label-mono opacity-40">·</span>
+              <span className="label-mono">{formatCount(typed.views)} views</span>
+            </div>
           </div>
 
           {/* Tags */}
