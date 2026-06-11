@@ -1,191 +1,103 @@
-# Pergamum — Community Prompt Library
+Pergamum
 
-A free, community-driven web app where anyone can browse, contribute, and vote on AI prompts. Think Product Hunt meets a prompt marketplace, but open and free forever.
+A community-powered library for AI prompts. Browse, vote on, remix, and share prompts that actually work — every one human-reviewed before it goes live, free forever, no account required to read. The Library of Pergamum, on Postgres.
 
-**Live target:** Vercel  
-**Stack:** Next.js 14 (App Router) · TypeScript · Tailwind CSS · shadcn/ui · Supabase · pnpm
+It started as "Product Hunt for prompts" and is growing into a curated library with reputation, remixes, and a chat-first builder for new prompts.
 
----
+Principles
 
-## Features
 
-- **Auth** — Email/password, Google OAuth, GitHub OAuth. Signing up auto-creates a profile.
-- **Prompt CRUD** — Submit, edit, publish, delete. Auto-generated slugs with collision handling.
-- **Variable templating** — `{{variable_name}}` placeholders become live inputs on the detail page; preview updates as you type.
-- **Copy to clipboard** — One-click copy with visual feedback; increments the view count.
-- **Voting** — Upvote/downvote with optimistic UI. One vote per user per prompt. Toggle to remove; switch direction to flip.
-- **Browse & filter** — Filter by category, model tag, free-text search (Postgres FTS). Sort by trending / newest / top all-time. All filters are URL-driven (shareable links).
-- **Model badges** — Visual chips for Claude, GPT-4, Gemini, Llama, Mistral, etc. on every card.
-- **Tools directory** — ~15 seeded free AI tools. Filterable by category. Auth users can submit; admins approve.
-- **Moderation** — Every prompt is reviewed before publishing. Flag button on every prompt. Admin panel shows queue + reports.
-- **Public profiles** — `/u/[username]` with bio, stats, and published prompts.
-- **Responsive** — Mobile-first, tested at sm/md/lg breakpoints.
+Open and free forever. No paywalls. No account required to browse, copy, or share — contributing is the only thing that needs sign-up.
+Curation over volume. Every non-admin prompt enters review before publishing; consistent quality at the front door beats an infinite firehose.
+URL-driven state. Every filter, sort, tag, and category lives in the query string, so every view is a bookmarkable, shareable link.
+Postgres does the work. Voting, reputation, trending score, rate limiting, copy tracking, and badges all run as SQL functions and triggers on Supabase with RLS. The app stays a thin client over the database.
 
----
 
-## Tech Stack
+Features
 
-| Layer | Choice |
-|---|---|
-| Framework | Next.js 14, App Router, React Server Components |
-| Styling | Tailwind CSS + shadcn/ui (Radix primitives) |
-| Backend | Supabase (Postgres, Auth, Row Level Security) |
-| Auth | Supabase Auth — email/password + Google + GitHub |
-| Forms | react-hook-form + zod |
-| Package manager | pnpm |
-| Hosting target | Vercel |
-| Icons | lucide-react |
-| Toasts | sonner |
 
----
+Prompts. Submit prompts with auto-generated slugs, model tags (Claude / GPT / Gemini / Llama / image models), categories, and free-form tags. Every prompt has a public detail page with vote buttons, comments, copy-to-clipboard, and a one-click "Remix" to fork it under your name.
+Variables. Auto-detected {{name}} tokens in the body become live inputs on the prompt page; the rendered body updates as you type. Optional metadata — descriptions, defaults — layers on top, fill it in if you want, skip it if you don't.
+Browse and filter. Category, model, free-text search (Postgres FTS over title and body), three sorts: Trending (HN-style time decay), Newest, Top all-time. All filter state lives in the URL.
+Reputation and engagement. Upvote/downvote with optimistic UI and one-vote-per-user-per-prompt. Publishing awards +10, remixes give +2 to the remixer and +3 to the original author, with a daily comment cap and a floor at zero. Badges and leaderboards sit on top of the rep ledger; follows surface a personalised feed.
+Collections. Per-user prompt collections with their own slugs (unique per owner, not globally), public or private. Add any prompt to any collection from the detail page.
+AI-assisted builder. /build walks you through a chat-first builder that drafts a prompt from a goal in five labelled blocks, then hands the assembled body off to the submit form, pre-filled. Drafts auto-save server-side so you can come back to them.
+Moderation. Every non-admin prompt enters a pending queue. The admin panel shows the queue plus user reports; one click approves to published, which fires reputation, trending, and badge triggers in sequence.
 
-## Setup
 
-### Prerequisites
+Data sources (all in Supabase or the file tree)
 
-- Node.js 18+
-- pnpm (`npm install -g pnpm` or via the [official installer](https://pnpm.io/installation))
-- [Supabase CLI](https://supabase.com/docs/guides/cli) (for running migrations)
 
-### 1. Clone & install
+Postgres tables: prompts, votes, comments, profiles, collections, collection_prompts, follows, badges, user_badges, reports, tools, categories, analytics_events, rate_limit_vote_log. Migrations under supabase/migrations/0001…0010_*.sql, applied with supabase db push.
+Auth: Supabase Auth — email/password, Google OAuth, GitHub OAuth. Sign-up auto-creates a profile row via a database trigger.
+Clients: server components fetch via lib/supabase/server.ts; a cookie-free createPublicClient() is used by sitemap.ts, robots.ts, and OG image routes so they stay statically renderable.
+Analytics: first-party only — analytics_events table with RLS allowing anon + authenticated inserts and no public SELECT. No third-party trackers.
+Rate limiting: vote and copy routes query rate_limit_vote_log for entries in the last 60 seconds; 10 actions per user per minute, HTTP 429 beyond.
 
-```bash
-git clone <your-repo-url> pergamum
-cd pergamum
+
+Tech stack
+Next.js 14 (App Router, React Server Components by default), TypeScript, Tailwind CSS, shadcn/ui, Supabase (Postgres + Auth + RLS), react-hook-form + zod, pnpm. Light and dark theme. Vercel target.
+
+Develop
+
 pnpm install
-```
-
-### 2. Environment variables
-
-```bash
-cp .env.local.example .env.local
-```
-
-Fill in `.env.local`:
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-### 3. Run the migration
-
-Using Supabase CLI (recommended):
-
-```bash
-supabase link --project-ref your-project-ref
-supabase db push
-```
-
-Or paste `supabase/migrations/0001_init.sql` directly into the Supabase SQL editor.
-
-### 4. Configure OAuth providers
-
-See [SETUP.md](./SETUP.md) for step-by-step OAuth provider setup.
-
-### 5. Start the dev server
-
-```bash
 pnpm dev
-```
 
-Open [http://localhost:3000](http://localhost:3000).
+Pre-push gate (required, must pass before pushing):
 
----
+pnpm check    # = pnpm type-check && pnpm lint && pnpm build
 
-## Project Structure
+CI runs the same three steps on every push and PR via .github/workflows/ci.yml.
 
-```
-app/
-├── (marketing)/          # Public landing page + tools directory
-├── (app)/                # Authenticated & browse pages
-│   ├── prompts/          # Browse page + detail page
-│   ├── submit/           # Prompt submission form
-│   ├── dashboard/        # User dashboard
-│   ├── u/[username]/     # Public profile
-│   └── admin/            # Moderation queue (admin only)
-├── auth/                 # Login, signup, OAuth callback
-└── api/                  # vote + copy count endpoints
-components/
-├── ui/                   # shadcn/ui components
-├── prompts/              # Prompt-specific components
-├── tools/                # Tool card
-├── layout/               # Header + Footer
-└── auth/                 # Auth form
-lib/
-├── supabase/             # Browser, server, middleware clients
-├── types/database.ts     # Hand-written Supabase types
-└── utils.ts              # Helpers (slugify, substituteVariables, etc.)
-supabase/
-└── migrations/0001_init.sql
-```
+Pre-commit hook (recommended, runs pnpm type-check):
 
----
-
-## Scripts
-
-| Command | What it does |
-|---|---|
-| `pnpm dev` | Start the dev server at http://localhost:3000 |
-| `pnpm build` | Production build |
-| `pnpm lint` | ESLint |
-| `pnpm type-check` | TypeScript (`tsc --noEmit`) |
-| `pnpm check` | Run type-check → lint → build sequentially (same as CI) |
-
-**Install the pre-commit hook** (runs `pnpm type-check` before every commit):
-
-```bash
 cp scripts/pre-commit.sh .git/hooks/pre-commit
-```
 
-Skip the hook on a specific commit with `git commit --no-verify`.
+Skip on a specific commit with git commit --no-verify.
 
----
+Smoke test against a deployed URL:
 
-## Pre-deploy Checklist
+bash scripts/smoke.sh https://your-domain.com
 
-Run through this before every production deployment.
+Setup
 
-- [ ] All env vars present in Vercel project settings (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`)
-- [ ] Supabase **Site URL** updated to the production domain
-- [ ] Supabase **Redirect URLs** include the production callback: `https://your-domain.com/auth/callback`
-- [ ] Google OAuth callback URL updated in GCP console
-- [ ] GitHub OAuth callback URL updated in GitHub app settings
-- [ ] First admin user has `is_admin = true` in the `profiles` table
-- [ ] All migrations run (`supabase db push`)
-- [ ] `pnpm check` passes cleanly (zero type errors, zero lint warnings, clean build)
-- [ ] Lighthouse mobile score ≥ 90 on `/`, `/prompts`, `/prompts/[any-slug]`
-- [ ] Smoke test passes: `bash scripts/smoke.sh https://your-domain.com`
-- [ ] End-to-end smoke: sign up → confirm email → complete onboarding → submit prompt → vote on a prompt → copy a prompt — all as a fresh user
 
----
+Node 18+, pnpm 9, Supabase CLI.
+Copy .env.local.example → .env.local and fill in NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, and NEXT_PUBLIC_APP_URL.
+supabase link --project-ref <ref> then supabase db push to run all 10 migrations.
+Configure Google and GitHub OAuth callbacks per SETUP.md.
+Set the first admin: flip is_admin = true on your profile row in the SQL editor.
 
-## Contribution Guidelines
 
-1. Fork the repo and create a feature branch.
-2. Keep PRs focused — one feature or fix per PR.
-3. TypeScript strict mode — no `any`, no `console.log`.
-4. Server Components by default; use `"use client"` only when interactivity requires it.
-5. Validate all form input with zod schemas shared between client and server.
-6. Test your changes at sm/md/lg breakpoints before opening a PR.
+Structure
 
----
-
-## Decisions Made
-
-| Decision | Rationale |
-|---|---|
-| **Trending score computed on read** | Eliminates a scheduled job for v1. The `calculate_trending_score` SQL function exists; calling it from a Supabase cron job (or pg_cron) is a one-liner upgrade path. At scale, run it on a scheduled job and store the result in `trending_score`. |
-| **Violet accent color** | Chosen over blue (overused), emerald (too "money"), amber (too warm). Violet reads as "creative/technical" — well-matched to prompt engineering. |
-| **Hand-written database types** | `supabase gen types typescript` requires a live project to run. The hand-written types are 100% consistent with the migration. Once you link a project, run `supabase gen types typescript --local > lib/types/database.ts` to replace them. |
-| **Universal moderation gate** | Every prompt enters review before publishing, ensuring consistent quality at launch. Revert to the 2-prompt threshold by restoring `const needsReview = !isAdmin && contributionCount < 2` in `submit-form.tsx` and re-adding the `contributionCount` prop. |
-| **URL-driven filters** | All browse filters are stored in the URL query string, making every filtered view bookmarkable and shareable. No client-side filter state needed. |
-| **No caching headers set** | Deferred to Vercel's defaults for v1. Add `revalidate` or ISR to browse/detail pages for production traffic. |
-
----
-
-## Manual Checklist (post-build)
-
-See [SETUP.md](./SETUP.md) for the complete setup checklist you need to perform manually.
+pergamum/
+  app/
+    (marketing)/          marketing pages — home, about, the-science, tools dir
+    (app)/                authed + browse pages
+      prompts/[slug]/     public prompt page + OG/Twitter images
+      submit/             submission form (auto-detect, variable metadata)
+      build/              chat-first AI prompt builder + drafts
+      dashboard/          user dashboard, collections manager, profile editor
+      collections/        public collection pages
+      u/[username]/       public profile
+      feed/               personalised feed (follows)
+      leaderboards/       reputation + activity leaderboards
+      badges/             badge catalogue + earned-by-you
+      admin/              moderation queue, bulk JSON import
+    api/                  vote, copy, build/*, events
+    auth/                 login, signup, OAuth callback
+    onboarding/           first-run flow (username, bio)
+  components/
+    prompts/              cards, detail view, variable form, vote buttons
+    collections/          collection card, add-to-collection button
+    profile/              badge showcase, follow button
+    brand/, layout/       marketing pieces, header + footer
+    ui/                   shadcn primitives
+  lib/
+    supabase/             browser / server / service / public clients
+    types/database.ts     hand-written Supabase types
+    utils.ts              slugify, substituteVariables, trendingScore, etc.
+    analytics.ts          fire-and-forget track() client
+  supabase/migrations/    0001 init → 0010 prompt-drafts examples
+  scripts/                pre-commit, smoke test
