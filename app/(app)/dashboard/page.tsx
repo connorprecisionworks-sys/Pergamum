@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Eye, ArrowUp, Edit, FileText, Clock, User, BookOpen, Star, Sparkles } from "lucide-react";
+import { Plus, Eye, Copy, Edit, FileText, Clock, User, BookOpen, Sparkles } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -68,7 +68,7 @@ export default async function DashboardPage() {
     (p) => p.status === "pending" || p.status === "draft" || p.status === "flagged"
   );
 
-  const totalUpvotes = published.reduce((acc, p) => acc + p.upvotes, 0);
+  const totalCopies = (prompts ?? []).reduce((acc, p) => acc + p.copies, 0);
   const totalViews = (prompts ?? []).reduce((acc, p) => acc + p.views, 0);
   const hasNoPrompts = (prompts ?? []).length === 0;
 
@@ -92,7 +92,7 @@ export default async function DashboardPage() {
             <div className="space-y-2">
               <h2 className="text-2xl font-medium tracking-tight">Share your first prompt</h2>
               <p className="text-muted-foreground">
-                Contribute to the library and earn reputation with every upvote.
+                Publish a prompt and put it in front of your audience. See who copies it.
               </p>
             </div>
             <Button asChild size="lg">
@@ -138,12 +138,6 @@ export default async function DashboardPage() {
             My collections
           </Link>
         </Button>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/badges">
-            <Star className="h-4 w-4 mr-1.5" />
-            Badges
-          </Link>
-        </Button>
         {profile?.username && (
           <Button variant="outline" size="sm" asChild>
             <Link href={`/u/${profile.username}`}>
@@ -157,6 +151,18 @@ export default async function DashboardPage() {
       {/* Stats */}
       <div className="border-t border-b border-border py-3 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-1.5">
+          <Copy className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Copies</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalCopies)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
+          <Eye className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Uses</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalViews)}</span>
+        </div>
+        <span className="opacity-40 text-foreground-subtle select-none">·</span>
+        <div className="flex items-center gap-1.5">
           <FileText className="h-3 w-3 text-foreground-subtle" />
           <span className="label-mono text-foreground-subtle">Published</span>
           <span className="font-mono text-[14px] text-foreground ml-1">{published.length}</span>
@@ -167,28 +173,6 @@ export default async function DashboardPage() {
           <span className="label-mono text-foreground-subtle">In review</span>
           <span className="font-mono text-[14px] text-foreground ml-1">{drafts.length}</span>
         </div>
-        <span className="opacity-40 text-foreground-subtle select-none">·</span>
-        <div className="flex items-center gap-1.5">
-          <ArrowUp className="h-3 w-3 text-foreground-subtle" />
-          <span className="label-mono text-foreground-subtle">Upvotes</span>
-          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalUpvotes)}</span>
-        </div>
-        <span className="opacity-40 text-foreground-subtle select-none">·</span>
-        <div className="flex items-center gap-1.5">
-          <Eye className="h-3 w-3 text-foreground-subtle" />
-          <span className="label-mono text-foreground-subtle">Uses</span>
-          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalViews)}</span>
-        </div>
-        {typeof profile?.reputation === "number" && (
-          <>
-            <span className="opacity-40 text-foreground-subtle select-none">·</span>
-            <div className="flex items-center gap-1.5">
-              <Star className="h-3 w-3 text-foreground-subtle" />
-              <span className="label-mono text-foreground-subtle">Reputation</span>
-              <span className="font-mono text-[14px] text-foreground ml-1">{profile.reputation}</span>
-            </div>
-          </>
-        )}
       </div>
 
       {/* Prompts table */}
@@ -214,7 +198,7 @@ export default async function DashboardPage() {
                   <EmptyState
                     icon={<FileText className="h-6 w-6 text-muted-foreground" />}
                     title="Share your first prompt"
-                    description="Contribute to the library and earn reputation with each upvote."
+                    description="Publish it and put it in front of your audience. See who copies it."
                     action={{ label: "Submit a prompt", href: "/submit" }}
                   />
                 }
@@ -273,8 +257,8 @@ function PromptTable({ prompts, emptyContent }: { prompts: Prompt[]; emptyConten
               </div>
               <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
-                  <ArrowUp className="h-3 w-3" />
-                  {prompt.upvotes}
+                  <Copy className="h-3 w-3" />
+                  {formatCount(prompt.copies)}
                 </span>
                 <span className="flex items-center gap-1">
                   <Eye className="h-3 w-3" />
