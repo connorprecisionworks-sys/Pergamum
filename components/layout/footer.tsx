@@ -5,26 +5,28 @@ const PRODUCT_LINKS = [
   { href: "/prompts",       label: "Browse"       },
   { href: "/submit",        label: "Submit"        },
   { href: "/collections",   label: "Collections"   },
-  { href: "/leaderboards",  label: "Leaderboards"  },
   { href: "/badges",        label: "Badges"        },
   { href: "/tools",         label: "Tools"         },
+];
+
+const COMMUNITY_LINKS = [
+  { href: "/leaderboards",  label: "Leaderboards"  },
 ];
 
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
       <div className="container py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           {/* Left: wordmark + tagline */}
           <div className="space-y-4">
             <Logo variant="full" size="sm" />
             <p className="text-[13px] text-foreground-muted leading-relaxed max-w-[220px]">
-              A community archive of prompts for every AI tool.
-              Discover, contribute, remix.
+              Publish prompts as a product, not a screenshot.
             </p>
           </div>
 
-          {/* Middle: product links */}
+          {/* Product links */}
           <div className="space-y-4">
             <span className="label-mono">Product</span>
             <ul className="space-y-2">
@@ -41,11 +43,28 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Community links */}
+          <div className="space-y-4">
+            <span className="label-mono">Community</span>
+            <ul className="space-y-2">
+              {COMMUNITY_LINKS.map(({ href, label }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="text-[13px] text-foreground-muted hover:text-foreground transition-colors"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Right: built by */}
           <div className="space-y-4">
             <span className="label-mono">[ Built by ]</span>
             <p className="text-[13px] text-foreground-muted leading-relaxed">
-              Community-powered and free forever. No paywalls, no pro tier.
+              Built by a solo indie shop. Free to browse, copy, and save.
             </p>
           </div>
         </div>

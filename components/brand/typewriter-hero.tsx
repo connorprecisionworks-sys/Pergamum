@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-// Cycled use cases — keep these short, lowercase, and concrete.
+// Cycled outcomes — keep these short, lowercase, and concrete.
 const WORDS = [
-  "coding",
-  "code review",
-  "marketing",
-  "writing",
-  "research",
-  "brainstorming",
-  "summarising",
-  "cold email",
-  "product specs",
-  "meeting notes",
-  "analysis",
-  "the next thing",
+  "a product",
+  "a storefront",
+  "an experience",
+  "software",
+  "a page",
+  "the real thing",
 ];
 
 const TYPE_MS = 65;
@@ -76,7 +70,7 @@ export function TypewriterHero() {
 
   return (
     <h1 className="font-serif font-normal text-foreground text-[clamp(2.25rem,6.4vw,4.5rem)] leading-[1.02] tracking-[-0.025em]">
-      Prompts for
+      Ship your prompts as
       <br />
       <span className="inline-flex items-baseline text-primary italic">
         <span className="whitespace-pre" aria-live="polite">

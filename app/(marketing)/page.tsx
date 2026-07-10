@@ -62,19 +62,19 @@ export default async function LandingPage() {
             <TypewriterHero />
 
             <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
-              A community archive of prompts for every AI tool. Free forever — no paywall, no pro tier.
+              A prompt can be worth hundreds of dollars. Pasted into an Instagram comment, a PDF, a Google Doc, the delivery feels worth zero. PrmptKit makes the delivery the product — publish once, push an update, and your whole audience gets the latest version.
             </p>
 
             {/* CTAs — left-aligned, primary verb + secondary text-link */}
             <div className="flex items-center gap-7 flex-wrap pt-2">
               <Button size="lg" asChild className="h-12 px-7 text-[15px] font-medium">
-                <Link href="/prompts">Browse the library</Link>
+                <Link href="/auth/signup">Publish your prompt</Link>
               </Button>
               <Link
-                href="/auth/signup"
+                href="/prompts"
                 className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-foreground hover:text-primary transition-colors"
               >
-                Contribute a prompt
+                Browse the library
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
               </Link>
             </div>
@@ -128,7 +128,7 @@ export default async function LandingPage() {
         <div className="px-6 md:px-12 lg:px-20 max-w-[1180px] mx-auto mb-10 md:mb-12">
           <FadeSection>
             <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-4">
-              From the community
+              From PrmptKit creators
             </p>
             <h2 className="font-serif text-[32px] md:text-[44px] font-normal leading-[1.05] tracking-[-0.025em] max-w-[680px]">
               What people are using right now.
@@ -223,9 +223,6 @@ export default async function LandingPage() {
             </Link>
             <Link href="/submit" className="label-mono hover:text-foreground-muted transition-colors">
               Submit →
-            </Link>
-            <Link href="/leaderboards" className="label-mono hover:text-foreground-muted transition-colors">
-              Leaderboards →
             </Link>
           </div>
         </div>
