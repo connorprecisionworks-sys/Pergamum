@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
+import { LaunchButtons } from "./launch-buttons";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
@@ -197,8 +198,9 @@ export function PromptDetail({
         </div>
 
         <div className="flex items-center gap-3 justify-between flex-wrap">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <CopyButton text={substitutedBody} promptId={prompt.id} />
+            <LaunchButtons text={substitutedBody} promptId={prompt.id} />
             {currentUserId && currentUserId !== prompt.author_id && (
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/submit?fork_from=${prompt.id}`}>

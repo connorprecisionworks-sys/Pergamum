@@ -3,7 +3,8 @@ type TrackEvent =
   | "signup_completed"
   | "onboarding_completed"
   | "first_prompt_submitted"
-  | "first_prompt_published";
+  | "first_prompt_published"
+  | "prompt_launch";
 
 export function track(event: TrackEvent, props?: Record<string, unknown>): void {
   fetch("/api/events", {

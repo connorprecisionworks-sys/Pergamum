@@ -1,0 +1,57 @@
+"use client";
+
+import { ExternalLink } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { track } from "@/lib/analytics";
+
+type LaunchPlatform = "chatgpt" | "claude" | "gemini";
+
+const LAUNCHERS: {
+  platform: LaunchPlatform;
+  label: string;
+  buildUrl: (encoded: string) => string;
+}[] = [
+  { platform: "chatgpt", label: "ChatGPT", buildUrl: (q) => `https://chatgpt.com/?q=${q}` },
+  { platform: "claude",  label: "Claude",  buildUrl: (q) => `https://claude.ai/new?q=${q}` },
+  { platform: "gemini",  label: "Gemini",  buildUrl: (q) => `https://gemini.google.com/app?q=${q}` },
+];
+
+interface LaunchButtonsProps {
+  text: string;
+  promptId: string;
+  className?: string;
+}
+
+export function LaunchButtons({ text, promptId, className }: LaunchButtonsProps) {
+  const handleLaunch = async (platform: LaunchPlatform, label: string, buildUrl: (q: string) => string) => {
+    // Copy first — query-param prefill support varies by tool, so the
+    // clipboard is the reliable fallback if the tool ignores the param.
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success(`Copied — opening ${label}…`);
+    } catch {
+      toast.error("Couldn't copy automatically — paste the prompt manually if it doesn't prefill.");
+    }
+
+    window.open(buildUrl(encodeURIComponent(text)), "_blank", "noopener");
+    track("prompt_launch", { promptId, platform });
+  };
+
+  return (
+    <div className={className ? className : "flex items-center gap-1.5 flex-wrap"}>
+      {LAUNCHERS.map(({ platform, label, buildUrl }) => (
+        <Button
+          key={platform}
+          variant="outline"
+          size="sm"
+          onClick={() => handleLaunch(platform, label, buildUrl)}
+          aria-label={`Open in ${label}`}
+        >
+          <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+          {label}
+        </Button>
+      ))}
+    </div>
+  );
+}
