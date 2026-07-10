@@ -50,7 +50,7 @@ export default async function BadgesPage() {
           Earn badges by contributing to the library, gaining followers, and building reputation.
         </p>
         {user && (
-          <p className="text-sm text-brand-600 mt-1">
+          <p className="text-sm text-brand-600 dark:text-brand-300 mt-1">
             You&apos;ve earned {myBadges.length} of {allBadges.length} badges.
           </p>
         )}

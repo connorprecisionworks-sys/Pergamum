@@ -36,7 +36,7 @@ export function CollectionCard({ collection, owner, showOwner = false }: Collect
               <Lock className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-1" />
             )}
           </div>
-          <h3 className="font-semibold text-sm leading-snug mb-1 group-hover:text-brand-600 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm leading-snug mb-1 group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors line-clamp-1">
             {collection.title}
           </h3>
           {collection.description && (

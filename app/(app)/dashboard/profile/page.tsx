@@ -36,7 +36,7 @@ export default async function ProfileEditPage() {
         <h1 className="text-3xl font-medium tracking-tight font-serif">Edit profile</h1>
         <p className="text-muted-foreground mt-1">
           Your profile is public at{" "}
-          <Link href={`/u/${profile.username}`} className="text-brand-600 hover:text-brand-700">
+          <Link href={`/u/${profile.username}`} className="text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400">
             /u/{profile.username}
           </Link>
         </p>

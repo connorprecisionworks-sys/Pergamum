@@ -47,7 +47,7 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
         <div className="flex items-baseline gap-2">
           <Link
             href={`/u/${author?.username}`}
-            className="text-sm font-medium hover:text-brand-600 transition-colors"
+            className="text-sm font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
           >
             {author?.display_name ?? author?.username}
           </Link>
@@ -202,7 +202,7 @@ export function CommentSection({
         <p className="text-sm text-muted-foreground bg-muted rounded-lg p-4">
           <Link
             href="/auth/login"
-            className="text-brand-600 hover:text-brand-700 font-medium"
+            className="text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400 font-medium"
           >
             Sign in
           </Link>{" "}

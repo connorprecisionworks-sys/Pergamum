@@ -93,7 +93,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
       <div className="mb-8">
         {sourcePrompt ? (
           <>
-            <div className="flex items-center gap-2 text-sm text-brand-600 mb-2">
+            <div className="flex items-center gap-2 text-sm text-brand-600 dark:text-brand-300 mb-2">
               <GitFork className="h-4 w-4" />
               <span>Remixing a prompt</span>
             </div>
@@ -104,7 +104,7 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           </>
         ) : draftSeed ? (
           <>
-            <div className="flex items-center gap-2 text-sm text-brand-600 mb-2">
+            <div className="flex items-center gap-2 text-sm text-brand-600 dark:text-brand-300 mb-2">
               <Wand2 className="h-4 w-4" />
               <span>From your builder draft</span>
             </div>

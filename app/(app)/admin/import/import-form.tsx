@@ -345,7 +345,7 @@ export function ImportForm({ categories, adminId }: ImportFormProps) {
       {/* Post-import hint */}
       <p className="text-xs text-muted-foreground">
         Imported prompts are published immediately and attributed to your admin account.{" "}
-        <Link href="/prompts" className="text-brand-600 hover:text-brand-700">
+        <Link href="/prompts" className="text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400">
           Browse the library →
         </Link>
       </p>

@@ -120,7 +120,7 @@ export function PromptDetail({
             </Avatar>
             <Link
               href={`/u/${author?.username}`}
-              className="text-sm font-medium hover:text-brand-600 transition-colors"
+              className="text-sm font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
             >
               {author?.display_name ?? author?.username}
             </Link>

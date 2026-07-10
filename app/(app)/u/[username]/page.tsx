@@ -332,7 +332,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                     {item.kind === "prompt" && (
                       <p className="leading-snug">
                         Published{" "}
-                        <Link href={`/prompts/${item.slug}`} className="font-medium hover:text-brand-600 transition-colors">
+                        <Link href={`/prompts/${item.slug}`} className="font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
                           {item.title}
                         </Link>
                       </p>
@@ -340,7 +340,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                     {item.kind === "collection" && (
                       <p className="leading-snug">
                         Created collection{" "}
-                        <Link href={`/collections/${item.ownerUsername}/${item.collSlug}`} className="font-medium hover:text-brand-600 transition-colors">
+                        <Link href={`/collections/${item.ownerUsername}/${item.collSlug}`} className="font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
                           {item.title}
                         </Link>
                       </p>

@@ -116,7 +116,7 @@ function PromptLeaderboard({ prompts }: { prompts: PromptWithAuthor[] }) {
               <div className="flex-1 min-w-0">
                 <Link
                   href={`/prompts/${prompt.slug}`}
-                  className="font-semibold text-sm hover:text-brand-600 transition-colors line-clamp-1"
+                  className="font-semibold text-sm hover:text-brand-600 dark:hover:text-brand-300 transition-colors line-clamp-1"
                 >
                   {prompt.title}
                 </Link>
@@ -192,7 +192,7 @@ function ContributorLeaderboard({
               <div className="flex-1 min-w-0">
                 <Link
                   href={`/u/${user.username}`}
-                  className="font-semibold text-sm hover:text-brand-600 transition-colors"
+                  className="font-semibold text-sm hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
                 >
                   {user.display_name ?? user.username}
                 </Link>

@@ -88,7 +88,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       <div className="mb-8">
         <div className="flex items-start gap-3 mb-4">
           <div className="p-3 rounded-xl bg-brand-50 dark:bg-brand-950/30 border">
-            <Bookmark className="h-6 w-6 text-brand-600" />
+            <Bookmark className="h-6 w-6 text-brand-600 dark:text-brand-400" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">

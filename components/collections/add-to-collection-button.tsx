@@ -108,7 +108,7 @@ export function AddToCollectionButton({
               {loadingId === c.id ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
               ) : containing.has(c.id) ? (
-                <Check className="h-3.5 w-3.5 text-brand-600 shrink-0" />
+                <Check className="h-3.5 w-3.5 text-brand-600 dark:text-brand-400 shrink-0" />
               ) : null}
             </DropdownMenuItem>
           ))

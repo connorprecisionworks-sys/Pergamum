@@ -274,7 +274,7 @@ export function SubmitForm({
       {/* First-timer welcome banner */}
       {isFirstPrompt && !isAdmin && (
         <div className="flex gap-3 p-4 rounded-lg bg-brand-50 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-800">
-          <Info className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
+          <Info className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
           <p className="text-sm text-brand-800 dark:text-brand-300">
             Welcome! Every prompt is reviewed before going live, usually under an hour.
           </p>

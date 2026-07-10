@@ -141,7 +141,7 @@ export default async function AdminPage() {
                       <div className="flex items-center gap-2 mb-1">
                         <Link
                           href={`/prompts/${prompt.slug}`}
-                          className="font-medium text-sm hover:text-brand-600 transition-colors"
+                          className="font-medium text-sm hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
                           target="_blank"
                         >
                           {prompt.title}
@@ -186,7 +186,7 @@ export default async function AdminPage() {
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <Link
                           href={`/skills/${skill.slug}`}
-                          className="font-medium text-sm hover:text-brand-600 transition-colors"
+                          className="font-medium text-sm hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
                           target="_blank"
                         >
                           {skill.name}

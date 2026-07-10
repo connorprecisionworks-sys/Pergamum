@@ -55,7 +55,7 @@ export function ToolCard({ tool }: ToolCardProps) {
               href={tool.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-xs text-brand-600 hover:text-brand-700 mt-3 transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400 mt-3 transition-colors"
             >
               Visit site
               <ExternalLink className="h-3 w-3" />

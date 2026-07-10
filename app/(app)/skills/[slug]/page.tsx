@@ -172,7 +172,7 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               </Avatar>
               <Link
                 href={`/u/${author?.username}`}
-                className="text-sm font-medium hover:text-brand-600 transition-colors"
+                className="text-sm font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
               >
                 {author?.display_name ?? author?.username}
               </Link>
@@ -240,7 +240,7 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                 href={typed.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-brand-600 hover:text-brand-700 break-all"
+                className="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400 break-all"
               >
                 {typed.source_url}
               </a>
