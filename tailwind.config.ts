@@ -49,6 +49,14 @@ const config: Config = {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
@@ -73,18 +81,18 @@ const config: Config = {
         "border-strong":      "var(--border-strong)",
         "foreground-muted":   "var(--foreground-muted)",
         "foreground-subtle":  "var(--foreground-subtle)",
-        // ── Brand palette ──────────────────────────────────────────
+        // ── Brand palette (Ink) ─────────────────────────────────────
         brand: {
-          50:  "#f5f3ff",
-          100: "#e6e6fa",
-          200: "#d4ccf5",
-          300: "#bbbbf1",
-          400: "#b299e5",
-          500: "#9370db",
-          600: "#7447d1",
-          700: "#5c33b5",
-          800: "#432580",
-          900: "#2d1959",
+          50:  "#F1F5FA",
+          100: "#E1EAF4",
+          200: "#C4D5E8",
+          300: "#9FBAD8",
+          400: "#7396BD",
+          500: "#4E739B",
+          600: "#3C5F86",
+          700: "#34557D",
+          800: "#2A4463",
+          900: "#22344B",
         },
       },
       borderRadius: {

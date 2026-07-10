@@ -4,79 +4,75 @@
 
 @layer base {
   :root {
-    /* ── Pergamum brand palette (HSL, used by shadcn token system) ── */
-    --pergamum-50:  245 93% 97%;
-    --pergamum-100: 240 63% 94%;
-    --pergamum-200: 250 52% 88%;
-    --pergamum-300: 242 51% 82%;
-    --pergamum-400: 270 47% 74%;
-    --pergamum-500: 270 58% 65%;
-    --pergamum-600: 261 62% 55%;
-    --pergamum-700: 258 56% 45%;
-    --pergamum-800: 260 56% 32%;
-    --pergamum-900: 261 56% 22%;
-
-    /* ── shadcn/ui tokens — light mode (warm cream) ── */
-    --background: 40 25% 96%;
-    --foreground: 0 0% 9%;
+    /* ── shadcn/ui tokens — light mode (Ink neutral) ── */
+    --background: 40 27% 96%;
+    --foreground: 255 8% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 255 8% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 263 70% 50%;
+    --popover-foreground: 255 8% 9%;
+    --primary: 212 42% 35%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 40 18% 92%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 40 18% 92%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 40 18% 92%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 40 10% 88%;
-    --input: 40 10% 88%;
-    --ring: 263 70% 50%;
-    --radius: 0.5rem;
+    --secondary: 42 22% 91%;
+    --secondary-foreground: 255 8% 9%;
+    --muted: 42 22% 91%;
+    --muted-foreground: 253 5% 39%;
+    --accent: 42 22% 91%;
+    --accent-foreground: 255 8% 9%;
+    --destructive: 4 72% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 153 46% 49%;
+    --success-foreground: 0 0% 100%;
+    --warning: 39 73% 55%;
+    --warning-foreground: 240 6% 8%;
+    --border: 40 14% 88%;
+    --input: 40 14% 88%;
+    --ring: 212 42% 35%;
+    --radius: 0.25rem;
 
     /* ── Design tokens — light mode ── */
-    --background-subtle: #edeae4;
-    --background-inset:  #e5e1da;
-    --border-strong:     #cec9c1;
-    --foreground-muted:  #666666;
-    --foreground-subtle: #999999;
-    --accent-glow:       rgba(107, 38, 217, 0.12);
+    --background-subtle: #EDEAE3;
+    --background-inset:  #E5E1D9;
+    --border-strong:     #CFCBC3;
+    --foreground-muted:  #605E67;
+    --foreground-subtle: #8C8A93;
+    --accent-glow:       rgba(23, 22, 26, 0.06);
     --grid-line:         rgba(180, 170, 155, 0.30);
   }
 
   .dark {
-    /* ── shadcn/ui tokens — dark mode (near-black) ── */
-    --background: 0 0% 7%;
-    --foreground: 40 15% 92%;
-    --card: 0 0% 10%;
-    --card-foreground: 40 15% 92%;
-    --popover: 0 0% 10%;
-    --popover-foreground: 40 15% 92%;
-    --primary: 263 75% 65%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 40 15% 92%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 40 8% 65%;
-    --accent: 0 0% 14%;
-    --accent-foreground: 40 15% 92%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 18%;
-    --input: 0 0% 14%;
-    --ring: 263 75% 65%;
+    /* ── shadcn/ui tokens — dark mode (Ink neutral) ── */
+    --background: 240 8% 5%;
+    --foreground: 45 17% 91%;
+    --card: 240 7% 9%;
+    --card-foreground: 45 17% 91%;
+    --popover: 240 7% 9%;
+    --popover-foreground: 45 17% 91%;
+    --primary: 212 52% 71%;
+    --primary-foreground: 240 6% 8%;
+    --secondary: 240 6% 10%;
+    --secondary-foreground: 45 17% 91%;
+    --muted: 240 6% 10%;
+    --muted-foreground: 255 4% 60%;
+    --accent: 240 6% 10%;
+    --accent-foreground: 45 17% 91%;
+    --destructive: 4 72% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 153 46% 49%;
+    --success-foreground: 0 0% 100%;
+    --warning: 39 73% 55%;
+    --warning-foreground: 240 6% 8%;
+    --border: 240 6% 17%;
+    --input: 240 6% 17%;
+    --ring: 212 52% 71%;
 
     /* ── Design tokens — dark mode ── */
-    --background-subtle: #1c1c1c;
-    --background-inset:  #242424;
-    --border-strong:     #3a3a3a;
-    --foreground-muted:  #a8a49c;
-    --foreground-subtle: #737373;
-    --accent-glow:       rgba(150, 99, 233, 0.25);
+    --background-subtle: #17171A;
+    --background-inset:  #1F1F23;
+    --border-strong:     #3A3A40;
+    --foreground-muted:  #97959D;
+    --foreground-subtle: #6A6870;
+    --accent-glow:       rgba(0, 0, 0, 0.35);
     --grid-line:         rgba(40, 40, 40, 0.85);
   }
 }
@@ -132,21 +128,21 @@
   background-size: 20px 20px;
 }
 
-/* ── Accent glow utilities ── */
+/* ── Accent utilities: 1px border + subtle neutral shadow, no glow ── */
 .glow-accent {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 20px var(--accent-glow);
+  box-shadow: 0 0 0 1px var(--border-strong), 0 4px 16px var(--accent-glow);
 }
 .glow-accent-sm {
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 2px 10px var(--accent-glow);
+  box-shadow: 0 0 0 1px var(--border-strong), 0 2px 8px var(--accent-glow);
 }
 
-/* ── Prompt card hover: accent border + glow, no lift ── */
+/* ── Prompt card hover: accent border, subtle neutral shadow, no lift ── */
 .card-hover {
   transition: border-color 200ms ease, box-shadow 200ms ease;
 }
 .card-hover:hover {
-  border-color: rgba(147, 112, 219, 0.45);
-  box-shadow: 0 0 0 1px var(--accent-glow), 0 4px 16px var(--accent-glow);
+  border-color: hsl(var(--primary) / 0.45);
+  box-shadow: 0 0 0 1px hsl(var(--primary) / 0.45), 0 4px 12px var(--accent-glow);
 }
 
 /* ── Gradient fade for library tease section ── */
