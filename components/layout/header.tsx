@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Search, Menu, X, Zap, Star } from "lucide-react";
+import { Search, Menu, X, Zap, Star, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   profile: Profile | null;
+  unreadNotifications?: number;
 }
 
 const NAV_LINKS = [
@@ -36,7 +37,7 @@ const NAV_LINKS = [
   { href: "/the-science",   label: "The Science"  },
 ];
 
-export function Header({ profile }: HeaderProps) {
+export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [searchValue, setSearchValue] = useState("");
@@ -165,6 +166,16 @@ export function Header({ profile }: HeaderProps) {
 
           {profile ? (
             <>
+              <Button variant="ghost" size="icon" className="h-8 w-8 relative" asChild>
+                <Link href="/notifications" aria-label="Notifications">
+                  <Bell className="h-4 w-4" />
+                  {unreadNotifications > 0 && (
+                    <span className="absolute top-0.5 right-0.5 h-3.5 min-w-[0.875rem] px-[3px] rounded-full bg-primary text-primary-foreground text-[9px] font-medium leading-[0.875rem] text-center">
+                      {unreadNotifications > 9 ? "9+" : unreadNotifications}
+                    </span>
+                  )}
+                </Link>
+              </Button>
               <Button variant="default" size="sm" className="hidden md:flex h-8 gap-1" asChild>
                 <Link href="/submit">
                   <Zap className="h-3.5 w-3.5" />

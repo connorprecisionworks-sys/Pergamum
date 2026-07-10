@@ -31,7 +31,7 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { slugify, normalizeTags, substituteVariables, detectVariableNames } from "@/lib/utils";
 import { track } from "@/lib/analytics";
-import type { Category, Prompt } from "@/lib/types/database";
+import type { Category, Prompt, PromptVariable } from "@/lib/types/database";
 
 // Granular model tiers — keeps "any" as the catch-all, and groups by provider.
 // Tier names (Opus, Sonnet, Haiku, GPT-5, etc.) so this stays valid across version bumps.
@@ -84,6 +84,18 @@ interface SubmitFormProps {
    * defaults, but does not set forked_from_id on insert.
    */
   seed?: Pick<Prompt, "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
+  /**
+   * Present when this form is editing an existing prompt (Living Prompts) —
+   * submits an UPDATE against editing.id instead of an INSERT. Re-publishing
+   * an already-published prompt (editing.status === "published") bumps
+   * version, prompts for an optional changelog, and notifies
+   * followers/collection-savers; editing a draft/pending prompt just saves
+   * the fields in place.
+   */
+  editing?: Pick<
+    Prompt,
+    "id" | "slug" | "status" | "version" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables"
+  >;
 }
 
 export function SubmitForm({
@@ -93,12 +105,13 @@ export function SubmitForm({
   isFirstPrompt,
   forkedFrom,
   seed,
+  editing,
 }: SubmitFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  // forkedFrom takes precedence over seed when both are somehow present.
-  const prefill = forkedFrom ?? seed ?? null;
+  // forkedFrom takes precedence, then editing, then seed.
+  const prefill = forkedFrom ?? editing ?? seed ?? null;
   const [selectedModels, setSelectedModels] = useState<string[]>(
     prefill?.model_tags ?? ["any"]
   );
@@ -113,9 +126,21 @@ export function SubmitForm({
   } = useForm<PromptFormValues>({
     resolver: zodResolver(promptSchema),
     defaultValues: {
-      variables: [],
+      // editing carries the prompt's existing variable metadata (name,
+      // description, default, type) forward — otherwise saving an edit
+      // would silently wipe it, since it's not re-derivable from the body
+      // alone (only the {{name}} itself is).
+      variables:
+        editing && Array.isArray(editing.variables)
+          ? (editing.variables as unknown as PromptVariable[]).map((v) => ({
+              name: v.name,
+              description: v.description ?? "",
+              default: v.default ?? "",
+              type: v.type ?? "text",
+            }))
+          : [],
       model_tags: prefill?.model_tags ?? ["any"],
-      title: forkedFrom ? `Remix: ${forkedFrom.title}` : seed?.title ?? "",
+      title: forkedFrom ? `Remix: ${forkedFrom.title}` : editing?.title ?? seed?.title ?? "",
       description: prefill?.description ?? "",
       body: prefill?.body ?? "",
       category_id: prefill?.category_id ?? "",
@@ -185,26 +210,6 @@ export function SubmitForm({
     const supabase = createClient();
 
     try {
-      // Generate slug with collision check
-      const base = slugify(values.title);
-      const { data: existing } = await supabase
-        .from("prompts")
-        .select("slug")
-        .like("slug", `${base}%`);
-
-      const existingSlugs = (existing ?? []).map((p) => p.slug);
-      let slug = base;
-      if (existingSlugs.includes(slug)) {
-        let i = 2;
-        while (existingSlugs.includes(`${base}-${i}`)) i++;
-        slug = `${base}-${i}`;
-      }
-
-      // Every non-admin submission enters review before publishing
-      const needsReview = !isAdmin;
-      const status = needsReview ? "pending" : "published";
-      const published_at = needsReview ? null : new Date().toISOString();
-
       // The prompt body is the source of truth for which variables exist.
       // Auto-detect them from the body, then enrich each with any optional
       // metadata the author added under "Variable details" (matched by name).
@@ -226,6 +231,80 @@ export function SubmitForm({
           type: meta?.type ?? "text",
         };
       });
+
+      if (editing) {
+        const isRepublish = editing.status === "published";
+        // Living Prompts: re-publishing an already-live prompt bumps the
+        // version and logs a changelog entry. Editing a draft/pending prompt
+        // that's never gone live yet just saves the fields — nothing to
+        // version or notify anyone about.
+        const changelog = isRepublish
+          ? window.prompt("What changed? (optional, one line)")?.trim() || null
+          : null;
+        const newVersion = isRepublish ? editing.version + 1 : editing.version;
+
+        const { error: updateError } = await supabase
+          .from("prompts")
+          .update({
+            title: values.title.trim(),
+            description: values.description.trim(),
+            body: values.body.trim(),
+            category_id: values.category_id,
+            model_tags: values.model_tags,
+            tags: normalizeTags(values.tags ?? ""),
+            variables,
+            ...(isRepublish ? { version: newVersion } : {}),
+          })
+          .eq("id", editing.id);
+
+        if (updateError) throw updateError;
+
+        if (isRepublish) {
+          // Fire-and-forget — neither of these should block the redirect.
+          supabase
+            .from("prompt_versions")
+            .insert({
+              prompt_id: editing.id,
+              version: newVersion,
+              changelog,
+              body_snapshot: values.body.trim(),
+            })
+            .then(() => {}, () => {});
+
+          fetch("/api/prompts/notify-update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ promptId: editing.id }),
+          }).catch(() => {});
+
+          toast.success(`Prompt updated — v${newVersion} is live.`);
+          router.push(`/prompts/${editing.slug}`);
+        } else {
+          toast.success("Draft updated.");
+          router.push("/dashboard");
+        }
+        return;
+      }
+
+      // Generate slug with collision check
+      const base = slugify(values.title);
+      const { data: existing } = await supabase
+        .from("prompts")
+        .select("slug")
+        .like("slug", `${base}%`);
+
+      const existingSlugs = (existing ?? []).map((p) => p.slug);
+      let slug = base;
+      if (existingSlugs.includes(slug)) {
+        let i = 2;
+        while (existingSlugs.includes(`${base}-${i}`)) i++;
+        slug = `${base}-${i}`;
+      }
+
+      // Every non-admin submission enters review before publishing
+      const needsReview = !isAdmin;
+      const status = needsReview ? "pending" : "published";
+      const published_at = needsReview ? null : new Date().toISOString();
 
       const { data, error } = await supabase
         .from("prompts")
@@ -272,7 +351,7 @@ export function SubmitForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* First-timer welcome banner */}
-      {isFirstPrompt && !isAdmin && (
+      {!editing && isFirstPrompt && !isAdmin && (
         <div className="flex gap-3 p-4 rounded-lg bg-brand-50 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-800">
           <Info className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
           <p className="text-sm text-brand-800 dark:text-brand-300">
@@ -623,7 +702,7 @@ Code:
       </div>
 
       {/* Moderation note */}
-      {!isAdmin && (
+      {!editing && !isAdmin && (
         <div className="flex gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
           <Info className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
           <p className="text-sm text-amber-800 dark:text-amber-300">
@@ -636,7 +715,7 @@ Code:
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-          Submit prompt
+          {editing ? (editing.status === "published" ? "Save & re-publish" : "Save changes") : "Submit prompt"}
         </Button>
 
         {/* Preview as published — opens a dialog rendering the prompt as visitors will see it */}

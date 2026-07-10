@@ -86,6 +86,14 @@ export default async function PromptPage({ params }: PromptPageProps) {
     .is("parent_id", null)
     .order("created_at", { ascending: true });
 
+  // Living Prompts: version history (empty unless the prompt has been
+  // edited-and-republished at least once — v1 has no row, see 0017).
+  const { data: versions } = await supabase
+    .from("prompt_versions")
+    .select("*")
+    .eq("prompt_id", prompt.id)
+    .order("version", { ascending: false });
+
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
   const promptAuthor = (prompt as PromptWithAuthor).profiles;
   const jsonLd = {
@@ -127,6 +135,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
         prompt={prompt as PromptWithAuthor}
         currentUserId={user?.id ?? null}
         currentVote={currentVote}
+        versions={versions ?? []}
       />
 
       {user && (

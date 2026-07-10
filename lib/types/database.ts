@@ -121,6 +121,7 @@ export type Database = {
           search_vector: string | null;
           forked_from_id: string | null;
           copies: number;
+          version: number;
           created_at: string;
           updated_at: string;
           published_at: string | null;
@@ -143,6 +144,7 @@ export type Database = {
           trending_score?: number;
           forked_from_id?: string | null;
           copies?: number;
+          version?: number;
           created_at?: string;
           updated_at?: string;
           published_at?: string | null;
@@ -163,6 +165,7 @@ export type Database = {
           trending_score?: number;
           forked_from_id?: string | null;
           copies?: number;
+          version?: number;
           updated_at?: string;
           published_at?: string | null;
         };
@@ -613,6 +616,74 @@ export type Database = {
           }
         ];
       };
+      prompt_versions: {
+        Row: {
+          id: string;
+          prompt_id: string;
+          version: number;
+          changelog: string | null;
+          body_snapshot: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          prompt_id: string;
+          version: number;
+          changelog?: string | null;
+          body_snapshot?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          changelog?: string | null;
+          body_snapshot?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prompt_versions_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: string;
+          prompt_id: string | null;
+          created_at: string;
+          read_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: string;
+          prompt_id?: string | null;
+          created_at?: string;
+          read_at?: string | null;
+        };
+        Update: {
+          read_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       user_attributes: {
         Row: {
           user_id: string;
@@ -863,6 +934,8 @@ export type PromptDraft = Database["public"]["Tables"]["prompt_drafts"]["Row"];
 export type PromptPreset = Database["public"]["Tables"]["prompt_presets"]["Row"];
 export type PromptRun = Database["public"]["Tables"]["prompt_runs"]["Row"];
 export type UserAttributes = Database["public"]["Tables"]["user_attributes"]["Row"];
+export type PromptVersion = Database["public"]["Tables"]["prompt_versions"]["Row"];
+export type Notification = Database["public"]["Tables"]["notifications"]["Row"];
 
 // Must match the Postgres enums in 0016_pro_profile_fields.sql exactly.
 export type RoleCategory =

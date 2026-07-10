@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Eye, Flag, Tag, GitFork } from "lucide-react";
+import { Eye, Flag, Tag, GitFork, History, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,18 +17,21 @@ import { ModelBadge } from "./model-badge";
 import { formatCount, relativeTime, categoryColor, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { savePendingClaim } from "@/lib/anon-claim";
-import type { PromptWithAuthor, VoteValue, PromptVariable } from "@/lib/types/database";
+import type { PromptWithAuthor, VoteValue, PromptVariable, PromptVersion } from "@/lib/types/database";
 
 interface PromptDetailProps {
   prompt: PromptWithAuthor;
   currentUserId: string | null;
   currentVote: VoteValue | null;
+  /** Ordered version DESC; empty unless the prompt has been edited-and-republished at least once. */
+  versions: PromptVersion[];
 }
 
 export function PromptDetail({
   prompt,
   currentUserId,
   currentVote,
+  versions,
 }: PromptDetailProps) {
   const author = prompt.profiles;
   const category = prompt.categories;
@@ -146,6 +149,12 @@ export function PromptDetail({
               <span className="label-mono">{formatCount(prompt.views)} uses</span>
             </div>
           )}
+          {prompt.version > 1 && (
+            <div className="flex items-center gap-1">
+              <History className="h-3 w-3 text-foreground-subtle" />
+              <span className="label-mono">Updated {relativeTime(prompt.updated_at)}</span>
+            </div>
+          )}
         </div>
 
         {/* Tags */}
@@ -162,6 +171,32 @@ export function PromptDetail({
               </Link>
             ))}
           </div>
+        )}
+
+        {/* Version history — only present once a prompt has been edited-and-republished */}
+        {versions.length > 0 && (
+          <details className="group">
+            <summary className="text-xs text-muted-foreground hover:text-foreground cursor-pointer list-none flex items-center gap-1.5 select-none w-fit">
+              <ChevronRight className="h-3 w-3 transition-transform group-open:rotate-90" />
+              Version history ({versions.length + 1})
+            </summary>
+            <div className="mt-3 space-y-2.5 pl-4 border-l border-border/60">
+              {versions.map((v) => (
+                <div key={v.id} className="text-xs">
+                  <span className="font-mono text-foreground-subtle">v{v.version}</span>{" "}
+                  <span className="text-muted-foreground">{relativeTime(v.created_at)}</span>
+                  {v.changelog && <p className="mt-0.5 text-foreground/80">{v.changelog}</p>}
+                </div>
+              ))}
+              <div className="text-xs">
+                <span className="font-mono text-foreground-subtle">v1</span>{" "}
+                <span className="text-muted-foreground">
+                  {relativeTime(prompt.published_at ?? prompt.created_at)}
+                </span>
+                <p className="mt-0.5 text-foreground/80">Initial publish.</p>
+              </div>
+            </div>
+          </details>
         )}
       </div>
 
