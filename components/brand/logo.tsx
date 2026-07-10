@@ -9,25 +9,36 @@ interface LogoProps {
   className?: string;
 }
 
-// Source logo is 1536×1024 (3:2). Width is the constraint we pin to;
-// height is computed from the aspect ratio at render time by next/image.
-const sizeMap: Record<LogoSize, { width: number; height: number; cls: string }> = {
-  sm:   { width: 36,  height: 24,  cls: "h-6 w-auto" },
-  md:   { width: 60,  height: 40,  cls: "h-10 w-auto" },
-  lg:   { width: 120, height: 80,  cls: "h-20 w-auto" },
-  hero: { width: 360, height: 240, cls: "h-32 md:h-48 w-auto" },
+// Mark is icon-only (no wordmark baked in) and square (1080×1080). Two
+// theme-swapped exports — the black mark for light backgrounds, the white
+// mark for dark — toggled purely with Tailwind's class-based dark mode.
+const sizeMap: Record<LogoSize, { px: number; cls: string }> = {
+  sm:   { px: 24,  cls: "h-6 w-6" },
+  md:   { px: 40,  cls: "h-10 w-10" },
+  lg:   { px: 80,  cls: "h-20 w-20" },
+  hero: { px: 192, cls: "h-32 w-32 md:h-48 md:w-48" },
 };
 
 export function Logo({ size = "md", className }: LogoProps) {
-  const { width, height, cls } = sizeMap[size];
+  const { px, cls } = sizeMap[size];
   return (
-    <Image
-      src="/logo.png"
-      alt="PrmptKit"
-      width={width}
-      height={height}
-      priority={size === "hero"}
-      className={cn("select-none", cls, className)}
-    />
+    <>
+      <Image
+        src="/logo-mark-black.png"
+        alt="PrmptKit"
+        width={px}
+        height={px}
+        priority={size === "hero"}
+        className={cn("select-none object-contain block dark:hidden", cls, className)}
+      />
+      <Image
+        src="/logo-mark-white.png"
+        alt="PrmptKit"
+        width={px}
+        height={px}
+        priority={size === "hero"}
+        className={cn("select-none object-contain hidden dark:block", cls, className)}
+      />
+    </>
   );
 }
