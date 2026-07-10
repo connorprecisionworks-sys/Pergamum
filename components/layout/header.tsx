@@ -232,6 +232,9 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
                     <Link href="/dashboard/collections">Collections</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/dashboard/packs">Packs</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/feed">Following feed</Link>
                   </DropdownMenuItem>
                   {profile.is_admin && (

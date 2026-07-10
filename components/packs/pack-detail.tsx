@@ -17,6 +17,8 @@ interface PackDetailProps {
   initiallySaved: boolean;
   followerCount: number;
   funnelMode: boolean;
+  /** Builder's live preview: static "Get this pack" pill, no writes. */
+  previewMode?: boolean;
 }
 
 function releaseDate(d: string | null): string {
@@ -33,6 +35,7 @@ export function PackDetail({
   initiallySaved,
   followerCount,
   funnelMode,
+  previewMode,
 }: PackDetailProps) {
   const creator = pack.profiles;
   const isOwner = currentUserId === pack.creator_id;
@@ -73,15 +76,21 @@ export function PackDetail({
           )}
 
           <div className="pt-1">
-            <GetPackButton
-              packId={pack.id}
-              packTitle={pack.title}
-              gating={pack.gating as PackGating}
-              priceCents={pack.price_cents}
-              currentUserId={currentUserId}
-              initiallySaved={initiallySaved}
-              returnTo={returnTo}
-            />
+            {previewMode ? (
+              <span className="inline-flex items-center h-10 px-4 rounded-md bg-primary/40 text-primary-foreground text-sm font-medium select-none">
+                {pack.gating === "paid" ? `Get for $${(pack.price_cents / 100).toFixed(0)}` : "Get this pack"}
+              </span>
+            ) : (
+              <GetPackButton
+                packId={pack.id}
+                packTitle={pack.title}
+                gating={pack.gating as PackGating}
+                priceCents={pack.price_cents}
+                currentUserId={currentUserId}
+                initiallySaved={initiallySaved}
+                returnTo={returnTo}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -93,7 +102,10 @@ export function PackDetail({
         <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-2">Tracklist</h2>
         <div>
           {items.map((item, index) => {
-            const locked = pack.gating === "paid" && !item.is_preview && !isOwner;
+            // In the builder's live preview, currentUserId is always the
+            // creator (isOwner), which would otherwise hide the lock state
+            // they're trying to configure — simulate a visitor's view there.
+            const locked = pack.gating === "paid" && !item.is_preview && (previewMode || !isOwner);
             return (
               <PackTrackRow
                 key={item.id}

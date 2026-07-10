@@ -11,8 +11,14 @@ export const metadata: Metadata = {
   title: "Notifications",
 };
 
-type NotificationWithPrompt = Notification & {
+type NotificationWithTarget = Notification & {
   prompts: {
+    id: string;
+    title: string;
+    slug: string;
+    profiles: { username: string; display_name: string | null } | null;
+  } | null;
+  packs: {
     id: string;
     title: string;
     slug: string;
@@ -30,13 +36,15 @@ export default async function NotificationsPage() {
   const { data } = await supabase
     .from("notifications")
     .select(
-      `*, prompts:prompts!notifications_prompt_id_fkey(id, title, slug, profiles:profiles!prompts_author_id_fkey(username, display_name))`
+      `*,
+      prompts:prompts!notifications_prompt_id_fkey(id, title, slug, profiles:profiles!prompts_author_id_fkey(username, display_name)),
+      packs:packs!notifications_pack_id_fkey(id, title, slug, profiles:profiles!packs_creator_id_fkey(username, display_name))`
     )
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
 
-  const notifications = (data ?? []) as unknown as NotificationWithPrompt[];
+  const notifications = (data ?? []) as unknown as NotificationWithTarget[];
 
   // Mark everything unread as read now that the user's viewing the list.
   await supabase
@@ -61,24 +69,46 @@ export default async function NotificationsPage() {
       ) : (
         <div className="space-y-2">
           {notifications.map((n) => {
-            if (!n.prompts) return null;
-            const authorName = n.prompts.profiles?.display_name ?? n.prompts.profiles?.username ?? "Someone";
-            return (
-              <Link
-                key={n.id}
-                href={`/prompts/${n.prompts.slug}`}
-                className="flex items-start gap-3 p-4 rounded-lg border hover:bg-muted/30 transition-colors"
-              >
-                <Bell className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
-                <div className="min-w-0">
-                  <p className="text-sm">
-                    <span className="font-medium">{authorName}</span> updated{" "}
-                    <span className="font-medium">{n.prompts.title}</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(n.created_at)}</p>
-                </div>
-              </Link>
-            );
+            if (n.prompts) {
+              const authorName = n.prompts.profiles?.display_name ?? n.prompts.profiles?.username ?? "Someone";
+              return (
+                <Link
+                  key={n.id}
+                  href={`/prompts/${n.prompts.slug}`}
+                  className="flex items-start gap-3 p-4 rounded-lg border hover:bg-muted/30 transition-colors"
+                >
+                  <Bell className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
+                  <div className="min-w-0">
+                    <p className="text-sm">
+                      <span className="font-medium">{authorName}</span> updated{" "}
+                      <span className="font-medium">{n.prompts.title}</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(n.created_at)}</p>
+                  </div>
+                </Link>
+              );
+            }
+            if (n.packs) {
+              const authorName = n.packs.profiles?.display_name ?? n.packs.profiles?.username ?? "Someone";
+              const verb = n.type === "pack_updated" ? "pushed an update to" : "released";
+              return (
+                <Link
+                  key={n.id}
+                  href={`/packs/${n.packs.profiles?.username}/${n.packs.slug}`}
+                  className="flex items-start gap-3 p-4 rounded-lg border hover:bg-muted/30 transition-colors"
+                >
+                  <Bell className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
+                  <div className="min-w-0">
+                    <p className="text-sm">
+                      <span className="font-medium">{authorName}</span> {verb}{" "}
+                      <span className="font-medium">{n.packs.title}</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(n.created_at)}</p>
+                  </div>
+                </Link>
+              );
+            }
+            return null;
           })}
         </div>
       )}

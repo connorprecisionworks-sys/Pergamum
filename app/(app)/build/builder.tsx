@@ -76,6 +76,13 @@ interface BuilderProps {
   userId: string;
   initialDraft: PromptDraft | null;
   recentDrafts: Pick<PromptDraft, "id" | "title" | "goal" | "updated_at">[];
+  /**
+   * Overrides the default "Send to library" behavior (router.push to
+   * /submit?from_draft=). Callers embedding the builder in a context they
+   * can't navigate away from (e.g. the pack builder's slide-over) pass
+   * this to take over instead — the draft is still saved first.
+   */
+  onPublish?: (draftId: string) => void;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -142,7 +149,7 @@ function newId() {
 }
 
 // ─── Component ────────────────────────────────────────────────────
-export function Builder({ userId: _userId, initialDraft, recentDrafts }: BuilderProps) {
+export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish }: BuilderProps) {
   const router = useRouter();
 
   const [draftId, setDraftId] = useState<string | null>(initialDraft?.id ?? null);
@@ -442,7 +449,8 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts }: Builder
   const onSendToLibrary = () => {
     if (!hasResult) return;
     onSave((id) => {
-      router.push(`/submit?from_draft=${id}`);
+      if (onPublish) onPublish(id);
+      else router.push(`/submit?from_draft=${id}`);
     });
   };
 

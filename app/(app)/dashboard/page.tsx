@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Plus, Eye, Copy, Edit, FileText, Clock, User, BookOpen, Sparkles } from "lucide-react";
+import { Plus, Eye, Copy, Edit, FileText, Clock, User, BookOpen, Sparkles, Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,6 +82,10 @@ export default async function DashboardPage() {
     .from("prompt_runs")
     .select("*", { count: "exact", head: true })
     .eq("user_id", user.id);
+  const { count: packCount } = await supabase
+    .from("packs")
+    .select("*", { count: "exact", head: true })
+    .eq("creator_id", user.id);
 
   if (hasNoPrompts) {
     return (
@@ -159,6 +163,18 @@ export default async function DashboardPage() {
           <Link href="/dashboard/collections">
             <BookOpen className="h-4 w-4 mr-1.5" />
             My collections
+          </Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/dashboard/packs">
+            <Layers className="h-4 w-4 mr-1.5" />
+            Packs{packCount ? ` (${packCount})` : ""}
+          </Link>
+        </Button>
+        <Button size="sm" asChild>
+          <Link href="/dashboard/packs/new">
+            <Plus className="h-4 w-4 mr-1.5" />
+            New release
           </Link>
         </Button>
         {profile?.username && (
