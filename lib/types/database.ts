@@ -653,6 +653,7 @@ export type Database = {
           user_id: string;
           type: string;
           prompt_id: string | null;
+          pack_id: string | null;
           created_at: string;
           read_at: string | null;
         };
@@ -661,6 +662,7 @@ export type Database = {
           user_id: string;
           type: string;
           prompt_id?: string | null;
+          pack_id?: string | null;
           created_at?: string;
           read_at?: string | null;
         };
@@ -680,6 +682,186 @@ export type Database = {
             columns: ["prompt_id"];
             isOneToOne: false;
             referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "notifications_pack_id_fkey";
+            columns: ["pack_id"];
+            isOneToOne: false;
+            referencedRelation: "packs";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      packs: {
+        Row: {
+          id: string;
+          creator_id: string;
+          title: string;
+          slug: string;
+          liner_note: string | null;
+          cover_type: string;
+          cover_seed: string | null;
+          accent: string | null;
+          status: string;
+          gating: string;
+          price_cents: number;
+          version: number;
+          released_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          creator_id: string;
+          title: string;
+          slug: string;
+          liner_note?: string | null;
+          cover_type?: string;
+          cover_seed?: string | null;
+          accent?: string | null;
+          status?: string;
+          gating?: string;
+          price_cents?: number;
+          version?: number;
+          released_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          title?: string;
+          slug?: string;
+          liner_note?: string | null;
+          cover_type?: string;
+          cover_seed?: string | null;
+          accent?: string | null;
+          status?: string;
+          gating?: string;
+          price_cents?: number;
+          version?: number;
+          released_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "packs_creator_id_fkey";
+            columns: ["creator_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      pack_items: {
+        Row: {
+          id: string;
+          pack_id: string;
+          item_type: string;
+          prompt_id: string | null;
+          skill_id: string | null;
+          position: number;
+          promise_line: string | null;
+          is_preview: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          pack_id: string;
+          item_type: string;
+          prompt_id?: string | null;
+          skill_id?: string | null;
+          position: number;
+          promise_line?: string | null;
+          is_preview?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          item_type?: string;
+          prompt_id?: string | null;
+          skill_id?: string | null;
+          position?: number;
+          promise_line?: string | null;
+          is_preview?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pack_items_pack_id_fkey";
+            columns: ["pack_id"];
+            isOneToOne: false;
+            referencedRelation: "packs";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pack_items_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pack_items_skill_id_fkey";
+            columns: ["skill_id"];
+            isOneToOne: false;
+            referencedRelation: "skills";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      pack_versions: {
+        Row: {
+          id: string;
+          pack_id: string;
+          version: number;
+          changelog: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          pack_id: string;
+          version: number;
+          changelog?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          changelog?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "pack_versions_pack_id_fkey";
+            columns: ["pack_id"];
+            isOneToOne: false;
+            referencedRelation: "packs";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      pack_saves: {
+        Row: {
+          id: string;
+          user_id: string;
+          pack_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          pack_id: string;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "pack_saves_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "pack_saves_pack_id_fkey";
+            columns: ["pack_id"];
+            isOneToOne: false;
+            referencedRelation: "packs";
             referencedColumns: ["id"];
           }
         ];
@@ -936,6 +1118,24 @@ export type PromptRun = Database["public"]["Tables"]["prompt_runs"]["Row"];
 export type UserAttributes = Database["public"]["Tables"]["user_attributes"]["Row"];
 export type PromptVersion = Database["public"]["Tables"]["prompt_versions"]["Row"];
 export type Notification = Database["public"]["Tables"]["notifications"]["Row"];
+export type Pack = Database["public"]["Tables"]["packs"]["Row"];
+export type PackItem = Database["public"]["Tables"]["pack_items"]["Row"];
+export type PackVersion = Database["public"]["Tables"]["pack_versions"]["Row"];
+export type PackSave = Database["public"]["Tables"]["pack_saves"]["Row"];
+
+export type PackStatus = "draft" | "published";
+export type PackGating = "free" | "paid" | "follower";
+export type PackCoverType = "auto" | "upload";
+export type PackItemType = "prompt" | "skill";
+
+export type PackWithCreator = Pack & {
+  profiles: Pick<Profile, "id" | "username" | "display_name" | "avatar_url" | "bio">;
+};
+
+export type PackItemWithContent = PackItem & {
+  prompts: PromptWithAuthor | null;
+  skills: SkillWithAuthor | null;
+};
 
 // Must match the Postgres enums in 0016_pro_profile_fields.sql exactly.
 export type RoleCategory =
