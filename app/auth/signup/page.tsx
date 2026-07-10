@@ -14,7 +14,15 @@ const VALUE_PROPS = [
   "Build a personal library you can come back to",
 ];
 
-export default function SignupPage() {
+export default function SignupPage({
+  searchParams,
+}: {
+  searchParams: { next?: string };
+}) {
+  const next = searchParams.next?.startsWith("/") && !searchParams.next.startsWith("//")
+    ? searchParams.next
+    : undefined;
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm space-y-8">
@@ -37,16 +45,16 @@ export default function SignupPage() {
           ))}
         </ul>
 
-        <AuthForm mode="signup" />
+        <AuthForm mode="signup" returnTo={next} />
 
         <p className="text-center text-sm text-muted-foreground">
-          We&apos;ll send a confirmation email. Click the link and you&apos;re in.
+          No password to set — we&apos;ll email you a link, or continue with Google or Apple.
         </p>
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
-            href="/auth/login"
+            href={next ? `/auth/login?next=${encodeURIComponent(next)}` : "/auth/login"}
             className="text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400 font-medium"
           >
             Sign in

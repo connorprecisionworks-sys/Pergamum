@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Search, Menu, X, Zap, Star } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -18,6 +19,8 @@ import {
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
 import { createClient } from "@/lib/supabase/client";
+import { readPendingClaim, clearPendingClaim } from "@/lib/anon-claim";
+import { claimPendingState } from "@/lib/claim";
 import type { Profile } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
@@ -45,6 +48,23 @@ export function Header({ profile }: HeaderProps) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Frictionless claim flow: on the first authenticated render after a
+  // signed-out visitor claimed a prompt, reconcile their carried-over state.
+  const profileId = profile?.id;
+  useEffect(() => {
+    if (!profileId) return;
+    const pending = readPendingClaim();
+    if (!pending) return;
+    clearPendingClaim();
+    claimPendingState(pending.promptId, pending.values, pending.creatorId)
+      .then(() => {
+        toast.success("Saved to your library — we remembered what you typed.");
+      })
+      .catch(() => {
+        // Best-effort — a failed claim reconciliation shouldn't surface as an error.
+      });
+  }, [profileId]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

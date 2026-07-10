@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, Flag, Tag, GitFork } from "lucide-react";
 import { toast } from "sonner";
@@ -10,11 +10,13 @@ import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
 import { LaunchButtons } from "./launch-buttons";
 import { PresetPanel } from "./preset-panel";
+import { ClaimButton } from "./claim-button";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
 import { formatCount, relativeTime, categoryColor, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
+import { savePendingClaim } from "@/lib/anon-claim";
 import type { PromptWithAuthor, VoteValue, PromptVariable } from "@/lib/types/database";
 
 interface PromptDetailProps {
@@ -46,6 +48,13 @@ export function PromptDetail({
     Object.fromEntries(variables.map((v) => [v.name, v.default ?? ""]))
   );
   const substitutedBody = substituteVariables(prompt.body, values);
+
+  // Anonymous carryover: keep the in-progress state ready to claim on auth.
+  useEffect(() => {
+    if (!currentUserId) {
+      savePendingClaim(prompt.id, values, prompt.author_id);
+    }
+  }, [currentUserId, prompt.id, prompt.author_id, values]);
 
   const handleReport = async () => {
     if (!currentUserId) {
@@ -230,6 +239,7 @@ export function PromptDetail({
                 </Link>
               </Button>
             )}
+            {!currentUserId && <ClaimButton returnTo={`/prompts/${prompt.slug}`} />}
           </div>
           <Button
             variant="ghost"

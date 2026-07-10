@@ -7,7 +7,15 @@ export const metadata: Metadata = {
   title: "Sign in",
 };
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { next?: string };
+}) {
+  const next = searchParams.next?.startsWith("/") && !searchParams.next.startsWith("//")
+    ? searchParams.next
+    : undefined;
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm space-y-8">
@@ -21,12 +29,12 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <AuthForm mode="login" />
+        <AuthForm mode="login" returnTo={next} />
 
         <p className="text-center text-sm text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link
-            href="/auth/signup"
+            href={next ? `/auth/signup?next=${encodeURIComponent(next)}` : "/auth/signup"}
             className="text-brand-600 hover:text-brand-700 dark:text-brand-300 dark:hover:text-brand-400 font-medium"
           >
             Sign up
