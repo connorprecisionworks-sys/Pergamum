@@ -1,35 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { substituteVariables } from "@/lib/utils";
 import type { PromptVariable } from "@/lib/types/database";
 
 interface VariableFormProps {
   variables: PromptVariable[];
-  body: string;
-  onSubstitutedChange: (substituted: string) => void;
+  values: Record<string, string>;
+  onValuesChange: (values: Record<string, string>) => void;
 }
 
 export function VariableForm({
   variables,
-  body,
-  onSubstitutedChange,
+  values,
+  onValuesChange,
 }: VariableFormProps) {
-  const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(variables.map((v) => [v.name, v.default ?? ""]))
-  );
-
-  useEffect(() => {
-    onSubstitutedChange(substituteVariables(body, values));
-  }, [body, values, onSubstitutedChange]);
-
   if (variables.length === 0) return null;
 
   const handleChange = (name: string, value: string) => {
-    setValues((prev) => ({ ...prev, [name]: value }));
+    onValuesChange({ ...values, [name]: value });
   };
 
   return (

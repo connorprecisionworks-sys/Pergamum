@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Eye, Flag, Tag, GitFork } from "lucide-react";
 import { toast } from "sonner";
@@ -9,10 +9,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
 import { LaunchButtons } from "./launch-buttons";
+import { PresetPanel } from "./preset-panel";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
-import { formatCount, relativeTime, categoryColor, detectVariableNames } from "@/lib/utils";
+import { formatCount, relativeTime, categoryColor, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import type { PromptWithAuthor, VoteValue, PromptVariable } from "@/lib/types/database";
 
@@ -27,7 +28,6 @@ export function PromptDetail({
   currentUserId,
   currentVote,
 }: PromptDetailProps) {
-  const [substitutedBody, setSubstitutedBody] = useState(prompt.body);
   const author = prompt.profiles;
   const category = prompt.categories;
   const accentColor = categoryColor(category?.slug ?? null);
@@ -42,9 +42,10 @@ export function PromptDetail({
     (name) => storedByName.get(name) ?? { name, type: "text" }
   );
 
-  const handleSubstitutedChange = useCallback((text: string) => {
-    setSubstitutedBody(text);
-  }, []);
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(variables.map((v) => [v.name, v.default ?? ""]))
+  );
+  const substitutedBody = substituteVariables(prompt.body, values);
 
   const handleReport = async () => {
     if (!currentUserId) {
@@ -162,9 +163,19 @@ export function PromptDetail({
         <>
           <VariableForm
             variables={variables}
-            body={prompt.body}
-            onSubstitutedChange={handleSubstitutedChange}
+            values={values}
+            onValuesChange={setValues}
           />
+          {currentUserId && (
+            <div className="flex justify-end">
+              <PresetPanel
+                promptId={prompt.id}
+                currentUserId={currentUserId}
+                values={values}
+                onLoadValues={setValues}
+              />
+            </div>
+          )}
           <Separator />
         </>
       )}
@@ -199,8 +210,18 @@ export function PromptDetail({
 
         <div className="flex items-center gap-3 justify-between flex-wrap">
           <div className="flex items-center gap-2 flex-wrap">
-            <CopyButton text={substitutedBody} promptId={prompt.id} />
-            <LaunchButtons text={substitutedBody} promptId={prompt.id} />
+            <CopyButton
+              text={substitutedBody}
+              promptId={prompt.id}
+              currentUserId={currentUserId}
+              values={values}
+            />
+            <LaunchButtons
+              text={substitutedBody}
+              promptId={prompt.id}
+              currentUserId={currentUserId}
+              values={values}
+            />
             {currentUserId && currentUserId !== prompt.author_id && (
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/submit?fork_from=${prompt.id}`}>

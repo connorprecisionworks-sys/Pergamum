@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
+import { logPromptRun } from "@/lib/prompt-runs";
 
 type LaunchPlatform = "chatgpt" | "claude" | "gemini";
 
@@ -20,10 +21,12 @@ const LAUNCHERS: {
 interface LaunchButtonsProps {
   text: string;
   promptId: string;
+  currentUserId: string | null;
+  values: Record<string, string>;
   className?: string;
 }
 
-export function LaunchButtons({ text, promptId, className }: LaunchButtonsProps) {
+export function LaunchButtons({ text, promptId, currentUserId, values, className }: LaunchButtonsProps) {
   const handleLaunch = async (platform: LaunchPlatform, label: string, buildUrl: (q: string) => string) => {
     // Copy first — query-param prefill support varies by tool, so the
     // clipboard is the reliable fallback if the tool ignores the param.
@@ -36,6 +39,10 @@ export function LaunchButtons({ text, promptId, className }: LaunchButtonsProps)
 
     window.open(buildUrl(encodeURIComponent(text)), "_blank", "noopener");
     track("prompt_launch", { promptId, platform });
+
+    if (currentUserId) {
+      logPromptRun(promptId, currentUserId, values);
+    }
   };
 
   return (

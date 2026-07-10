@@ -4,15 +4,17 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
+import { logPromptRun } from "@/lib/prompt-runs";
 
 interface CopyButtonProps {
   text: string;
   promptId: string;
+  currentUserId: string | null;
+  values: Record<string, string>;
   className?: string;
 }
 
-export function CopyButton({ text, promptId, className }: CopyButtonProps) {
+export function CopyButton({ text, promptId, currentUserId, values, className }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -29,6 +31,10 @@ export function CopyButton({ text, promptId, className }: CopyButtonProps) {
       }).catch(() => {
         // Non-critical: ignore errors
       });
+
+      if (currentUserId) {
+        logPromptRun(promptId, currentUserId, values);
+      }
 
       // Reset after 2s
       setTimeout(() => setCopied(false), 2000);

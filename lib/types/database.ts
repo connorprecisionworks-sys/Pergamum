@@ -613,6 +613,82 @@ export type Database = {
           }
         ];
       };
+      prompt_presets: {
+        Row: {
+          id: string;
+          user_id: string;
+          prompt_id: string;
+          name: string;
+          values: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          prompt_id: string;
+          name: string;
+          values?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          values?: Json;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prompt_presets_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "prompt_presets_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
+      prompt_runs: {
+        Row: {
+          id: string;
+          user_id: string;
+          prompt_id: string;
+          values: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          prompt_id: string;
+          values?: Json;
+          created_at?: string;
+        };
+        Update: {
+          values?: Json;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "prompt_runs_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "prompt_runs_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       prompt_drafts: {
         Row: {
           id: string;
@@ -738,6 +814,8 @@ export type Comment = Database["public"]["Tables"]["comments"]["Row"];
 export type Tool = Database["public"]["Tables"]["tools"]["Row"];
 export type Report = Database["public"]["Tables"]["reports"]["Row"];
 export type PromptDraft = Database["public"]["Tables"]["prompt_drafts"]["Row"];
+export type PromptPreset = Database["public"]["Tables"]["prompt_presets"]["Row"];
+export type PromptRun = Database["public"]["Tables"]["prompt_runs"]["Row"];
 export type Skill = Database["public"]["Tables"]["skills"]["Row"];
 export type SkillVote = Database["public"]["Tables"]["skill_votes"]["Row"];
 
