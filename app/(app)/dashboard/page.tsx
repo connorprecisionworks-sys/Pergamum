@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PersonalizeCard } from "@/components/profile/personalize-card";
 import { formatCount, relativeTime } from "@/lib/utils";
 import type { Prompt } from "@/lib/types/database";
 
@@ -72,6 +73,16 @@ export default async function DashboardPage() {
   const totalViews = (prompts ?? []).reduce((acc, p) => acc + p.views, 0);
   const hasNoPrompts = (prompts ?? []).length === 0;
 
+  const { data: proAttributes } = await supabase
+    .from("user_attributes")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const { count: promptRunsCount } = await supabase
+    .from("prompt_runs")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id);
+
   if (hasNoPrompts) {
     return (
       <div className="container py-10">
@@ -81,6 +92,12 @@ export default async function DashboardPage() {
             Welcome, {profile?.display_name ?? profile?.username}
           </p>
         </div>
+
+        <PersonalizeCard
+          hasCompletedProfile={!!proAttributes?.completed_at}
+          promptRunsCount={promptRunsCount ?? 0}
+          initial={proAttributes ?? null}
+        />
 
         <Card className="max-w-lg mx-auto mt-16 text-center p-12">
           <CardContent className="space-y-6 pt-0">
@@ -123,6 +140,12 @@ export default async function DashboardPage() {
           </Link>
         </Button>
       </div>
+
+      <PersonalizeCard
+        hasCompletedProfile={!!proAttributes?.completed_at}
+        promptRunsCount={promptRunsCount ?? 0}
+        initial={proAttributes ?? null}
+      />
 
       {/* Quick links */}
       <div className="flex flex-wrap gap-3 mb-8">

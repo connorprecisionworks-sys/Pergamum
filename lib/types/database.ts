@@ -613,6 +613,52 @@ export type Database = {
           }
         ];
       };
+      user_attributes: {
+        Row: {
+          user_id: string;
+          role_category: RoleCategory | null;
+          industry: Industry | null;
+          company_size: CompanySize | null;
+          goals: string[] | null;
+          job_title: string | null;
+          company_name: string | null;
+          linkedin_url: string | null;
+          completed_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          role_category?: RoleCategory | null;
+          industry?: Industry | null;
+          company_size?: CompanySize | null;
+          goals?: string[] | null;
+          job_title?: string | null;
+          company_name?: string | null;
+          linkedin_url?: string | null;
+          completed_at?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          role_category?: RoleCategory | null;
+          industry?: Industry | null;
+          company_size?: CompanySize | null;
+          goals?: string[] | null;
+          job_title?: string | null;
+          company_name?: string | null;
+          linkedin_url?: string | null;
+          completed_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "user_attributes_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: true;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       prompt_presets: {
         Row: {
           id: string;
@@ -816,6 +862,39 @@ export type Report = Database["public"]["Tables"]["reports"]["Row"];
 export type PromptDraft = Database["public"]["Tables"]["prompt_drafts"]["Row"];
 export type PromptPreset = Database["public"]["Tables"]["prompt_presets"]["Row"];
 export type PromptRun = Database["public"]["Tables"]["prompt_runs"]["Row"];
+export type UserAttributes = Database["public"]["Tables"]["user_attributes"]["Row"];
+
+// Must match the Postgres enums in 0016_pro_profile_fields.sql exactly.
+export type RoleCategory =
+  | "founder_owner"
+  | "executive"
+  | "marketing"
+  | "sales_bd"
+  | "consultant_coach"
+  | "engineering_data"
+  | "product_design"
+  | "operations"
+  | "hr_recruiting"
+  | "finance_legal"
+  | "content_creator"
+  | "student"
+  | "other";
+
+export type Industry =
+  | "agency_consulting"
+  | "saas_tech"
+  | "ecommerce_retail"
+  | "coaching_education"
+  | "health_wellness"
+  | "finance_insurance"
+  | "real_estate"
+  | "legal"
+  | "marketing_media"
+  | "manufacturing_trades"
+  | "nonprofit"
+  | "other";
+
+export type CompanySize = "solo" | "s2_10" | "s11_50" | "s51_200" | "s201_1000" | "s1000_plus";
 export type Skill = Database["public"]["Tables"]["skills"]["Row"];
 export type SkillVote = Database["public"]["Tables"]["skill_votes"]["Row"];
 

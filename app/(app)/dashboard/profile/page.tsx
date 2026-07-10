@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { Separator } from "@/components/ui/separator";
+import { ProProfileForm } from "@/components/profile/pro-profile-form";
 import { ProfileForm } from "./profile-form";
 
 export const metadata: Metadata = { title: "Edit Profile" };
@@ -23,6 +25,12 @@ export default async function ProfileEditPage() {
     .eq("status", "published")
     .order("title");
 
+  const { data: proAttributes } = await supabase
+    .from("user_attributes")
+    .select("*")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
   return (
     <div className="container py-10 max-w-2xl">
       <Link
@@ -42,6 +50,16 @@ export default async function ProfileEditPage() {
         </p>
       </div>
       <ProfileForm profile={profile} publishedPrompts={prompts ?? []} />
+
+      <Separator className="my-10" />
+
+      <div className="max-w-lg">
+        <h2 className="text-xl font-medium tracking-tight font-serif mb-1">About you</h2>
+        <p className="text-sm text-muted-foreground mb-6">
+          Optional — helps your prompts show up tuned to you. Never shown on your public profile.
+        </p>
+        <ProProfileForm initial={proAttributes ?? null} variant="settings" />
+      </div>
     </div>
   );
 }
