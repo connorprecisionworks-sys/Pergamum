@@ -108,7 +108,7 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
     .eq("prompt_id", prompt.id)
     .order("version", { ascending: false });
 
-  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmpt.com";
   const promptAuthor = (prompt as PromptWithAuthor).profiles;
   const jsonLd = {
     "@context": "https://schema.org",

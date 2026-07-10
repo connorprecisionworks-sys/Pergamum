@@ -89,7 +89,7 @@ export function BuildGate() {
         <p className="text-xs text-muted-foreground pt-2 border-t border-border/60">
           Don&apos;t have a code yet?{" "}
           <a
-            href="mailto:hello@prmptkit.com?subject=Builder%20beta%20access"
+            href="mailto:hello@prmpt.com?subject=Builder%20beta%20access"
             className="text-foreground underline underline-offset-4 hover:text-primary"
           >
             Request access

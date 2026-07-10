@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmpt.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
