@@ -18,6 +18,7 @@ const CommentSection = dynamic(
 
 interface PromptPageProps {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ run?: string; preset?: string }>;
 }
 
 export async function generateMetadata({
@@ -39,8 +40,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function PromptPage({ params }: PromptPageProps) {
+export default async function PromptPage({ params, searchParams }: PromptPageProps) {
   const { slug } = await params;
+  const { run: runId, preset: presetId } = await searchParams;
   const supabase = await createClient();
 
   const {
@@ -63,19 +65,31 @@ export default async function PromptPage({ params }: PromptPageProps) {
   // Fetch current user's vote + collections containing this prompt
   let currentVote: VoteValue | null = null;
   let containingCollectionIds: string[] = [];
+  let initiallySaved = false;
+  let initialValues: Record<string, string> | undefined;
   if (user) {
-    const [voteResult, containingResult] = await Promise.all([
+    const [voteResult, containingResult, saveResult, runResult, presetResult] = await Promise.all([
       supabase.from("votes").select("value").eq("user_id", user.id).eq("prompt_id", prompt.id).single(),
       supabase
         .from("collection_prompts")
         .select("collection_id, collections!inner(owner_id)")
         .eq("prompt_id", prompt.id)
         .eq("collections.owner_id" as never, user.id),
+      supabase.from("prompt_saves").select("id").eq("user_id", user.id).eq("prompt_id", prompt.id).maybeSingle(),
+      runId
+        ? supabase.from("prompt_runs").select("values").eq("id", runId).eq("user_id", user.id).eq("prompt_id", prompt.id).maybeSingle()
+        : Promise.resolve({ data: null }),
+      presetId
+        ? supabase.from("prompt_presets").select("values").eq("id", presetId).eq("user_id", user.id).eq("prompt_id", prompt.id).maybeSingle()
+        : Promise.resolve({ data: null }),
     ]);
     if (voteResult.data) currentVote = voteResult.data.value as VoteValue;
     containingCollectionIds = (containingResult.data ?? []).map(
       (r: { collection_id: string }) => r.collection_id
     );
+    initiallySaved = !!saveResult.data;
+    const restoredValues = runResult.data?.values ?? presetResult.data?.values;
+    if (restoredValues) initialValues = restoredValues as unknown as Record<string, string>;
   }
 
   // Fetch comments with authors (top-level only, replies fetched via nesting)
@@ -136,6 +150,8 @@ export default async function PromptPage({ params }: PromptPageProps) {
         currentUserId={user?.id ?? null}
         currentVote={currentVote}
         versions={versions ?? []}
+        initiallySaved={initiallySaved}
+        initialValues={initialValues}
       />
 
       {user && (

@@ -866,6 +866,37 @@ export type Database = {
           }
         ];
       };
+      prompt_saves: {
+        Row: {
+          id: string;
+          user_id: string;
+          prompt_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          prompt_id: string;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "prompt_saves_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "prompt_saves_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       user_attributes: {
         Row: {
           user_id: string;
@@ -1122,6 +1153,7 @@ export type Pack = Database["public"]["Tables"]["packs"]["Row"];
 export type PackItem = Database["public"]["Tables"]["pack_items"]["Row"];
 export type PackVersion = Database["public"]["Tables"]["pack_versions"]["Row"];
 export type PackSave = Database["public"]["Tables"]["pack_saves"]["Row"];
+export type PromptSave = Database["public"]["Tables"]["prompt_saves"]["Row"];
 
 export type PackStatus = "draft" | "published";
 export type PackGating = "free" | "paid" | "follower";

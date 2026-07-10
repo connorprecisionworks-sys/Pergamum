@@ -11,6 +11,7 @@ import { CopyButton } from "./copy-button";
 import { LaunchButtons } from "./launch-buttons";
 import { PresetPanel } from "./preset-panel";
 import { ClaimButton } from "./claim-button";
+import { SavePromptButton } from "./save-prompt-button";
 import { VoteButtons } from "./vote-buttons";
 import { VariableForm } from "./variable-form";
 import { ModelBadge } from "./model-badge";
@@ -25,6 +26,10 @@ interface PromptDetailProps {
   currentVote: VoteValue | null;
   /** Ordered version DESC; empty unless the prompt has been edited-and-republished at least once. */
   versions: PromptVersion[];
+  /** Whether the current user already has this prompt in prompt_saves. */
+  initiallySaved?: boolean;
+  /** Seeds the variable form — used by /library's "Run again" and preset "Load" deep-links. */
+  initialValues?: Record<string, string>;
 }
 
 export function PromptDetail({
@@ -32,6 +37,8 @@ export function PromptDetail({
   currentUserId,
   currentVote,
   versions,
+  initiallySaved = false,
+  initialValues,
 }: PromptDetailProps) {
   const author = prompt.profiles;
   const category = prompt.categories;
@@ -47,9 +54,10 @@ export function PromptDetail({
     (name) => storedByName.get(name) ?? { name, type: "text" }
   );
 
-  const [values, setValues] = useState<Record<string, string>>(() =>
-    Object.fromEntries(variables.map((v) => [v.name, v.default ?? ""]))
-  );
+  const [values, setValues] = useState<Record<string, string>>(() => {
+    const defaults = Object.fromEntries(variables.map((v) => [v.name, v.default ?? ""]));
+    return initialValues ? { ...defaults, ...initialValues } : defaults;
+  });
   const substitutedBody = substituteVariables(prompt.body, values);
 
   // Anonymous carryover: keep the in-progress state ready to claim on auth.
@@ -266,6 +274,13 @@ export function PromptDetail({
               currentUserId={currentUserId}
               values={values}
             />
+            {currentUserId && (
+              <SavePromptButton
+                promptId={prompt.id}
+                currentUserId={currentUserId}
+                initiallySaved={initiallySaved}
+              />
+            )}
             {currentUserId && currentUserId !== prompt.author_id && (
               <Button variant="outline" size="sm" asChild>
                 <Link href={`/submit?fork_from=${prompt.id}`}>

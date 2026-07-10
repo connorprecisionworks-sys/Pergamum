@@ -130,6 +130,24 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
           })}
           {profile && (
             <Link
+              href="/library"
+              className={cn(
+                "relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors",
+                pathname === "/library"
+                  ? "text-foreground bg-background-subtle"
+                  : "text-foreground-muted hover:text-foreground hover:bg-background-subtle"
+              )}
+            >
+              Library
+              {pathname === "/library" && (
+                <span className="font-mono text-[10px] text-foreground-subtle tracking-label opacity-70">
+                  /library
+                </span>
+              )}
+            </Link>
+          )}
+          {profile && (
+            <Link
               href="/feed"
               className={cn(
                 "relative flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[14px] font-medium transition-colors",
@@ -220,6 +238,9 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem asChild>
+                    <Link href="/library">Library</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
@@ -305,6 +326,20 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
                 {label}
               </Link>
             ))}
+            {profile && (
+              <Link
+                href="/library"
+                onClick={() => setMobileMenuOpen(false)}
+                className={cn(
+                  "px-3 py-2 rounded-md text-[14px] font-medium transition-colors",
+                  pathname === "/library"
+                    ? "bg-background-subtle text-foreground"
+                    : "text-foreground-muted hover:bg-background-subtle hover:text-foreground"
+                )}
+              >
+                Library
+              </Link>
+            )}
             {profile && (
               <Link
                 href="/feed"
