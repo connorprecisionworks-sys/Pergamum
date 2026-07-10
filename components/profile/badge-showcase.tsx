@@ -64,7 +64,7 @@ export function BadgeShowcase({ allBadges, earnedBadges }: BadgeShowcaseProps) {
                 <p className="font-semibold text-xs mb-0.5">{badge.name}</p>
                 <p className="text-xs text-muted-foreground">{badge.description}</p>
                 {!earned && (
-                  <p className="text-xs text-pergamum-500 mt-1 font-medium">Locked</p>
+                  <p className="text-xs text-brand-500 mt-1 font-medium">Locked</p>
                 )}
               </TooltipContent>
             </Tooltip>

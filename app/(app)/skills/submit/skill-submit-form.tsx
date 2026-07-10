@@ -135,7 +135,7 @@ function FileDropzone({
         }}
         className={`relative aspect-[16/9] w-full overflow-hidden rounded-lg border-2 border-dashed transition-colors cursor-pointer select-none ${
           dragging
-            ? "border-pergamum-400 bg-pergamum-50/10 dark:bg-pergamum-900/10"
+            ? "border-brand-400 bg-brand-50/10 dark:bg-brand-900/10"
             : previewUrl
             ? "border-border hover:border-foreground-subtle"
             : "border-border hover:border-foreground-muted"
@@ -501,8 +501,8 @@ export function SkillSubmitForm({ authorId, isAdmin }: SkillSubmitFormProps) {
                 aria-pressed={selectedRuntimes.includes(rt.value)}
               >
                 <Badge
-                  variant={selectedRuntimes.includes(rt.value) ? "pergamum" : "outline"}
-                  className="cursor-pointer hover:bg-pergamum-50 dark:hover:bg-pergamum-900/20 transition-colors"
+                  variant={selectedRuntimes.includes(rt.value) ? "brand" : "outline"}
+                  className="cursor-pointer hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
                 >
                   {rt.label}
                 </Badge>

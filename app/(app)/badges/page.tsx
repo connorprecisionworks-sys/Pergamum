@@ -8,7 +8,7 @@ import type { Badge as BadgeType } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Badges",
-  description: "All badges available on Pergamum and who has earned them.",
+  description: "All badges available on PrmptKit and who has earned them.",
 };
 
 const TIER_CONFIG = {
@@ -50,7 +50,7 @@ export default async function BadgesPage() {
           Earn badges by contributing to the library, gaining followers, and building reputation.
         </p>
         {user && (
-          <p className="text-sm text-pergamum-600 mt-1">
+          <p className="text-sm text-brand-600 mt-1">
             You&apos;ve earned {myBadges.length} of {allBadges.length} badges.
           </p>
         )}
@@ -82,7 +82,7 @@ export default async function BadgesPage() {
                 const earned = myEarnedIds.has(badge.id);
                 const count = earnedCounts[badge.id] ?? 0;
                 return (
-                  <Card key={badge.id} className={`transition-all ${earned ? "border-pergamum-300 dark:border-pergamum-700" : "opacity-70"}`}>
+                  <Card key={badge.id} className={`transition-all ${earned ? "border-brand-300 dark:border-brand-700" : "opacity-70"}`}>
                     <CardContent className="flex items-center gap-3 p-4">
                       <div className={`w-10 h-10 rounded-lg ring-2 flex items-center justify-center shrink-0 ${earned ? `ring-${tier === "gold" ? "yellow" : tier === "silver" ? "zinc" : "amber"}-400/50 ${bg}` : "ring-border bg-muted/40"}`}>
                         <Icon className={`h-5 w-5 ${earned ? color : "text-muted-foreground"}`} />
@@ -90,7 +90,7 @@ export default async function BadgesPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-sm">{badge.name}</span>
-                          {earned && <Badge variant="pergamum" className="text-[10px] py-0 h-4">Earned</Badge>}
+                          {earned && <Badge variant="brand" className="text-[10px] py-0 h-4">Earned</Badge>}
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">{badge.description}</p>
                         <p className="text-xs text-muted-foreground/60 mt-1">

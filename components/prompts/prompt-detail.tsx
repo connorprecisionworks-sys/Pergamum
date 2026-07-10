@@ -114,13 +114,13 @@ export function PromptDetail({
                 src={author?.avatar_url ?? undefined}
                 alt={author?.display_name ?? author?.username ?? ""}
               />
-              <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
+              <AvatarFallback className="text-xs bg-brand-100 text-brand-700">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <Link
               href={`/u/${author?.username}`}
-              className="text-sm font-medium hover:text-pergamum-600 transition-colors"
+              className="text-sm font-medium hover:text-brand-600 transition-colors"
             >
               {author?.display_name ?? author?.username}
             </Link>
@@ -174,7 +174,7 @@ export function PromptDetail({
           <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
             Prompt
             {variables.length > 0 && (
-              <span className="ml-2 text-pergamum-500 normal-case tracking-normal font-mono text-[11px]">
+              <span className="ml-2 text-brand-500 normal-case tracking-normal font-mono text-[11px]">
                 (live preview)
               </span>
             )}

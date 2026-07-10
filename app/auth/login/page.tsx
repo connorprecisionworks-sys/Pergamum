@@ -27,7 +27,7 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href="/auth/signup"
-            className="text-pergamum-600 hover:text-pergamum-700 font-medium"
+            className="text-brand-600 hover:text-brand-700 font-medium"
           >
             Sign up
           </Link>

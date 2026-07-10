@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createPublicClient } from "@/lib/supabase/server";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pergamum.app";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
 
 const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/`,            changeFrequency: "daily",  priority: 1   },

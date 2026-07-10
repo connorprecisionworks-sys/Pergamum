@@ -107,7 +107,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
         <div className="flex flex-col gap-1">
           <span className="font-serif text-2xl font-medium text-primary leading-none">P</span>
           <span className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
-            Pergamum onboarding
+            PrmptKit onboarding
           </span>
         </div>
       </header>
@@ -166,7 +166,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
 
             <div className="flex items-baseline gap-3 border-b border-border/80 focus-within:border-primary transition-colors px-4 md:px-5">
               <span className="text-2xl md:text-4xl font-serif text-muted-foreground/60 select-none">
-                pergamum.net/u/
+                prmptkit.com/u/
               </span>
               <input
                 ref={inputRef}

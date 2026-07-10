@@ -85,8 +85,8 @@ export default async function DashboardPage() {
         <Card className="max-w-lg mx-auto mt-16 text-center p-12">
           <CardContent className="space-y-6 pt-0">
             <div className="flex justify-center">
-              <div className="h-16 w-16 rounded-full bg-pergamum-100 dark:bg-pergamum-900/30 flex items-center justify-center">
-                <Sparkles className="h-8 w-8 text-pergamum-600" />
+              <div className="h-16 w-16 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center">
+                <Sparkles className="h-8 w-8 text-brand-600" />
               </div>
             </div>
             <div className="space-y-2">
@@ -266,7 +266,7 @@ function PromptTable({ prompts, emptyContent }: { prompts: Prompt[]; emptyConten
                 )}
                 <Link
                   href={`/prompts/${prompt.slug}`}
-                  className="font-medium text-sm hover:text-pergamum-600 transition-colors truncate"
+                  className="font-medium text-sm hover:text-brand-600 transition-colors truncate"
                 >
                   {prompt.title}
                 </Link>

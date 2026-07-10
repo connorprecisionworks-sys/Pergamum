@@ -73,8 +73,8 @@ const config: Config = {
         "border-strong":      "var(--border-strong)",
         "foreground-muted":   "var(--foreground-muted)",
         "foreground-subtle":  "var(--foreground-subtle)",
-        // ── Pergamum brand palette ────────────────────────────────
-        pergamum: {
+        // ── Brand palette ──────────────────────────────────────────
+        brand: {
           50:  "#f5f3ff",
           100: "#e6e6fa",
           200: "#d4ccf5",

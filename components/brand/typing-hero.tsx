@@ -63,9 +63,9 @@ export function TypingHero() {
 
   return (
     <span className="whitespace-nowrap">
-      <span className="text-pergamum-500">{displayed}</span>
+      <span className="text-brand-500">{displayed}</span>
       <span
-        className="inline-block w-[2px] rounded-sm bg-pergamum-500 align-middle mx-[1px]"
+        className="inline-block w-[2px] rounded-sm bg-brand-500 align-middle mx-[1px]"
         style={{
           height: "1em",
           verticalAlign: "-0.1em",

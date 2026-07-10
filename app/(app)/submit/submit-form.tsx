@@ -273,9 +273,9 @@ export function SubmitForm({
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" noValidate>
       {/* First-timer welcome banner */}
       {isFirstPrompt && !isAdmin && (
-        <div className="flex gap-3 p-4 rounded-lg bg-pergamum-50 dark:bg-pergamum-950/20 border border-pergamum-200 dark:border-pergamum-800">
-          <Info className="h-4 w-4 text-pergamum-600 shrink-0 mt-0.5" />
-          <p className="text-sm text-pergamum-800 dark:text-pergamum-300">
+        <div className="flex gap-3 p-4 rounded-lg bg-brand-50 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-800">
+          <Info className="h-4 w-4 text-brand-600 shrink-0 mt-0.5" />
+          <p className="text-sm text-brand-800 dark:text-brand-300">
             Welcome! Every prompt is reviewed before going live, usually under an hour.
           </p>
         </div>
@@ -298,7 +298,7 @@ export function SubmitForm({
               How to write a great prompt
             </DialogTitle>
             <DialogDescription className="sr-only">
-              A short guide to writing prompts on Pergamum.
+              A short guide to writing prompts on PrmptKit.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-5 text-sm leading-relaxed text-foreground">
@@ -422,8 +422,8 @@ export function SubmitForm({
                 aria-pressed={selectedModels.includes(model)}
               >
                 <Badge
-                  variant={selectedModels.includes(model) ? "pergamum" : "outline"}
-                  className="cursor-pointer capitalize hover:bg-pergamum-50 dark:hover:bg-pergamum-900/20 transition-colors"
+                  variant={selectedModels.includes(model) ? "brand" : "outline"}
+                  className="cursor-pointer capitalize hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-colors"
                 >
                   {model}
                 </Badge>
@@ -457,7 +457,7 @@ export function SubmitForm({
           <div>
             <h3 className="font-semibold">Variable details (optional)</h3>
             <p className="text-sm text-muted-foreground">
-              Pergamum auto-detects any <code className="bg-muted px-1 rounded text-xs font-mono">{"{{name}}"}</code> in your prompt body. Add help text or a default value here if you want.
+              PrmptKit auto-detects any <code className="bg-muted px-1 rounded text-xs font-mono">{"{{name}}"}</code> in your prompt body. Add help text or a default value here if you want.
             </p>
           </div>
           <Button

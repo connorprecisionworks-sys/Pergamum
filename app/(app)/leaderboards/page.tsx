@@ -12,7 +12,7 @@ import type { Profile, PromptWithAuthor } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Leaderboards",
-  description: "Top prompts and top contributors on Pergamum.",
+  description: "Top prompts and top contributors on PrmptKit.",
 };
 
 // Rank colors for top 3 — no emojis
@@ -61,7 +61,7 @@ export default async function LeaderboardsPage() {
         <span className="label-mono">Rankings</span>
         <h1 className="font-serif text-[32px] md:text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
         <p className="text-foreground-muted mt-2">
-          Top prompts and contributors on Pergamum.
+          Top prompts and contributors on PrmptKit.
         </p>
       </div>
 
@@ -116,14 +116,14 @@ function PromptLeaderboard({ prompts }: { prompts: PromptWithAuthor[] }) {
               <div className="flex-1 min-w-0">
                 <Link
                   href={`/prompts/${prompt.slug}`}
-                  className="font-semibold text-sm hover:text-pergamum-600 transition-colors line-clamp-1"
+                  className="font-semibold text-sm hover:text-brand-600 transition-colors line-clamp-1"
                 >
                   {prompt.title}
                 </Link>
                 <div className="flex items-center gap-2 mt-0.5">
                   <Avatar className="h-4 w-4">
                     <AvatarImage src={author?.avatar_url ?? undefined} />
-                    <AvatarFallback className="text-[8px] bg-pergamum-100 text-pergamum-700">
+                    <AvatarFallback className="text-[8px] bg-brand-100 text-brand-700">
                       {initials}
                     </AvatarFallback>
                   </Avatar>
@@ -185,14 +185,14 @@ function ContributorLeaderboard({
               </div>
               <Avatar className="h-9 w-9 shrink-0">
                 <AvatarImage src={user.avatar_url ?? undefined} />
-                <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
+                <AvatarFallback className="text-xs bg-brand-100 text-brand-700">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <Link
                   href={`/u/${user.username}`}
-                  className="font-semibold text-sm hover:text-pergamum-600 transition-colors"
+                  className="font-semibold text-sm hover:text-brand-600 transition-colors"
                 >
                   {user.display_name ?? user.username}
                 </Link>

@@ -37,7 +37,7 @@ export function FilterDialog({ categories }: FilterDialogProps) {
           <SlidersHorizontal className="h-4 w-4" />
           Filters
           {activeCount > 0 && (
-            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-pergamum-500 text-[11px] text-white font-medium">
+            <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-500 text-[11px] text-white font-medium">
               {activeCount}
             </span>
           )}

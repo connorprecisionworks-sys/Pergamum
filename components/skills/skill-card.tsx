@@ -88,14 +88,14 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
               <span className="font-mono text-[11px] text-foreground-subtle">
                 ⤓ {formatCount(skill.copies)}
               </span>
-              <span className="font-mono text-[11px] text-pergamum-400">
+              <span className="font-mono text-[11px] text-brand-400">
                 ↑ {formatCount(skill.upvotes)}
               </span>
             </div>
           </div>
 
           <Link href={`/skills/${skill.slug}`}>
-            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
+            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-brand-400 transition-colors line-clamp-2 mb-2">
               {skill.name}
             </h3>
           </Link>
@@ -114,7 +114,7 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
                 aria-label="Copy install command"
                 className="font-mono text-[11px] text-foreground-muted hover:text-foreground bg-transparent border border-border rounded px-2 py-0.5 transition-colors shrink-0"
               >
-                {copied ? <span className="text-pergamum-400">✓ copied</span> : "copy"}
+                {copied ? <span className="text-brand-400">✓ copied</span> : "copy"}
               </button>
             </div>
           )}
@@ -252,13 +252,13 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
                 </Link>
               )}
             </div>
-            <span className="font-mono text-[11px] text-pergamum-400 shrink-0 ml-2">
+            <span className="font-mono text-[11px] text-brand-400 shrink-0 ml-2">
               ↑ {formatCount(skill.upvotes)}
             </span>
           </div>
 
           <Link href={`/skills/${skill.slug}`}>
-            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
+            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-brand-400 transition-colors line-clamp-2 mb-2">
               {skill.name}
             </h3>
           </Link>

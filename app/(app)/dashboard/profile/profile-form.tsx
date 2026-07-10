@@ -69,7 +69,7 @@ export function ProfileForm({ profile, publishedPrompts }: ProfileFormProps) {
         <div className="relative">
           <Avatar className="h-16 w-16">
             <AvatarImage src={avatarUrl} alt="Avatar" />
-            <AvatarFallback className="bg-pergamum-100 text-pergamum-700 text-lg">{initials}</AvatarFallback>
+            <AvatarFallback className="bg-brand-100 text-brand-700 text-lg">{initials}</AvatarFallback>
           </Avatar>
           {uploading && (
             <div className="absolute inset-0 flex items-center justify-center bg-background/60 rounded-full">

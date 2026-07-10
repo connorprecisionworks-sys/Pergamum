@@ -86,7 +86,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
     .is("parent_id", null)
     .order("created_at", { ascending: true });
 
-  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pergamum.app";
+  const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
   const promptAuthor = (prompt as PromptWithAuthor).profiles;
   const jsonLd = {
     "@context": "https://schema.org",

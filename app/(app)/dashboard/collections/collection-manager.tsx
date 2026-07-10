@@ -17,10 +17,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { createCollection, deleteCollection } from "./actions";
 import type { Collection } from "@/lib/types/database";
 
-const COVER_COLORS = ["zinc", "pergamum", "amber", "emerald", "blue", "rose"] as const;
+const COVER_COLORS = ["zinc", "brand", "amber", "emerald", "blue", "rose"] as const;
 const COLOR_SWATCH: Record<string, string> = {
   zinc: "bg-zinc-300",
-  pergamum: "bg-pergamum-400",
+  brand: "bg-brand-400",
   amber: "bg-amber-400",
   emerald: "bg-emerald-400",
   blue: "bg-blue-400",
@@ -105,7 +105,7 @@ export function CollectionManager({ collections: initial, ownerUsername, openNew
                       key={color}
                       type="button"
                       onClick={() => setSelectedColor(color)}
-                      className={`w-7 h-7 rounded-full ${COLOR_SWATCH[color]} ring-offset-2 transition-all ${selectedColor === color ? "ring-2 ring-pergamum-500" : ""}`}
+                      className={`w-7 h-7 rounded-full ${COLOR_SWATCH[color]} ring-offset-2 transition-all ${selectedColor === color ? "ring-2 ring-brand-500" : ""}`}
                       aria-label={color}
                     />
                   ))}

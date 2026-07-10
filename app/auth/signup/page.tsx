@@ -31,7 +31,7 @@ export default function SignupPage() {
         <ul className="space-y-2">
           {VALUE_PROPS.map((prop) => (
             <li key={prop} className="flex items-start gap-2 text-sm text-muted-foreground">
-              <Check className="h-4 w-4 text-pergamum-500 shrink-0 mt-0.5" />
+              <Check className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" />
               {prop}
             </li>
           ))}
@@ -47,7 +47,7 @@ export default function SignupPage() {
           Already have an account?{" "}
           <Link
             href="/auth/login"
-            className="text-pergamum-600 hover:text-pergamum-700 font-medium"
+            className="text-brand-600 hover:text-brand-700 font-medium"
           >
             Sign in
           </Link>

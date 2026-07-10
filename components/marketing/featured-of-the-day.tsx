@@ -20,7 +20,7 @@ export async function FeaturedOfTheDay() {
       {/* Eyebrow */}
       <div className="flex items-center gap-2 font-mono text-[11px] tracking-[0.14em] text-foreground-subtle uppercase">
         <span
-          className="inline-block w-[7px] h-[7px] rounded-full shrink-0 bg-pergamum-400"
+          className="inline-block w-[7px] h-[7px] rounded-full shrink-0 bg-brand-400"
           aria-hidden="true"
         />
         {typeLabel}

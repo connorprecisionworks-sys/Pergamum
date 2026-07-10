@@ -21,7 +21,7 @@ interface TypeCaseProps {
 }
 
 // ─── Layout ───────────────────────────────────────────────────────
-// A printer's type case stylised down to the five blocks Pergamum cares
+// A printer's type case stylised down to the five blocks PrmptKit cares
 // about. Top row: three small compartments for the shorter blocks. Bottom
 // row: two larger compartments for Context (usually the longest) and
 // Output. Each filled block "sets" metal slugs into its compartment.

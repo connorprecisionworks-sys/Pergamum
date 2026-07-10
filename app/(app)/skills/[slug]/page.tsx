@@ -166,13 +166,13 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                   src={author?.avatar_url ?? undefined}
                   alt={author?.display_name ?? author?.username ?? ""}
                 />
-                <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
+                <AvatarFallback className="text-xs bg-brand-100 text-brand-700">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <Link
                 href={`/u/${author?.username}`}
-                className="text-sm font-medium hover:text-pergamum-600 transition-colors"
+                className="text-sm font-medium hover:text-brand-600 transition-colors"
               >
                 {author?.display_name ?? author?.username}
               </Link>
@@ -240,7 +240,7 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                 href={typed.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-pergamum-600 hover:text-pergamum-700 break-all"
+                className="text-sm font-medium text-brand-600 hover:text-brand-700 break-all"
               >
                 {typed.source_url}
               </a>

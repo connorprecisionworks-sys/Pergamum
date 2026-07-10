@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Pergamum — A living library of prompts";
+export const alt = "PrmptKit — A living library of prompts";
 
 export default function Image() {
   return new ImageResponse(
@@ -45,7 +45,7 @@ export default function Image() {
             margin: "0 0 20px",
           }}
         >
-          PERGAMUM
+          PRMPTKIT
         </p>
 
         {/* Tagline */}

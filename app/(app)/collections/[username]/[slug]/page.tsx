@@ -87,8 +87,8 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-start gap-3 mb-4">
-          <div className="p-3 rounded-xl bg-pergamum-50 dark:bg-pergamum-950/30 border">
-            <Bookmark className="h-6 w-6 text-pergamum-600" />
+          <div className="p-3 rounded-xl bg-brand-50 dark:bg-brand-950/30 border">
+            <Bookmark className="h-6 w-6 text-brand-600" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
@@ -110,7 +110,7 @@ export default async function CollectionPage({ params }: CollectionPageProps) {
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Avatar className="h-5 w-5">
             <AvatarImage src={owner.avatar_url ?? undefined} />
-            <AvatarFallback className="text-[10px] bg-pergamum-100 text-pergamum-700">{initials}</AvatarFallback>
+            <AvatarFallback className="text-[10px] bg-brand-100 text-brand-700">{initials}</AvatarFallback>
           </Avatar>
           <Link href={`/u/${owner.username}`} className="hover:text-foreground transition-colors font-medium">
             {owner.display_name ?? owner.username}

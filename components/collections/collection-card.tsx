@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { Collection, Profile } from "@/lib/types/database";
 
 const COLOR_MAP: Record<string, string> = {
-  pergamum: "from-pergamum-100 to-pergamum-50 dark:from-pergamum-900/30 dark:to-pergamum-950/20",
+  brand:    "from-brand-100 to-brand-50 dark:from-brand-900/30 dark:to-brand-950/20",
   amber:    "from-amber-100 to-amber-50 dark:from-amber-900/30 dark:to-amber-950/20",
   zinc:     "from-zinc-100 to-zinc-50 dark:from-zinc-800/30 dark:to-zinc-900/20",
   emerald:  "from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-950/20",
@@ -24,19 +24,19 @@ export function CollectionCard({ collection, owner, showOwner = false }: Collect
 
   return (
     <Link href={href} className="group block">
-      <Card className="overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group-hover:border-pergamum-300 dark:group-hover:border-pergamum-700">
+      <Card className="overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 group-hover:border-brand-300 dark:group-hover:border-brand-700">
         {/* Color band */}
         <div className={`h-1.5 bg-gradient-to-r ${gradient.split(" ").slice(0, 2).join(" ")}`} />
         <CardContent className="p-4">
           <div className="flex items-start justify-between gap-2 mb-2">
             <div className={`p-2 rounded-lg bg-gradient-to-br ${gradient}`}>
-              <Bookmark className="h-4 w-4 text-pergamum-600 dark:text-pergamum-400" />
+              <Bookmark className="h-4 w-4 text-brand-600 dark:text-brand-400" />
             </div>
             {!collection.is_public && (
               <Lock className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-1" />
             )}
           </div>
-          <h3 className="font-semibold text-sm leading-snug mb-1 group-hover:text-pergamum-600 transition-colors line-clamp-1">
+          <h3 className="font-semibold text-sm leading-snug mb-1 group-hover:text-brand-600 transition-colors line-clamp-1">
             {collection.title}
           </h3>
           {collection.description && (

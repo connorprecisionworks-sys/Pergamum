@@ -91,15 +91,15 @@ export function relativeTime(dateStr: string): string {
 
 /**
  * Returns a hex color for the category accent used in left-border accents and
- * dot indicators. Non-pergamum colors use their Tailwind default hex values
+ * dot indicators. Non-brand colors use their Tailwind default hex values
  * because those shades don't exist in the project palette.
  */
 export function categoryColor(slug: string | null | undefined): string {
   switch (slug) {
-    case "writing":           return "#b299e5"; // pergamum-400
-    case "coding":            return "#7447d1"; // pergamum-600
-    case "agents":            return "#9370db"; // pergamum-500
-    case "research":          return "#bbbbf1"; // pergamum-300
+    case "writing":           return "#b299e5"; // brand-400
+    case "coding":            return "#7447d1"; // brand-600
+    case "agents":            return "#9370db"; // brand-500
+    case "research":          return "#bbbbf1"; // brand-300
     case "data":
     case "data-analysis":     return "#6366f1"; // indigo-500 (no project shade)
     case "design":            return "#d946ef"; // fuchsia-500 (no project shade)
@@ -111,7 +111,7 @@ export function categoryColor(slug: string | null | undefined): string {
     case "business-strategy": return "#818cf8"; // indigo-400 (no project shade)
     case "productivity":
     case "education":         return "#71717a"; // zinc-500 (no project shade)
-    default:                  return "#9370db"; // pergamum-500
+    default:                  return "#9370db"; // brand-500
   }
 }
 

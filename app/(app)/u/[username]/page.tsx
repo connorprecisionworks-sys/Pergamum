@@ -24,7 +24,7 @@ interface ProfilePageProps {
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
   const { username } = await params;
-  return { title: `@${username}`, description: `${username}'s prompt library on Pergamum.` };
+  return { title: `@${username}`, description: `${username}'s prompt library on PrmptKit.` };
 }
 
 export default async function UserProfilePage({ params }: ProfilePageProps) {
@@ -151,7 +151,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       <div className="rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)] flex flex-col sm:flex-row gap-6 items-start">
         <Avatar className="h-20 w-20 shrink-0">
           <AvatarImage src={profile.avatar_url ?? undefined} alt={profile.display_name ?? profile.username} />
-          <AvatarFallback className="text-2xl bg-pergamum-100 text-pergamum-700">{initials}</AvatarFallback>
+          <AvatarFallback className="text-2xl bg-brand-100 text-brand-700">{initials}</AvatarFallback>
         </Avatar>
 
         <div className="flex-1 min-w-0">
@@ -159,7 +159,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl font-medium font-serif">{profile.display_name ?? profile.username}</h1>
-                {profile.is_admin && <Badge variant="pergamum" className="text-xs">Admin</Badge>}
+                {profile.is_admin && <Badge variant="brand" className="text-xs">Admin</Badge>}
               </div>
               <p className="text-muted-foreground text-sm">@{profile.username}</p>
             </div>
@@ -332,7 +332,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                     {item.kind === "prompt" && (
                       <p className="leading-snug">
                         Published{" "}
-                        <Link href={`/prompts/${item.slug}`} className="font-medium hover:text-pergamum-600 transition-colors">
+                        <Link href={`/prompts/${item.slug}`} className="font-medium hover:text-brand-600 transition-colors">
                           {item.title}
                         </Link>
                       </p>
@@ -340,7 +340,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                     {item.kind === "collection" && (
                       <p className="leading-snug">
                         Created collection{" "}
-                        <Link href={`/collections/${item.ownerUsername}/${item.collSlug}`} className="font-medium hover:text-pergamum-600 transition-colors">
+                        <Link href={`/collections/${item.ownerUsername}/${item.collSlug}`} className="font-medium hover:text-brand-600 transition-colors">
                           {item.title}
                         </Link>
                       </p>

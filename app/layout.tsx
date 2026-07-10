@@ -22,13 +22,13 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://pergamum.app";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Pergamum — A living library of prompts.",
-    template: "%s | Pergamum",
+    default: "PrmptKit — A living library of prompts.",
+    template: "%s | PrmptKit",
   },
   description:
     "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
@@ -44,14 +44,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Pergamum",
-    title: "Pergamum — A living library of prompts.",
+    siteName: "PrmptKit",
+    title: "PrmptKit — A living library of prompts.",
     description:
       "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pergamum — A living library of prompts.",
+    title: "PrmptKit — A living library of prompts.",
     description:
       "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   },

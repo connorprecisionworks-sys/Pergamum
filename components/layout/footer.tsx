@@ -53,7 +53,7 @@ export function Footer() {
         {/* Legal row — thin and quiet at the bottom */}
         <div className="mt-12 pt-6 border-t border-border/60 flex items-center justify-between gap-4 flex-wrap">
           <span className="label-mono">
-            &copy; {new Date().getFullYear()} Pergamum
+            &copy; {new Date().getFullYear()} PrmptKit
           </span>
           <div className="flex items-center gap-5">
             <Link

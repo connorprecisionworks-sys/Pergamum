@@ -54,7 +54,7 @@ export function InstallCommandBlock({ skillId, command, className }: InstallComm
           className={cn(
             "inline-flex items-center gap-1.5 font-mono text-[11px] px-2.5 py-1.5 rounded-md border transition-colors",
             copied
-              ? "border-pergamum-400/40 text-pergamum-400 dark:border-pergamum-500/30 dark:text-pergamum-400"
+              ? "border-brand-400/40 text-brand-400 dark:border-brand-500/30 dark:text-brand-400"
               : "border-border bg-background hover:bg-background-subtle text-foreground-muted"
           )}
         >

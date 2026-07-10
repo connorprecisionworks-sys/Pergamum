@@ -12,7 +12,7 @@ import { createHash } from "crypto";
 // If BUILD_ACCESS_CODE is unset, the gate is disabled entirely and the
 // builder is open to anyone signed in. Set the env var to turn the gate on.
 
-const COOKIE_NAME = "pergamum_build_access";
+const COOKIE_NAME = "prmptkit_build_access";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 /** Deterministic token derived from the access code. Cookie stores this. */

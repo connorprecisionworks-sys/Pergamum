@@ -50,7 +50,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
           <button
             onClick={clearAll}
             aria-label="Clear all filters"
-            className="label-mono text-pergamum-500 hover:text-pergamum-400 flex items-center gap-1 transition-colors"
+            className="label-mono text-brand-500 hover:text-brand-400 flex items-center gap-1 transition-colors"
           >
             <X className="h-3 w-3" />
             Clear
@@ -108,7 +108,7 @@ export function FilterSidebar({ categories }: FilterSidebarProps) {
                 className={cn(
                   "label-mono px-2.5 py-1.5 rounded border transition-colors capitalize",
                   active
-                    ? "border-pergamum-500/60 text-pergamum-400 bg-pergamum-900/20"
+                    ? "border-brand-500/60 text-brand-400 bg-brand-900/20"
                     : "border-border text-foreground-subtle hover:border-border-strong hover:text-foreground-muted"
                 )}
               >

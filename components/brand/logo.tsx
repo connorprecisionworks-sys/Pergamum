@@ -23,7 +23,7 @@ export function Logo({ size = "md", className }: LogoProps) {
   return (
     <Image
       src="/logo.png"
-      alt="Pergamum"
+      alt="PrmptKit"
       width={width}
       height={height}
       priority={size === "hero"}

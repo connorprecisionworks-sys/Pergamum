@@ -8,7 +8,7 @@ import {
 } from "@/components/science/research-charts";
 
 export const metadata: Metadata = {
-  title: "The science of structured prompts — Pergamum",
+  title: "The science of structured prompts — PrmptKit",
   description:
     "We've all written a vague prompt and spent twenty minutes fixing it. Here's the research on why structure works — and what it changes about the way you write your next one.",
 };
@@ -174,7 +174,7 @@ export default function TheSciencePage() {
           Three findings from the prompting literature, plus one recent survey that catalogues everything since. We summarise what each measured, what it implies for the prompts you write, and where the evidence stops.
         </p>
         <div className="mt-10 flex items-center gap-4 text-[13px] text-muted-foreground">
-          <span>Pergamum Research</span>
+          <span>PrmptKit Research</span>
           <span className="inline-block h-px w-6 bg-border" aria-hidden="true" />
           <span className="tabular-nums">29 April 2026</span>
         </div>
@@ -449,7 +449,7 @@ export default function TheSciencePage() {
           reinvent it.
         </p>
         <p className="text-[17px] leading-[1.7] text-foreground/85">
-          That&apos;s what Pergamum is for. It&apos;s a free, open library for
+          That&apos;s what PrmptKit is for. It&apos;s a free, open library for
           the prompts that earn their keep. Every prompt has its variables
           broken out as fillable inputs, every one is tagged for the model it
           was tuned on, and every one is yours to copy, fork, and remix.

@@ -85,7 +85,7 @@ export function SkillVoteButtons({
         className={cn(
           "gap-1.5 min-h-[44px]",
           vote === 1 &&
-            "border-pergamum-400 bg-pergamum-50 text-pergamum-700 hover:bg-pergamum-100 dark:border-pergamum-700 dark:bg-pergamum-900/30 dark:text-pergamum-400"
+            "border-brand-400 bg-brand-50 text-brand-700 hover:bg-brand-100 dark:border-brand-700 dark:bg-brand-900/30 dark:text-brand-400"
         )}
       >
         <ThumbsUp className="h-4 w-4" />

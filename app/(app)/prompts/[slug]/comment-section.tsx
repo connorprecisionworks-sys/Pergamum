@@ -39,7 +39,7 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
           src={author?.avatar_url ?? undefined}
           alt={author?.display_name ?? author?.username ?? ""}
         />
-        <AvatarFallback className="text-xs bg-pergamum-100 text-pergamum-700">
+        <AvatarFallback className="text-xs bg-brand-100 text-brand-700">
           {initials}
         </AvatarFallback>
       </Avatar>
@@ -47,7 +47,7 @@ function CommentItem({ comment, promptId, currentUserId, onReply }: CommentItemP
         <div className="flex items-baseline gap-2">
           <Link
             href={`/u/${author?.username}`}
-            className="text-sm font-medium hover:text-pergamum-600 transition-colors"
+            className="text-sm font-medium hover:text-brand-600 transition-colors"
           >
             {author?.display_name ?? author?.username}
           </Link>
@@ -202,7 +202,7 @@ export function CommentSection({
         <p className="text-sm text-muted-foreground bg-muted rounded-lg p-4">
           <Link
             href="/auth/login"
-            className="text-pergamum-600 hover:text-pergamum-700 font-medium"
+            className="text-brand-600 hover:text-brand-700 font-medium"
           >
             Sign in
           </Link>{" "}

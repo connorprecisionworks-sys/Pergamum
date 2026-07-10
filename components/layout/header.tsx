@@ -80,7 +80,7 @@ export function Header({ profile }: HeaderProps) {
         <div className="shrink-0">
           <Link href="/" className="inline-flex items-center gap-2">
             <Logo size="sm" />
-            <span className="font-serif font-medium text-foreground text-base">Pergamum</span>
+            <span className="font-serif font-medium text-foreground text-base">PrmptKit</span>
           </Link>
         </div>
 
@@ -181,8 +181,8 @@ export function Header({ profile }: HeaderProps) {
                     <div className="label-mono mt-0.5">@{profile.username}</div>
                     {typeof profile.reputation === "number" && (
                       <div className="flex items-center gap-1 mt-1">
-                        <Star className="h-3 w-3 fill-pergamum-500 text-pergamum-500" />
-                        <span className="label-mono text-pergamum-400">
+                        <Star className="h-3 w-3 fill-brand-500 text-brand-500" />
+                        <span className="label-mono text-brand-400">
                           {profile.reputation} rep
                         </span>
                       </div>

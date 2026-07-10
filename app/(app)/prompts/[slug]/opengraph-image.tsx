@@ -54,7 +54,7 @@ export default async function Image({
             margin: 0,
           }}
         >
-          PERGAMUM
+          PRMPTKIT
         </p>
 
         {/* Middle: title + handle */}
@@ -95,7 +95,7 @@ export default async function Image({
             letterSpacing: "0.06em",
           }}
         >
-          pergamum.app / prompts
+          prmptkit.com / prompts
         </p>
       </div>
     ),

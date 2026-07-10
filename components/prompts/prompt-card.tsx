@@ -42,7 +42,7 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
               </Link>
             )}
           </div>
-          <span className="font-mono text-[11px] text-pergamum-400 shrink-0 ml-2">
+          <span className="font-mono text-[11px] text-brand-400 shrink-0 ml-2">
             ↑ {formatCount(prompt.upvotes)}
           </span>
         </div>
@@ -54,7 +54,7 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
           </h3>
         ) : (
           <Link href={`/prompts/${prompt.slug}`}>
-            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-pergamum-400 transition-colors line-clamp-2 mb-2">
+            <h3 className="font-serif text-[22px] font-medium leading-[1.18] tracking-h3 group-hover:text-brand-400 transition-colors line-clamp-2 mb-2">
               {prompt.title}
             </h3>
           </Link>
@@ -114,10 +114,10 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
         {/* Sign-up nudge */}
         {blurred && (
           <div className="mt-3 flex items-center gap-1.5">
-            <Lock className="h-3 w-3 text-pergamum-400 shrink-0" />
+            <Lock className="h-3 w-3 text-brand-400 shrink-0" />
             <Link
               href="/auth/signup"
-              className="label-mono text-pergamum-500 hover:text-pergamum-400 transition-colors"
+              className="label-mono text-brand-500 hover:text-brand-400 transition-colors"
             >
               Free to read — sign up
             </Link>

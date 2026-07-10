@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { submitAccessCode } from "./gate-actions";
 
 // The gate the user sees on /build when they don't (yet) have access.
-// One input, one submit. Nothing fancy — match Pergamum's editorial calm.
+// One input, one submit. Nothing fancy — match PrmptKit's editorial calm.
 export function BuildGate() {
   const router = useRouter();
   const [code, setCode] = useState("");
@@ -89,7 +89,7 @@ export function BuildGate() {
         <p className="text-xs text-muted-foreground pt-2 border-t border-border/60">
           Don&apos;t have a code yet?{" "}
           <a
-            href="mailto:hello@pergamum.app?subject=Builder%20beta%20access"
+            href="mailto:hello@prmptkit.com?subject=Builder%20beta%20access"
             className="text-foreground underline underline-offset-4 hover:text-primary"
           >
             Request access
