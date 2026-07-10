@@ -27,8 +27,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://prmptkit.com";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "PrmptKit — A living library of prompts.",
-    template: "%s | PrmptKit",
+    default: "Prmpt — A living library of prompts.",
+    template: "%s | Prmpt",
   },
   description:
     "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
@@ -44,14 +44,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "PrmptKit",
-    title: "PrmptKit — A living library of prompts.",
+    siteName: "Prmpt",
+    title: "Prmpt — A living library of prompts.",
     description:
       "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PrmptKit — A living library of prompts.",
+    title: "Prmpt — A living library of prompts.",
     description:
       "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
   },

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About PrmptKit",
+  title: "About Prmpt",
   description:
-    "A prompt can be worth hundreds of dollars. The way it usually gets handed over is worth nothing. PrmptKit fixes the second part.",
+    "A prompt can be worth hundreds of dollars. The way it usually gets handed over is worth nothing. Prmpt fixes the second part.",
 };
 
 export default function AboutPage() {
@@ -19,7 +19,7 @@ export default function AboutPage() {
           A prompt can be worth hundreds of dollars. The delivery is usually worth zero.
         </h1>
         <p className="mt-7 text-[18px] md:text-[20px] text-muted-foreground leading-[1.55] max-w-[640px]">
-          PrmptKit is what happens when the delivery gets taken as seriously as the prompt.
+          Prmpt is what happens when the delivery gets taken as seriously as the prompt.
         </p>
       </header>
 
@@ -54,7 +54,7 @@ export default function AboutPage() {
         </h2>
 
         <p>
-          On PrmptKit, a prompt gets its own page instead of a paste-and-hope block of text. The variables inside it — a name, a tone, an audience, whatever the creator built in — show up as a live form, filled in as you type, instead of placeholders you have to hunt down and edit by hand. One button copies exactly what&apos;s meant to be copied.
+          On Prmpt, a prompt gets its own page instead of a paste-and-hope block of text. The variables inside it — a name, a tone, an audience, whatever the creator built in — show up as a live form, filled in as you type, instead of placeholders you have to hunt down and edit by hand. One button copies exactly what&apos;s meant to be copied.
         </p>
 
         <p>
@@ -74,14 +74,14 @@ export default function AboutPage() {
         </h2>
 
         <p>
-          Not a library. Not a leaderboard. A kit — the smallest unit of stuff you&apos;d actually hand someone so they could use it right away. That&apos;s the whole bet: prompts deserve to be shipped like software, not passed around like notes.
+          Not a library. Not a leaderboard. Prmpt — the smallest unit of stuff you&apos;d actually hand someone so they could use it right away. That&apos;s the whole bet: prompts deserve to be shipped like software, not passed around like notes.
         </p>
       </div>
 
       {/* ── Footer note + nav back ── */}
       <div className="max-w-[680px] mx-auto mt-20 pt-10 border-t border-border/60">
         <p className="text-[13px] text-muted-foreground leading-relaxed mb-6">
-          PrmptKit is built and maintained by{" "}
+          Prmpt is built and maintained by{" "}
           <a
             href="mailto:connor.precisionworks@gmail.com"
             className="text-primary underline-offset-4 hover:underline"
@@ -95,7 +95,7 @@ export default function AboutPage() {
             href="/"
             className="text-foreground hover:text-primary transition-colors"
           >
-            ← Back to PrmptKit
+            ← Back to Prmpt
           </Link>
           <Link
             href="/the-science"

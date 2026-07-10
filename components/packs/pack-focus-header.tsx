@@ -18,7 +18,7 @@ export function PackFocusHeader({ profile }: PackFocusHeaderProps) {
   return (
     <header className="w-full border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container flex h-12 items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-2" aria-label="PrmptKit home">
+        <Link href="/" className="inline-flex items-center gap-2" aria-label="Prmpt home">
           <Logo size="sm" />
         </Link>
         {profile ? (

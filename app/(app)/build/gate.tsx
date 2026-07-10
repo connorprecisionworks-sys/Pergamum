@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { submitAccessCode } from "./gate-actions";
 
 // The gate the user sees on /build when they don't (yet) have access.
-// One input, one submit. Nothing fancy — match PrmptKit's editorial calm.
+// One input, one submit. Nothing fancy — match Prmpt's editorial calm.
 export function BuildGate() {
   const router = useRouter();
   const [code, setCode] = useState("");

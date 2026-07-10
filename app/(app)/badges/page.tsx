@@ -8,7 +8,7 @@ import type { Badge as BadgeType } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Badges",
-  description: "All badges available on PrmptKit and who has earned them.",
+  description: "All badges available on Prmpt and who has earned them.",
 };
 
 const TIER_CONFIG = {

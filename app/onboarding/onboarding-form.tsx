@@ -107,7 +107,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
         <div className="flex flex-col gap-1">
           <span className="font-serif text-2xl font-medium text-primary leading-none">P</span>
           <span className="text-[11px] tracking-[0.22em] uppercase text-muted-foreground">
-            PrmptKit onboarding
+            Prmpt onboarding
           </span>
         </div>
       </header>

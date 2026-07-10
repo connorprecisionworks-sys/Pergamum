@@ -24,7 +24,7 @@ interface ProfilePageProps {
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
   const { username } = await params;
-  return { title: `@${username}`, description: `${username}'s prompt library on PrmptKit.` };
+  return { title: `@${username}`, description: `${username}'s prompt library on Prmpt.` };
 }
 
 export default async function UserProfilePage({ params }: ProfilePageProps) {

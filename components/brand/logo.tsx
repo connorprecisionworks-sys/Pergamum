@@ -25,7 +25,7 @@ export function Logo({ size = "md", className }: LogoProps) {
     <>
       <Image
         src="/logo-mark-black.png"
-        alt="PrmptKit"
+        alt="Prmpt"
         width={px}
         height={px}
         priority={size === "hero"}
@@ -33,7 +33,7 @@ export function Logo({ size = "md", className }: LogoProps) {
       />
       <Image
         src="/logo-mark-white.png"
-        alt="PrmptKit"
+        alt="Prmpt"
         width={px}
         height={px}
         priority={size === "hero"}

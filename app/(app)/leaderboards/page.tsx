@@ -12,7 +12,7 @@ import type { Profile, PromptWithAuthor } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Leaderboards",
-  description: "Top prompts and top contributors on PrmptKit.",
+  description: "Top prompts and top contributors on Prmpt.",
 };
 
 // Rank colors for top 3 — no emojis
@@ -61,7 +61,7 @@ export default async function LeaderboardsPage() {
         <span className="label-mono">Rankings</span>
         <h1 className="font-serif text-[32px] md:text-[48px] font-normal tracking-h1 mt-3 leading-tight">Leaderboards</h1>
         <p className="text-foreground-muted mt-2">
-          Top prompts and contributors on PrmptKit.
+          Top prompts and contributors on Prmpt.
         </p>
       </div>
 

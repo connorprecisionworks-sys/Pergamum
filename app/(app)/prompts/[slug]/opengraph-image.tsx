@@ -54,7 +54,7 @@ export default async function Image({
             margin: 0,
           }}
         >
-          PRMPTKIT
+          PRMPT
         </p>
 
         {/* Middle: title + handle */}

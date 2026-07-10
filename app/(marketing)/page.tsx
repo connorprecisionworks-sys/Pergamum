@@ -62,7 +62,7 @@ export default async function LandingPage() {
             <TypewriterHero />
 
             <p className="text-[17px] md:text-[19px] text-muted-foreground leading-[1.5] max-w-[540px]">
-              A prompt can be worth hundreds of dollars. Pasted into an Instagram comment, a PDF, a Google Doc, the delivery feels worth zero. PrmptKit makes the delivery the product — publish once, push an update, and your whole audience gets the latest version.
+              A prompt can be worth hundreds of dollars. Pasted into an Instagram comment, a PDF, a Google Doc, the delivery feels worth zero. Prmpt makes the delivery the product — publish once, push an update, and your whole audience gets the latest version.
             </p>
 
             {/* CTAs — left-aligned, primary verb + secondary text-link */}
@@ -128,7 +128,7 @@ export default async function LandingPage() {
         <div className="px-6 md:px-12 lg:px-20 max-w-[1180px] mx-auto mb-10 md:mb-12">
           <FadeSection>
             <p className="text-[11px] font-medium tracking-[0.22em] uppercase text-muted-foreground mb-4">
-              From PrmptKit creators
+              From Prmpt creators
             </p>
             <h2 className="font-serif text-[32px] md:text-[44px] font-normal leading-[1.05] tracking-[-0.025em] max-w-[680px]">
               What people are using right now.

@@ -377,7 +377,7 @@ export function SubmitForm({
               How to write a great prompt
             </DialogTitle>
             <DialogDescription className="sr-only">
-              A short guide to writing prompts on PrmptKit.
+              A short guide to writing prompts on Prmpt.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-5 text-sm leading-relaxed text-foreground">
@@ -536,7 +536,7 @@ export function SubmitForm({
           <div>
             <h3 className="font-semibold">Variable details (optional)</h3>
             <p className="text-sm text-muted-foreground">
-              PrmptKit auto-detects any <code className="bg-muted px-1 rounded text-xs font-mono">{"{{name}}"}</code> in your prompt body. Add help text or a default value here if you want.
+              Prmpt auto-detects any <code className="bg-muted px-1 rounded text-xs font-mono">{"{{name}}"}</code> in your prompt body. Add help text or a default value here if you want.
             </p>
           </div>
           <Button

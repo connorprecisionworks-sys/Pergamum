@@ -100,7 +100,7 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
         <div className="shrink-0">
           <Link href="/" className="inline-flex items-center gap-2">
             <Logo size="sm" />
-            <span className="font-serif font-medium text-foreground text-base">PrmptKit</span>
+            <span className="font-serif font-medium text-foreground text-base">Prmpt</span>
           </Link>
         </div>
 

@@ -7,7 +7,7 @@ import type { Collection, Profile } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Collections",
-  description: "Browse curated prompt collections from the PrmptKit community.",
+  description: "Browse curated prompt collections from the Prmpt community.",
 };
 
 export default async function CollectionsPage() {

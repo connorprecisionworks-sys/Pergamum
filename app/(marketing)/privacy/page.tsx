@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy",
   description:
-    "What PrmptKit collects, why, and what we don't do. The short, readable version.",
+    "What Prmpt collects, why, and what we don't do. The short, readable version.",
 };
 
 const LAST_UPDATED = "April 29, 2026";
@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         Last updated · {LAST_UPDATED}
       </p>
       <h1 className="font-serif text-[44px] md:text-[56px] font-normal leading-[1.05] tracking-[-0.025em] mb-6">
-        Privacy at PrmptKit.
+        Privacy at Prmpt.
       </h1>
       <p className="text-lg text-muted-foreground leading-[1.55] mb-12">
         The short version, in one page. We tried to keep it readable.
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
             <li>We don&apos;t sell your data.</li>
             <li>We don&apos;t track you across other websites.</li>
             <li>We don&apos;t use third-party advertising or trackers.</li>
-            <li>We don&apos;t show ads on PrmptKit.</li>
+            <li>We don&apos;t show ads on Prmpt.</li>
           </ul>
         </Section>
 
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
 
         <Section title="Cookies">
           <p>
-            PrmptKit uses one technical cookie to keep you signed in. No tracking cookies, no third-party trackers, no fingerprinting.
+            Prmpt uses one technical cookie to keep you signed in. No tracking cookies, no third-party trackers, no fingerprinting.
           </p>
         </Section>
 
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
           href="/"
           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          ← Back to PrmptKit
+          ← Back to Prmpt
         </Link>
       </div>
     </main>
