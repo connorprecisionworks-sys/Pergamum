@@ -19,9 +19,11 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        serif: ["var(--font-fraunces)", "Georgia", "serif"],
-        mono: ["var(--font-jetbrains-mono)", "ui-monospace", "monospace"],
+        // One typeface. serif/mono are aliases of the same family so existing
+        // font-serif / font-mono usages inherit it rather than break.
+        sans: ["var(--font-hanken)", "system-ui", "sans-serif"],
+        serif: ["var(--font-hanken)", "system-ui", "sans-serif"],
+        mono: ["var(--font-hanken)", "system-ui", "sans-serif"],
       },
       letterSpacing: {
         display: "-0.03em",
@@ -81,18 +83,23 @@ const config: Config = {
         "border-strong":      "var(--border-strong)",
         "foreground-muted":   "var(--foreground-muted)",
         "foreground-subtle":  "var(--foreground-subtle)",
-        // ── Brand palette (Ink) ─────────────────────────────────────
+        // ── Brand palette ───────────────────────────────────────────
+        // Retired as a hue: slate #34557D is gone, but the scale is KEPT and
+        // remapped onto the monochrome neutral ramp so every existing
+        // brand-* usage inherits the white/black system automatically.
+        // 950 is new — it was referenced in 4 files but never defined.
         brand: {
-          50:  "#F1F5FA",
-          100: "#E1EAF4",
-          200: "#C4D5E8",
-          300: "#9FBAD8",
-          400: "#7396BD",
-          500: "#4E739B",
-          600: "#3C5F86",
-          700: "#34557D",
-          800: "#2A4463",
-          900: "#22344B",
+          50:  "#F7F7F8",
+          100: "#F3F3F3",
+          200: "#ECECEC",
+          300: "#E4E4E4",
+          400: "#B7B5BC",
+          500: "#8C8A93",
+          600: "#605E67",
+          700: "#3A3A40",
+          800: "#232329",
+          900: "#141416",
+          950: "#0D0D0F",
         },
       },
       borderRadius: {

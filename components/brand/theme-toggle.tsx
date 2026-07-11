@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { Sun, Moon } from "lucide-react";
 
 export function ThemeToggle() {
-  const [dark, setDark] = useState(true);
+  // Light is the default; the effect below re-syncs with the inline script.
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     // Sync with whatever the inline script applied on load

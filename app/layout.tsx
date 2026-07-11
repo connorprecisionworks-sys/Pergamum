@@ -1,24 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces, JetBrains_Mono } from "next/font/google";
+import { Hanken_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
-const inter = Inter({
+// One typeface for the whole system — headings, body, labels, numerals.
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-  axes: ["SOFT", "WONK"],
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  variable: "--font-hanken",
   display: "swap",
 });
 
@@ -63,16 +51,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      // dark is the default class; ThemeToggle can remove it for light mode
-      className={`dark ${inter.variable} ${fraunces.variable} ${jetbrainsMono.variable}`}
-    >
+    <html lang="en" className={hanken.variable}>
       <head>
-        {/* Synchronous script: reads localStorage before first paint to avoid flash */}
+        {/* Synchronous script: reads localStorage before first paint to avoid flash.
+            Light is now the default (pure-white source-of-truth system); dark is
+            opt-in and remains for scoped surfaces. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('theme');if(t==='light'){document.documentElement.classList.remove('dark')}else{document.documentElement.classList.add('dark')}}catch(e){}`,
+            __html: `try{if(localStorage.getItem('theme')==='dark'){document.documentElement.classList.add('dark')}}catch(e){}`,
           }}
         />
       </head>

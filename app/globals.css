@@ -4,40 +4,40 @@
 
 @layer base {
   :root {
-    /* ── shadcn/ui tokens — light mode (Ink neutral) ── */
-    --background: 40 27% 96%;
-    --foreground: 255 8% 9%;
+    /* ── shadcn/ui tokens — light (prmpt source-of-truth) ── */
+    --background: 0 0% 100%;          /* pure white                    */
+    --foreground: 240 7% 5%;          /* #0D0D0F near-black ink        */
     --card: 0 0% 100%;
-    --card-foreground: 255 8% 9%;
+    --card-foreground: 240 7% 5%;
     --popover: 0 0% 100%;
-    --popover-foreground: 255 8% 9%;
-    --primary: 212 42% 35%;
+    --popover-foreground: 240 7% 5%;
+    --primary: 240 7% 5%;             /* black is the accent           */
     --primary-foreground: 0 0% 100%;
-    --secondary: 42 22% 91%;
-    --secondary-foreground: 255 8% 9%;
-    --muted: 42 22% 91%;
-    --muted-foreground: 253 5% 39%;
-    --accent: 42 22% 91%;
-    --accent-foreground: 255 8% 9%;
-    --destructive: 4 72% 64%;
+    --secondary: 0 0% 96%;            /* #F3F3F3                       */
+    --secondary-foreground: 240 7% 5%;
+    --muted: 0 0% 96%;                /* #F3F3F3                       */
+    --muted-foreground: 250 4% 56%;   /* #8C8A93                       */
+    --accent: 0 0% 96%;               /* #F3F3F3                       */
+    --accent-foreground: 240 7% 5%;
+    --destructive: 4 72% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 153 46% 49%;
+    --success: 153 39% 40%;           /* #3F8F6B — confirmed only      */
     --success-foreground: 0 0% 100%;
     --warning: 39 73% 55%;
     --warning-foreground: 240 6% 8%;
-    --border: 40 14% 88%;
-    --input: 40 14% 88%;
-    --ring: 212 42% 35%;
-    --radius: 0.25rem;
+    --border: 0 0% 93%;               /* #ECECEC hairline              */
+    --input: 0 0% 89%;                /* #E4E4E4                       */
+    --ring: 240 7% 5%;
+    --radius: 0.625rem;               /* 10px                          */
 
     /* ── Design tokens — light mode ── */
-    --background-subtle: #EDEAE3;
-    --background-inset:  #E5E1D9;
-    --border-strong:     #CFCBC3;
-    --foreground-muted:  #605E67;
+    --background-subtle: #F3F3F3;
+    --background-inset:  #EDEDEC;
+    --border-strong:     #E4E4E4;
+    --foreground-muted:  #3A3A40;
     --foreground-subtle: #8C8A93;
-    --accent-glow:       rgba(23, 22, 26, 0.06);
-    --grid-line:         rgba(180, 170, 155, 0.30);
+    --accent-glow:       rgba(13, 13, 15, 0.06);
+    --grid-line:         rgba(20, 24, 34, 0.08);
   }
 
   .dark {
@@ -48,8 +48,9 @@
     --card-foreground: 45 17% 91%;
     --popover: 240 7% 9%;
     --popover-foreground: 45 17% 91%;
-    --primary: 212 52% 71%;
-    --primary-foreground: 240 6% 8%;
+    /* on dark surfaces the primary action is a WHITE button */
+    --primary: 0 0% 100%;
+    --primary-foreground: 240 7% 5%;
     --secondary: 240 6% 10%;
     --secondary-foreground: 45 17% 91%;
     --muted: 240 6% 10%;
@@ -64,7 +65,7 @@
     --warning-foreground: 240 6% 8%;
     --border: 240 6% 17%;
     --input: 240 6% 17%;
-    --ring: 212 52% 71%;
+    --ring: 0 0% 100%;
 
     /* ── Design tokens — dark mode ── */
     --background-subtle: #17171A;
@@ -91,23 +92,24 @@
     -moz-osx-font-smoothing: grayscale;
   }
   h1, h2, h3 {
-    @apply font-serif tracking-tight leading-tight;
+    @apply font-sans tracking-tight leading-tight;
   }
 }
 
-/* ── Fonts ── */
+/* ── Fonts — ONE typeface. Hierarchy comes from size + weight only.
+   .font-serif / .font-mono are kept as aliases so the ~63 files that
+   already use them inherit the single family instead of orphaning. */
 .font-serif {
-  font-family: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  font-family: var(--font-hanken), system-ui, sans-serif;
 }
 .font-mono {
-  font-family: var(--font-jetbrains-mono), ui-monospace, Menlo, Consolas, monospace;
+  font-family: var(--font-hanken), system-ui, sans-serif;
 }
 
-/* ── Mono label — JetBrains Mono 11px uppercase, 0.08em tracking ──
-   Usage: <span className="label-mono">[ 01 — SECTION ]</span>
-   This is the single most important typographic move.              */
+/* ── Label — 11px uppercase, 0.08em tracking. Now renders in the sans;
+   labels stay "technical" via tracking, not a mono face.            */
 .label-mono {
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-family: var(--font-hanken), system-ui, sans-serif;
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
