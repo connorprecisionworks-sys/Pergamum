@@ -268,3 +268,129 @@ button:active:not(:disabled) {
 .minimal-editorial-group:hover .minimal-copy-btn {
   color: #a855f7;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MARKETING LANDING — ambient surfaces.
+
+   Per the source of truth, the blue↔white gradient and the liquid-glass
+   panels are the ONLY place color appears; it stays strictly behind
+   floating product shots and never bleeds into content. They live here
+   as classes rather than inline hex in the JSX.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.landing-hero-bg {
+  background: linear-gradient(140deg, #c3d2e8 0%, #a7c0de 52%, #93b0d6 100%);
+}
+.landing-finale-bg {
+  background: linear-gradient(135deg, #ffffff 0%, #eaf2f7 34%, #cfe4ef 70%, #b7d6e7 100%);
+}
+.landing-demo-bg {
+  background: #efede7;
+}
+
+/* Soft white blooms drifting over the hero gradient. */
+.landing-bloom {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Grain overlay (feTurbulence lives in the SVG that uses this). */
+.landing-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* The tilted hero product panel. */
+.landing-glass {
+  border-radius: 22px;
+  background: rgba(247, 245, 241, 0.42);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 44px 100px rgba(20, 34, 58, 0.42),
+    0 8px 24px rgba(20, 34, 58, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.12);
+}
+.landing-glass-body {
+  background: rgba(255, 255, 255, 0.28);
+}
+.landing-glass-row {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.42);
+}
+.landing-glass-divider {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+/* The frosted finale card. */
+.landing-frost {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(30px) saturate(150%);
+  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 40px 90px rgba(40, 60, 90, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* Frosted circular media buttons (restart / play-pause). */
+.landing-media-btn {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(20, 24, 34, 0.1);
+  box-shadow: 0 4px 14px rgba(28, 30, 40, 0.1);
+  transition: background 200ms ease, transform 200ms ease;
+}
+.landing-media-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+@keyframes landing-glow {
+  0%   { transform: scale(1);    opacity: 0.88; }
+  100% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes landing-sheen {
+  0%   { transform: translate3d(-3%, -2%, 0); }
+  100% { transform: translate3d(4%, 3%, 0); }
+}
+.landing-glow-layer {
+  animation: landing-glow 12s ease-in-out infinite alternate;
+}
+.landing-sheen-layer {
+  will-change: transform;
+  animation: landing-sheen 8s ease-in-out infinite alternate;
+}
+
+/* Reveal-on-scroll: children fade + slide, staggered by the observer. */
+.landing-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.landing-reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Every landing enhancement degrades to a calm static state. */
+@media (prefers-reduced-motion: reduce) {
+  .landing-glow-layer,
+  .landing-sheen-layer {
+    animation: none;
+  }
+  .landing-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
