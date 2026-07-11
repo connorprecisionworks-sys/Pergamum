@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  html, body { margin: 0; background: #FFFFFF; }
+  *, *::before, *::after { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: rgba(13,13,15,0.10); }
+  button { font-family: inherit; cursor: pointer; }
+  #demo-video [data-omelette-chrome] { display: none !important; }
+  #demo-video svg[data-om-exportable-video-with-duration-secs] { box-shadow: none !important; }
+  @keyframes plk-blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+  @keyframes plk-rise { 0% { opacity: 0; transform: translateY(12px); } 16% { opacity: 1; transform: translateY(4px); } 55% { opacity: 1; transform: translateY(-2px); } 80% { opacity: 0.9; transform: translateY(-18px); } 100% { opacity: 0; transform: translateY(-32px); } }
+  @keyframes plk-draw { 0% { stroke-dashoffset: 160; } 42% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 0; } }
+  @keyframes plk-glow { 0% { transform: scale(1); opacity: 0.88; } 100% { transform: scale(1.08); opacity: 1; } }
+  @keyframes plk-sheen { 0% { transform: translate3d(-3%,-2%,0); } 100% { transform: translate3d(4%,3%,0); } }
+  .plk-slot-label { position:absolute; left:16px; bottom:14px; z-index:2; font-family:'Hanken Grotesk',sans-serif; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.82); text-shadow:0 1px 3px rgba(0,0,0,0.5); pointer-events:none; }
+</style>
+</helmet>
+
+<div style="background:#FFFFFF; color:#0D0D0F; font-family:'Hanken Grotesk',system-ui,sans-serif; font-size:16px; overflow-x:hidden;">
+
+  <!-- ============ NAV ============ -->
+  <div style="position:sticky; top:0; z-index:40; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; height:72px; padding:0 40px; background:rgba(255,255,255,0.82); backdrop-filter:blur(12px); border-bottom:1px solid #ECECEC;">
+    <a href="#" style="display:flex; align-items:center; gap:10px; justify-self:start;">
+      <span style="width:28px; height:28px; background:#141416; border-radius:5px; display:inline-flex; align-items:center; justify-content:center;"><img src="src/logo-white.png" alt="" style="width:18px; height:18px;"></span>
+      <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:500; font-size:21px; letter-spacing:-0.01em;">prmpt</span>
+    </a>
+    <div style="display:flex; align-items:center; gap:30px; font-size:14.5px; font-weight:500; color:#3A3942; white-space:nowrap;">
+      <a href="#packs">Browse</a><a href="#creators">Creators</a><a href="#pricing">Pricing</a><a href="#resources">Resources</a>
+    </div>
+    <div style="justify-self:end; display:flex; align-items:center; gap:14px;">
+      <div style="display:flex; align-items:center; gap:9px; height:40px; padding:0 18px; border:1px solid #E4E4E4; border-radius:9999px; color:#605E67; font-size:14px;">
+        <span style="width:13px; height:13px; border:1.75px solid #8C8A93; border-radius:9999px; position:relative;"><span style="position:absolute; right:-4px; bottom:-3px; width:7px; height:1.75px; background:#8C8A93; transform:rotate(45deg);"></span></span>
+        Find a pack
+      </div>
+      <span style="height:40px; display:inline-flex; align-items:center; padding:0 18px; border:1px solid #E4E4E4; border-radius:9999px; font-size:14px; font-weight:500;">Log in</span>
+      <span style="height:40px; display:inline-flex; align-items:center; padding:0 22px; border-radius:9999px; background:#141416; color:#FFFFFF; font-size:14px; font-weight:600;">Get started</span>
+    </div>
+  </div>
+
+  <!-- ============ HERO 1 — big type + product panel ============ -->
+  <section id="hero-stage" style="position:relative; overflow:hidden; background:linear-gradient(140deg,#C3D2E8 0%,#A7C0DE 52%,#93B0D6 100%);">
+    <!-- white swooshes -->
+    <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+      <div style="position:absolute; width:1100px; height:440px; left:-14%; top:-20%; border-radius:50%; background:radial-gradient(closest-side, rgba(255,255,255,0.92), rgba(255,255,255,0) 70%); filter:blur(32px); transform:rotate(-20deg);"></div>
+      <div style="position:absolute; width:900px; height:320px; right:-12%; top:6%; border-radius:50%; background:radial-gradient(closest-side, rgba(255,255,255,0.72), rgba(255,255,255,0) 72%); filter:blur(36px); transform:rotate(15deg);"></div>
+      <div style="position:absolute; width:1250px; height:400px; left:4%; bottom:-24%; border-radius:50%; background:radial-gradient(closest-side, rgba(255,255,255,0.68), rgba(255,255,255,0) 72%); filter:blur(42px); transform:rotate(-8deg);"></div>
+    </div>
+    <!-- grain -->
+    <svg style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; opacity:0.13; mix-blend-mode:overlay;" xmlns="http://www.w3.org/2000/svg"><filter id="heroGrain"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="2" stitchTiles="stitch"></feTurbulence></filter><rect width="100%" height="100%" filter="url(#heroGrain)"></rect></svg>
+
+    <div style="position:relative; z-index:2; max-width:1320px; margin:0 auto; display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center; padding:96px 40px 104px;">
+      <div>
+        <h1 style="font-family:'Hanken Grotesk',sans-serif; font-weight:600; font-size:80px; line-height:0.98; letter-spacing:-0.03em; margin:0; color:#111114;">Turn comment<br><span style="white-space:nowrap;">&#8220;<span id="trigger-word" style="color:#0D0D0F; font-family:'Hanken Grotesk',sans-serif; font-weight:500; letter-spacing:-0.01em;">PROMPT</span><span style="color:#0D0D0F; font-family:'Hanken Grotesk',sans-serif; font-weight:400; animation:plk-blink 1s step-end infinite;">|</span>&#8221;</span><br>into booked clients.</h1>
+        <p style="max-width:480px; margin:32px 0 30px; font-size:18px; line-height:1.6; color:#1D2330;">A wall of comment &#8220;PROMPT&#8221; doesn&#8217;t get you clients. prmpt does &#8212; it turns every one of those comments into a lead, hands over your prompt like a pro, and books the call for you.</p>
+        <div style="display:flex; align-items:center; gap:22px; flex-wrap:wrap;">
+          <button style="height:54px; padding:0 30px; border:none; border-radius:9999px; background:#141416; color:#FFFFFF; font-size:16px; font-weight:600;">Open your prmpt page</button>
+          <a href="#packs" style="font-size:15px; font-weight:500; color:#1D2330; text-decoration:underline; text-underline-offset:3px; text-decoration-color:rgba(29,35,48,0.35);">Looking for prompts to use? Browse the library &#8594;</a>
+        </div>
+      </div>
+
+      <!-- product panel (adapts the chat panel → a live prompt workspace) — liquid glass, offset angle -->
+      <div style="justify-self:end; width:100%; max-width:480px; perspective:1700px;">
+      <div id="glass-card" style="position:relative; transform:rotateY(-14deg) rotateX(6deg) rotate(-1.5deg); transform-origin:center; transition:transform 0.2s ease-out; will-change:transform; border-radius:22px; overflow:hidden; background:rgba(247,245,241,0.42); backdrop-filter:blur(28px) saturate(180%); -webkit-backdrop-filter:blur(28px) saturate(180%); border:1px solid rgba(255,255,255,0.55); box-shadow:0 44px 100px rgba(20,34,58,0.42), 0 8px 24px rgba(20,34,58,0.2), inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -1px 0 rgba(255,255,255,0.12);">
+        <div id="glass-shine" style="position:absolute; inset:0; z-index:5; pointer-events:none; background:radial-gradient(420px circle at 30% 18%, rgba(255,255,255,0.42), rgba(255,255,255,0) 60%); transition:background 0.2s ease-out;"></div>
+        <div style="display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.28);">
+          <span style="width:34px; height:34px; border-radius:9999px; background:#E5E1D9; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; color:#605E67;">CN</span>
+          <div style="line-height:1.2;">
+            <div style="font-weight:600; font-size:14px;">The pre-call research brief</div>
+            <div style="font-family:'Hanken Grotesk',sans-serif; font-size:10.5px; letter-spacing:0.04em; color:#8C8A93;">CONNOR NORTH · SALES · v1.2</div>
+          </div>
+          <span style="margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-size:10px; letter-spacing:0.08em; color:#0D0D0F;">3 FIELDS</span>
+        </div>
+        <div style="padding:22px 22px 20px; background:rgba(255,255,255,0.28);">
+          <div style="font-family:'Hanken Grotesk',sans-serif; font-size:13px; line-height:2.05; color:#2A2933;">
+            Research <span style="display:inline-block; padding:1px 8px; border:1.5px solid #0D0D0F; border-radius:3px; background:rgba(255,255,255,0.85); color:#0D0D0F;">Acme, Inc.</span> before my discovery call. They&#8217;re a <span style="display:inline-block; padding:1px 8px; border:1px solid #E4E4E4; border-radius:3px; background:#FFFFFF;">Series B fintech</span> and I&#8217;m selling <span style="display:inline-block; padding:1px 8px; border:1px solid #E4E4E4; border-radius:3px; background:#FFFFFF;">a compliance layer</span>.
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; margin-top:20px;">
+            <button style="height:40px; padding:0 20px; border:none; border-radius:4px; background:#0D0D0F; color:#FFFFFF; font-weight:600; font-size:14px;">Copy prompt</button>
+            <div style="height:40px; display:inline-flex; align-items:center; gap:9px; padding:0 14px; border:1px solid #E4E4E4; border-radius:4px; background:#FFFFFF; font-size:13px; font-weight:500;"><span style="width:6px; height:6px; border-radius:9999px; background:#0D0D0F;"></span>Open in Claude<span style="color:#8C8A93;">&#9662;</span></div>
+            <span style="margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-size:10px; letter-spacing:0.06em; color:#8C8A93;">3 / 3</span>
+          </div>
+        </div>
+        <!-- mini stacked "kept" receipts -->
+        <div style="padding:14px 22px 20px; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:10px; padding:11px 14px; border:1px solid rgba(255,255,255,0.5); border-radius:8px; background:rgba(255,255,255,0.42);">
+            <span style="width:22px; height:22px; border-radius:9999px; background:#E5E1D9; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:9px; color:#605E67;">MO</span>
+            <span style="font-size:13px; color:#3A3942;">Maya kept <span style="font-weight:600; color:#0D0D0F;">PRDs in an Afternoon</span></span>
+            <span style="margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-size:10px; color:#8C8A93;">2m</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; padding:11px 14px; border:1px solid rgba(255,255,255,0.5); border-radius:8px; background:rgba(255,255,255,0.42);">
+            <span style="width:22px; height:22px; border-radius:9999px; background:#E5E1D9; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:9px; color:#605E67;">DR</span>
+            <span style="font-size:13px; color:#3A3942;">Dev unlocked <span style="font-weight:600; color:#0D0D0F;">The Recruiter&#8217;s Kit</span></span>
+            <span style="margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-size:10px; color:#8C8A93;">5m</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DEMO VIDEO ============ -->
+  <section id="demo-video" style="position:relative; width:100%; background:#EFEDE7; overflow:hidden;">
+    <div style="position:relative; width:100%; aspect-ratio:16/9; overflow:hidden;">
+      <!-- host is grown 30px top & bottom so the Stage's 44px scrubber-reservation
+           doesn't letterbox the sides; chrome hidden + shadow killed via CSS below -->
+      <x-import component-from-global-scope="ClientJourneyV3" from="./animations.jsx ./client-journey-v3.jsx" hint-size="100%,100%" style="position:absolute; left:0; right:0; top:-30px; bottom:-30px; width:100%;"></x-import>
+    </div>
+  </section>
+
+  <!-- ============ BAND — reach leads (light blue) ============ -->
+  <section style="position:relative; min-height:760px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#FFFFFF 0%,#EAF2F7 34%,#CFE4EF 70%,#B7D6E7 100%); overflow:hidden;">
+    <div style="position:absolute; inset:0; pointer-events:none; transform-origin:center; animation:plk-glow 12s ease-in-out infinite alternate; background:radial-gradient(90% 78% at 30% 24%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%), radial-gradient(78% 70% at 90% 98%, rgba(120,178,212,0.34), rgba(255,255,255,0) 60%);"></div>
+    <svg style="position:absolute; inset:0; width:100%; height:100%; pointer-events:none; opacity:0.09; mix-blend-mode:overlay;" xmlns="http://www.w3.org/2000/svg"><filter id="leadGrain"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"></feTurbulence></filter><rect width="100%" height="100%" filter="url(#leadGrain)"></rect></svg>
+    <div id="lead-card" style="position:relative; z-index:3; width:452px; max-width:calc(100% - 48px); background:rgba(255,255,255,0.55); backdrop-filter:blur(30px) saturate(150%); -webkit-backdrop-filter:blur(30px) saturate(150%); border:1px solid rgba(255,255,255,0.8); border-radius:30px; padding:48px 46px 38px; text-align:center; box-shadow:0 40px 90px rgba(40,60,90,0.22), inset 0 1px 0 rgba(255,255,255,0.85); overflow:hidden; opacity:0; transform:translateY(30px) scale(0.985); transition:opacity 0.7s cubic-bezier(.2,.7,.2,1), transform 0.7s cubic-bezier(.2,.7,.2,1);">
+      <div style="position:absolute; inset:-14%; z-index:1; pointer-events:none; will-change:transform; animation:plk-sheen 8s ease-in-out infinite alternate; background:linear-gradient(135deg, rgba(255,255,255,0.30) 0%, rgba(255,255,255,0) 34%), radial-gradient(420px circle at 26% 4%, rgba(255,255,255,0.35), rgba(255,255,255,0) 55%);"></div>
+      <div style="position:relative; z-index:2;">
+        <span data-reveal style="width:46px; height:46px; background:#141416; border:1px solid rgba(0,0,0,0.08); border-radius:12px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:22px; opacity:0; transform:translateY(14px); transition:opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);"><img src="src/logo-white.png" alt="" style="width:26px; height:26px;"></span>
+        <h2 data-reveal style="font-family:'Hanken Grotesk',sans-serif; font-weight:400; font-size:40px; line-height:1.02; letter-spacing:-0.02em; margin:0 0 14px; color:#0D0D0F; opacity:0; transform:translateY(14px); transition:opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);">Reach the <span id="lead-word">leads</span><br>your prompts earn.</h2>
+        <p data-reveal style="font-size:16px; line-height:1.55; color:#3A3942; margin:0 0 28px; opacity:0; transform:translateY(14px); transition:opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);">Every download becomes a warm contact. Open your page and start the conversation.</p>
+        <button id="lead-cta" data-reveal style="width:100%; height:56px; border:none; border-radius:9999px; background:#141416; color:#FFFFFF; font-size:16px; font-weight:600; margin-bottom:18px; opacity:0; transform:translateY(14px); transition:opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);">Get started</button>
+        <div data-reveal style="font-size:14px; color:#605E67; opacity:0; transform:translateY(14px); transition:opacity 0.6s cubic-bezier(.2,.7,.2,1), transform 0.6s cubic-bezier(.2,.7,.2,1);">Already have an account? <a href="#" style="color:#0D0D0F; text-decoration:underline; text-underline-offset:2px;">Log in</a></div>
+      </div>
+    </div>
+  </section>
+
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  componentDidMount() {
+    const base = { ry: -14, rx: 6, rot: -1.5 };
+    const start = () => {
+      const stage = document.getElementById('hero-stage');
+      const card = document.getElementById('glass-card');
+      const shine = document.getElementById('glass-shine');
+      if (!stage || !card) { this._t = setTimeout(start, 120); return; }
+
+      const apply = (px, py) => {
+        const dx = px - 0.5, dy = py - 0.5;
+        const ry = base.ry - dx * 20;
+        const rx = base.rx + dy * 18;
+        card.style.transform = 'rotateY(' + ry.toFixed(2) + 'deg) rotateX(' + rx.toFixed(2) + 'deg) rotate(' + base.rot + 'deg)';
+        if (shine) shine.style.background = 'radial-gradient(440px circle at ' + (px * 100).toFixed(1) + '% ' + (py * 100).toFixed(1) + '%, rgba(255,255,255,0.55), rgba(255,255,255,0) 60%)';
+      };
+      const reset = () => {
+        card.style.transform = 'rotateY(' + base.ry + 'deg) rotateX(' + base.rx + 'deg) rotate(' + base.rot + 'deg)';
+        if (shine) shine.style.background = 'radial-gradient(420px circle at 30% 18%, rgba(255,255,255,0.42), rgba(255,255,255,0) 60%)';
+      };
+      const onMove = (e) => {
+        const r = stage.getBoundingClientRect();
+        apply((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+      };
+      stage.addEventListener('pointermove', onMove, { passive: true });
+      stage.addEventListener('pointerleave', reset);
+      this._cleanup = () => {
+        stage.removeEventListener('pointermove', onMove);
+        stage.removeEventListener('pointerleave', reset);
+      };
+    };
+    start();
+    this._startWords();
+    this._wireLeadReveal();
+    this._wireMagnetic();
+  }
+  _wireMagnetic() {
+    const attach = () => {
+      const card = document.getElementById('lead-card');
+      const btn = document.getElementById('lead-cta');
+      if (!card || !btn) { this._mt = setTimeout(attach, 150); return; }
+      btn.style.transition = 'transform 0.22s cubic-bezier(.2,.7,.2,1), opacity 0.6s cubic-bezier(.2,.7,.2,1)';
+      const move = (e) => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
+        const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+        btn.style.transform = 'translate(' + (dx * 9).toFixed(1) + 'px,' + (dy * 6).toFixed(1) + 'px)';
+      };
+      const leave = () => { btn.style.transform = 'translate(0,0)'; };
+      card.addEventListener('pointermove', move, { passive: true });
+      card.addEventListener('pointerleave', leave);
+      this._magCleanup = () => {
+        card.removeEventListener('pointermove', move);
+        card.removeEventListener('pointerleave', leave);
+      };
+    };
+    attach();
+  }
+  _wireLeadReveal() {
+    const attach = () => {
+      const card = document.getElementById('lead-card');
+      if (!card) { this._lt = setTimeout(attach, 150); return; }
+      const items = card.querySelectorAll('[data-reveal]');
+      const reveal = () => {
+        card.style.opacity = '1';
+        card.style.transform = 'none';
+        items.forEach((el, i) => {
+          el.style.transitionDelay = (0.14 * i + 0.12) + 's';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        const word = document.getElementById('lead-word');
+        if (word) word.style.backgroundSize = '100% 34%';
+      };
+      if (!('IntersectionObserver' in window)) { reveal(); return; }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) { reveal(); io.disconnect(); } });
+      }, { threshold: 0.3 });
+      io.observe(card);
+      this._leadIO = io;
+    };
+    attach();
+  }
+  _startWords() {
+    const words = ['PROMPT', 'CLAUDE', 'SKILL', 'GUIDE', 'PLAYBOOK', 'RECIPE', 'AUDIT'];
+    const typeSpeed = 120, backSpeed = 65, hold = 1050, gap = 380;
+    let wi = 0;
+    const run = () => {
+      const el = document.getElementById('trigger-word');
+      if (!el) { this._wt = setTimeout(run, 150); return; }
+      const word = words[wi];
+      let ci = 0;
+      const type = () => {
+        el.textContent = word.slice(0, ci);
+        if (ci < word.length) { ci++; this._wt = setTimeout(type, typeSpeed); }
+        else { this._wt = setTimeout(erase, hold); }
+      };
+      const erase = () => {
+        el.textContent = word.slice(0, ci);
+        if (ci > 0) { ci--; this._wt = setTimeout(erase, backSpeed); }
+        else { wi = (wi + 1) % words.length; this._wt = setTimeout(run, gap); }
+      };
+      type();
+    };
+    this._wt = setTimeout(run, 700);
+  }
+  componentWillUnmount() {
+    if (this._t) clearTimeout(this._t);
+    if (this._wt) clearTimeout(this._wt);
+    if (this._lt) clearTimeout(this._lt);
+    if (this._mt) clearTimeout(this._mt);
+    if (this._cleanup) this._cleanup();
+    if (this._magCleanup) this._magCleanup();
+    if (this._leadIO) this._leadIO.disconnect();
+  }
+}
+</script>
+</body>
+</html>

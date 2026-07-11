@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; background: #EDEDEC; }
+  *, *::before, *::after { box-sizing: border-box; }
+  a { color: #0D0D0F; text-decoration: none; }
+  a:hover { color: #3A3A40; }
+  ::selection { background: rgba(13,13,15,0.10); }
+  input, button { font-family: inherit; }
+  input:focus { outline: none; }
+</style>
+</helmet>
+
+<div style="background:#EDEDEC; color:#0D0D0F; font-family:'Hanken Grotesk',sans-serif; font-size:15px;">
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 1 — PROMPT-LINK VIEWER · the document on a dark desk -->
+  <!-- ================================================================ -->
+  <section data-screen-label="01 Prompt-link viewer" style="position:relative; min-height:960px; padding:0 48px 100px;">
+    <!-- focus bar -->
+    <div style="display:flex; align-items:center; height:76px;">
+      <span style="width:26px; height:26px; background:#0D0D0F; border-radius:12px; display:inline-flex; align-items:center; justify-content:center;"><img src="src/logo-white.png" alt="PrmptKit" style="width:17px; height:17px; filter:invert(1);"></span>
+      <span style="margin-left:auto; font-family:'Hanken Grotesk',sans-serif; font-size:11px; letter-spacing:0.08em; color:#6A6870;">SHARED BY @CONNOR</span>
+    </div>
+
+    <!-- folio -->
+    
+
+    <!-- paper document -->
+    <div style="max-width:760px; margin:0 auto; background:#FFFFFF; color:#0D0D0F; border-radius:20px; box-shadow:0 24px 70px rgba(28,30,40,0.16);">
+      <div style="padding:64px 72px 0;">
+        <div style="font-family:'Hanken Grotesk',sans-serif; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#8C8A93; margin-bottom:28px;">Sales — Cold email</div>
+        <h1 style="font-family:'Hanken Grotesk',sans-serif; font-weight:400; font-size:56px; line-height:0.98; letter-spacing:-0.025em; margin:0 0 20px; max-width:12ch;">Cold outreach that gets replies</h1>
+        <p style="font-size:18px; line-height:1.5; color:#3A3A40; margin:0 0 32px; max-width:46ch;">A six-variable cold email tuned for founders selling to founders.</p>
+        <div style="display:flex; align-items:center; gap:12px; padding-bottom:36px; border-bottom:1px solid #ECECEC;">
+          <span style="width:30px; height:30px; border-radius:9999px; background:#EDECEA; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:10px; color:#605E67;">CN</span>
+          <span style="font-family:'Hanken Grotesk',sans-serif; font-size:13px; color:#3A3A40;">@connor</span>
+          <button style="margin-left:6px; height:30px; padding:0 14px; border:1px solid #E4E4E4; border-radius:12px; background:transparent; color:#3A3A40; font-size:13px; cursor:pointer;">Follow</button>
+        </div>
+      </div>
+
+      <!-- the workspace: one read-and-type object -->
+      <div style="padding:34px 72px 40px;">
+        <div style="font-family:'Hanken Grotesk',sans-serif; font-size:11px; letter-spacing:0.06em; color:#B7B5BC; margin-bottom:20px;">2 of 3 fields filled</div>
+        <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:300; font-size:26px; line-height:1.7; letter-spacing:-0.01em; color:#26252B;">
+          Write a cold email to <input value="a VP of Sales" style="font-family:'Hanken Grotesk',sans-serif; display:inline-block; min-width:150px; height:40px; padding:0 14px; border:1.5px solid #0D0D0F; border-radius:12px; background:#FFFFFF; color:#0D0D0F; font-size:19px; vertical-align:baseline;"> at <input value="Acme, Inc." style="font-family:'Hanken Grotesk',sans-serif; display:inline-block; min-width:130px; height:40px; padding:0 14px; border:1px solid #D6D1C7; border-radius:12px; background:#FFFFFF; color:#0D0D0F; font-size:19px; vertical-align:baseline;"> offering <span style="font-family:'Hanken Grotesk',sans-serif; display:inline-block; min-width:150px; height:40px; padding:0 14px; border:1px dashed #CFC9BE; border-radius:12px; background:transparent; color:#B7B5BC; font-size:19px; line-height:40px; vertical-align:baseline;">your offer</span>. Keep it under 90 words, one clear ask, and no flattery.
+        </div>
+      </div>
+
+      <!-- action rail -->
+      <div style="display:flex; align-items:center; gap:14px; padding:20px 72px; border-top:1px solid #ECECEC;">
+        <button style="height:46px; padding:0 28px; border:none; border-radius:12px; background:#0D0D0F; color:#FFFFFF; font-weight:600; font-size:15px; cursor:pointer; border-radius:9999px;">Copy prompt</button>
+        <div style="display:flex; gap:2px; margin-left:4px;">
+          <button title="Open in ChatGPT" style="height:46px; padding:0 14px; border:none; background:transparent; color:#605E67; font-family:'Hanken Grotesk',sans-serif; font-size:12px; cursor:pointer;">ChatGPT</button>
+          <button title="Open in Claude" style="height:46px; padding:0 14px; border:none; background:transparent; color:#605E67; font-family:'Hanken Grotesk',sans-serif; font-size:12px; cursor:pointer;">Claude</button>
+          <button title="Open in Gemini" style="height:46px; padding:0 14px; border:none; background:transparent; color:#605E67; font-family:'Hanken Grotesk',sans-serif; font-size:12px; cursor:pointer;">Gemini</button>
+        </div>
+        <button style="margin-left:auto; height:46px; padding:0 20px; border:none; background:transparent; color:#8C8A93; font-size:14px; cursor:pointer;">Save</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 1b — POST-RUN -->
+  <!-- ================================================================ -->
+  <section data-screen-label="01b Post-run" style="position:relative; padding:0 48px 110px; border-top:1px solid #16161A;">
+    <div style="height:64px;"></div>
+    <div style="max-width:760px; margin:0 auto;">
+      <div style="background:#FFFFFF; color:#0D0D0F; border-radius:20px; box-shadow:0 24px 70px rgba(28,30,40,0.16); overflow:hidden;">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:22px 40px; border-bottom:1px solid #ECECEC;">
+          <span style="font-family:'Hanken Grotesk',sans-serif; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:#8C8A93;">Sales — Cold email</span>
+          <span style="display:inline-flex; align-items:center; gap:8px; font-size:13px; color:#3A3A40;"><span style="width:18px; height:18px; border-radius:9999px; background:#0D0D0F; color:#FFFFFF; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">✓</span>Copied to clipboard</span>
+        </div>
+        <div style="padding:40px 40px 38px;">
+          <h2 style="font-family:'Hanken Grotesk',sans-serif; font-weight:400; font-size:38px; line-height:1.0; letter-spacing:-0.025em; margin:0 0 10px; max-width:14ch;">Cold outreach that gets replies</h2>
+          <p style="color:#6A6870; font-size:15px; margin:0;">Paste it into your model — you&#8217;re all set.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px; background:#FFFFFF; color:#0D0D0F; border-radius:16px; padding:20px 22px; box-shadow:0 12px 34px rgba(28,30,40,0.12); position:relative;">
+        <button title="Dismiss" style="position:absolute; top:14px; right:16px; width:24px; height:24px; border:none; background:transparent; color:#B7B5BC; font-size:17px; line-height:1; cursor:pointer;">×</button>
+        <div style="display:flex; align-items:flex-start; gap:14px;">
+          <span style="width:40px; height:40px; border-radius:9999px; background:#EDECEA; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; color:#605E67; flex:none;">CN</span>
+          <div style="flex:1;">
+            <div style="font-size:15.5px; line-height:1.55; color:#26252B; max-width:52ch;">I run this on live deals every week. If it helps, I&#8217;ll look at your actual pipeline for 30 minutes. <span style="color:#8C8A93;">— @connor</span></div>
+            <div style="display:flex; align-items:center; gap:22px; margin-top:16px;">
+              <button style="height:40px; padding:0 20px; border:none; border-radius:9999px; background:#0D0D0F; color:#FFFFFF; font-size:14px; font-weight:600; cursor:pointer;">Book 30 min</button>
+              <span style="font-size:14px; color:#0D0D0F; font-weight:500; cursor:pointer;">Keep &amp; follow for updates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-family:'Hanken Grotesk',sans-serif; font-size:10.5px; letter-spacing:0.04em; color:#4E4E55; margin-top:14px;">Shown once, right after a copy — then it stays out of the way.</div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 2 — YOUR AI TOOLBOX · the light app -->
+  <!-- ================================================================ -->
+  <section data-screen-label="02 Your AI toolbox" style="background:#FFFFFF; color:#0D0D0F;">
+    <div style="display:flex; align-items:center; gap:16px; height:64px; padding:0 40px; border-bottom:1px solid #ECECEC;">
+      <span style="width:24px; height:24px; background:#141416; border-radius:8px; display:inline-flex; align-items:center; justify-content:center;"><img src="src/logo-white.png" alt="" style="width:15px; height:15px;"></span>
+      <span style="font-family:'Hanken Grotesk',sans-serif; font-weight:600; font-size:16px;">prmpt</span>
+      <div style="margin-left:28px; display:flex; gap:24px; font-size:13.5px;">
+        <span style="font-weight:500;">Library</span>
+        <span style="color:#8C8A93;">Browse</span>
+        <span style="color:#8C8A93;">Creators</span>
+      </div>
+      <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+        <div style="display:flex; align-items:center; gap:9px; height:34px; padding:0 14px; border:1px solid #DAD5CB; border-radius:9999px; color:#8C8A93; font-size:13px; width:210px;">
+          <span style="width:12px; height:12px; border:1.5px solid #B7B5BC; border-radius:9999px; position:relative;"><span style="position:absolute; right:-4px; bottom:-3px; width:6px; height:1.5px; background:#B7B5BC; transform:rotate(45deg);"></span></span>
+          Search your library
+        </div>
+        <span style="width:30px; height:30px; border-radius:9999px; background:#EDECEA; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; color:#605E67;">JD</span>
+      </div>
+    </div>
+    <div style="padding:60px 40px 100px; max-width:1120px; margin:0 auto;">
+      <!-- masthead -->
+      <div style="margin-bottom:60px;">
+        <div style="font-size:13px; color:#8C8A93; margin-bottom:16px;">Your toolbox</div>
+        <h2 style="font-family:'Hanken Grotesk',sans-serif; font-weight:400; font-size:52px; line-height:0.98; letter-spacing:-0.025em; margin:0; max-width:16ch;">Everything you keep, in reach.</h2>
+      </div>
+
+      <!-- recent runs -->
+      <div style="margin-bottom:64px;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:13px; border-bottom:1px solid #ECECEC; margin-bottom:22px;"><span style="font-size:13px; color:#605E67;">Recent runs</span></div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:#ECECEC; border:1px solid #ECECEC; border-radius:16px; overflow:hidden;">
+          <div style="background:#FFFFFF; padding:20px 22px;">
+              <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:500; font-size:18px; line-height:1.2;">Cold outreach that gets replies</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+                <span style="font-size:12px; color:#8C8A93;">Acme pitch</span>
+                <span style="font-size:13px; font-weight:500; color:#0D0D0F;">Run again →</span>
+              </div>
+            </div>
+          <div style="background:#FFFFFF; padding:20px 22px;">
+              <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:500; font-size:18px; line-height:1.2;">The pre-call research brief</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+                <span style="font-size:12px; color:#8C8A93;">Series B fintech</span>
+                <span style="font-size:13px; font-weight:500; color:#0D0D0F;">Run again →</span>
+              </div>
+            </div>
+          <div style="background:#FFFFFF; padding:20px 22px;">
+              <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:500; font-size:18px; line-height:1.2;">PRD first draft</div>
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-top:14px;">
+                <span style="font-size:12px; color:#8C8A93;">Mobile checkout</span>
+                <span style="font-size:13px; font-weight:500; color:#0D0D0F;">Run again →</span>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- packs -->
+      <div style="margin-bottom:64px;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:13px; border-bottom:1px solid #ECECEC; margin-bottom:22px;"><span style="font-size:13px; color:#605E67;">Your packs</span><span style="font-size:13px; color:#8C8A93;">4 packs</span></div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:20px;">
+          <div>
+                <div style="position:relative; aspect-ratio:1; border-radius:14px; overflow:hidden; background:linear-gradient(150deg,#1C1C20,#0E0E11);"><div style="position:absolute; left:24%; top:24%; width:40%; height:40%; border:1.5px solid #4A4A52; transform:rotate(45deg);"></div><div style="position:absolute; left:34%; top:34%; width:20%; height:20%; background:#6A6A73; transform:rotate(45deg);"></div></div>
+                <div style="font-size:14px; font-weight:500; margin-top:12px; line-height:1.25;">Discovery-Call Kit</div>
+                <div style="font-size:12px; color:#8C8A93; margin-top:4px;">v1.3 · 2 new</div>
+              </div>
+          <div>
+                <div style="position:relative; aspect-ratio:1; border-radius:14px; overflow:hidden; background:linear-gradient(150deg,#1C1C20,#0E0E11);"><div style="position:absolute; left:0; right:0; top:40%; height:2px; background:#4A4A52;"></div><div style="position:absolute; left:0; right:0; top:54%; height:2px; background:#4A4A52;"></div></div>
+                <div style="font-size:14px; font-weight:500; margin-top:12px; line-height:1.25;">PRDs in an Afternoon</div>
+                <div style="font-size:12px; color:#B7B5BC; margin-top:4px;">v2.0</div>
+              </div>
+          <div>
+                <div style="position:relative; aspect-ratio:1; border-radius:14px; overflow:hidden; background:linear-gradient(150deg,#1C1C20,#0E0E11);"><div style="position:absolute; left:50%; top:50%; width:38%; height:38%; margin:-19% 0 0 -19%; border:1.5px solid #4A4A52; transform:rotate(45deg);"></div></div>
+                <div style="font-size:14px; font-weight:500; margin-top:12px; line-height:1.25;">The Recruiter&#8217;s Kit</div>
+                <div style="font-size:12px; color:#B7B5BC; margin-top:4px;">v1.0</div>
+              </div>
+          <div>
+                <div style="position:relative; aspect-ratio:1; border-radius:14px; overflow:hidden; background:linear-gradient(150deg,#1C1C20,#0E0E11);"><div style="position:absolute; left:26%; right:26%; top:26%; bottom:26%; border:1.5px solid #4A4A52;"></div></div>
+                <div style="font-size:14px; font-weight:500; margin-top:12px; line-height:1.25;">Support Replies</div>
+                <div style="font-size:12px; color:#8C8A93; margin-top:4px;">v1.1 · 1 new</div>
+              </div>
+        </div>
+      </div>
+
+      <!-- two column: history / creators -->
+      <div style="display:grid; grid-template-columns:1.7fr 1fr; gap:64px;">
+        <div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:13px; border-bottom:1px solid #ECECEC; margin-bottom:22px;"><span style="font-size:13px; color:#605E67;">Presets &amp; history</span></div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+            <span style="height:32px; display:inline-flex; align-items:center; padding:0 14px; border:1px solid #0D0D0F; border-radius:9999px; color:#0D0D0F; font-size:13px;">Acme pitch</span>
+            <span style="height:32px; display:inline-flex; align-items:center; padding:0 14px; border:1px solid #DAD5CB; border-radius:9999px; color:#3A3A40; font-size:13px;">Series B fintech</span>
+            <span style="height:32px; display:inline-flex; align-items:center; padding:0 14px; border:1px solid #DAD5CB; border-radius:9999px; color:#3A3A40; font-size:13px;">Enterprise SaaS</span>
+            <span style="height:32px; display:inline-flex; align-items:center; padding:0 14px; border:1px dashed #C4BFB6; border-radius:9999px; color:#8C8A93; font-size:13px;">New preset</span>
+          </div>
+          <div style="font-family:'Hanken Grotesk',sans-serif;">
+            <div style="display:grid; grid-template-columns:1fr 150px 90px 50px; gap:16px; padding:0 4px 10px; font-size:10.5px; letter-spacing:0.04em; text-transform:uppercase; color:#B7B5BC; border-bottom:1px solid #ECECEC;"><span>Prompt</span><span>Preset</span><span>Model</span><span style="text-align:right;">When</span></div>
+            <div style="display:grid; grid-template-columns:1fr 150px 90px 50px; gap:16px; padding:14px 4px; border-bottom:1px solid #EAE6DE; font-size:13px;"><span style="font-family:'Hanken Grotesk',sans-serif; color:#0D0D0F;">Cold outreach that gets replies</span><span style="color:#605E67;">Acme pitch</span><span style="color:#605E67;">Claude</span><span style="text-align:right; color:#B7B5BC;">2h</span></div>
+            <div style="display:grid; grid-template-columns:1fr 150px 90px 50px; gap:16px; padding:14px 4px; border-bottom:1px solid #EAE6DE; font-size:13px;"><span style="font-family:'Hanken Grotesk',sans-serif; color:#0D0D0F;">The pre-call research brief</span><span style="color:#605E67;">Series B fintech</span><span style="color:#605E67;">GPT-4o</span><span style="text-align:right; color:#B7B5BC;">1d</span></div>
+            <div style="display:grid; grid-template-columns:1fr 150px 90px 50px; gap:16px; padding:14px 4px; font-size:13px;"><span style="font-family:'Hanken Grotesk',sans-serif; color:#0D0D0F;">PRD first draft</span><span style="color:#605E67;">Mobile checkout</span><span style="color:#605E67;">Claude</span><span style="text-align:right; color:#B7B5BC;">3d</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:13px; border-bottom:1px solid #ECECEC; margin-bottom:22px;"><span style="font-size:13px; color:#605E67;">From creators you follow</span></div>
+          <div style="display:flex; flex-direction:column; gap:20px; margin-bottom:24px;">
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:36px; height:36px; border-radius:9999px; background:#EDECEA; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; color:#605E67;">CN</span><div style="flex:1;"><div style="font-size:14px; font-weight:500;">Connor North</div><div style="font-size:12.5px; color:#8C8A93; margin-top:1px;">Released Discovery-Call Kit v1.3</div></div></div>
+            <div style="display:flex; align-items:center; gap:12px;"><span style="width:36px; height:36px; border-radius:9999px; background:#EDECEA; display:inline-flex; align-items:center; justify-content:center; font-family:'Hanken Grotesk',sans-serif; font-size:11px; color:#605E67;">MO</span><div style="flex:1;"><div style="font-size:14px; font-weight:500;">Maya Okonkwo</div><div style="font-size:12.5px; color:#8C8A93; margin-top:1px;">New single: Spec review</div></div></div>
+          </div>
+          <!-- tasteful, contained creator offer: opt-in, dismissible, lives among people you chose to follow -->
+          <div style="border:1px solid #DAD5CB; border-radius:16px; padding:18px 20px; background:#FBFAF7; margin-bottom:44px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;"><span style="font-size:12px; color:#8C8A93;">Office hours · @connor</span><span style="font-size:12px; color:#B7B5BC; cursor:pointer;">Not now</span></div>
+            <div style="font-size:14.5px; line-height:1.5; color:#26252B;">Five slots a week for people who use my packs — 30 min on your pipeline.</div>
+            <button style="height:36px; padding:0 18px; border:none; border-radius:9999px; background:#0D0D0F; color:#FFFFFF; font-size:13px; font-weight:600; cursor:pointer; margin-top:14px;">Book a time</button>
+          </div>
+
+          <div style="display:flex; align-items:baseline; justify-content:space-between; padding-bottom:13px; border-bottom:1px solid #ECECEC; margin-bottom:22px;"><span style="font-size:13px; color:#605E67;">Saved singles</span></div>
+          <div style="display:flex; flex-direction:column; gap:18px;">
+            <div><div style="font-size:14px; font-weight:500;">Weekly investor update</div><div style="font-size:12px; color:#8C8A93; margin-top:2px;">@lena · 2 fields</div></div>
+            <div><div style="font-size:14px; font-weight:500;">Standup summarizer</div><div style="font-size:12px; color:#8C8A93; margin-top:2px;">@dev · 1 field</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================ -->
+  <!-- SCREEN 2b — FIRST VISIT -->
+  <!-- ================================================================ -->
+  <section data-screen-label="02b First visit" style="background:#EDEDEC; color:#0D0D0F; padding:0 48px 110px;">
+    <div style="height:56px;"></div>
+    <div style="max-width:640px; margin:0 auto; text-align:center;">
+      <h2 style="font-family:'Hanken Grotesk',sans-serif; font-weight:400; font-size:40px; line-height:1.02; letter-spacing:-0.02em; margin:0 0 12px;">Your toolbox starts here.</h2>
+      <p style="color:#8C8A93; font-size:16px; line-height:1.55; margin:0 0 36px;">The prompt you just claimed is saved below. Fill the fields, copy, and paste into your model — any time.</p>
+      <div style="text-align:left; background:#FFFFFF; color:#0D0D0F; border-radius:12px; padding:26px 28px; display:flex; align-items:center; gap:18px;">
+        <div style="flex:1;">
+          <div style="font-family:'Hanken Grotesk',sans-serif; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#8C8A93; margin-bottom:8px;">Just claimed · @connor</div>
+          <div style="font-family:'Hanken Grotesk',sans-serif; font-weight:500; font-size:24px; line-height:1.12;">Cold outreach that gets replies</div>
+        </div>
+        <button style="height:44px; padding:0 22px; border:none; border-radius:12px; background:#0D0D0F; color:#FFFFFF; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap;">Open</button>
+      </div>
+      <div style="font-family:'Hanken Grotesk',sans-serif; font-size:11px; letter-spacing:0.04em; color:#4E4E55; margin-top:22px;">Next — browse a pack, follow a creator, or save a single.</div>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+</body>
+</html>
