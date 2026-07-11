@@ -166,7 +166,7 @@ export function OnboardingForm({ profile }: OnboardingFormProps) {
 
             <div className="flex items-baseline gap-3 border-b border-border/80 focus-within:border-primary transition-colors px-4 md:px-5">
               <span className="text-2xl md:text-4xl font-serif text-muted-foreground/60 select-none">
-                prmpt.com/u/
+                useprmpt.com/u/
               </span>
               <input
                 ref={inputRef}

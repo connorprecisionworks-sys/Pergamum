@@ -95,7 +95,7 @@ export default async function Image({
             letterSpacing: "0.06em",
           }}
         >
-          prmpt.com / prompts
+          useprmpt.com / prompts
         </p>
       </div>
     ),
