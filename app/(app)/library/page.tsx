@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Compass, History as HistoryIcon, Layers, UserPlus } from "lucide-react";
+import { Compass } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { EmptyState } from "@/components/ui/empty-state";
-import { PromptCard } from "@/components/prompts/prompt-card";
 import { PackCover } from "@/components/packs/pack-cover";
 import { LibraryHistoryTable } from "@/components/library/library-history-table";
 import { relativeTime } from "@/lib/utils";
@@ -18,6 +16,16 @@ interface RunOrPresetPromptRef {
   id: string;
   title: string;
   slug: string;
+}
+
+/** Zone header — hairline rule with a quiet label, and optional right-side meta. */
+function ZoneHeader({ label, meta }: { label: string; meta?: string }) {
+  return (
+    <div className="mb-6 flex items-baseline justify-between border-b border-border pb-3">
+      <span className="text-[13px] text-foreground-muted">{label}</span>
+      {meta && <span className="text-[13px] text-foreground-subtle">{meta}</span>}
+    </div>
+  );
 }
 
 export default async function LibraryPage() {
@@ -149,47 +157,57 @@ export default async function LibraryPage() {
 
   if (totalActivity === 0) {
     return (
-      <div className="container py-10 max-w-3xl">
-        <LibraryHeader />
-        <EmptyState
-          icon={<Compass className="h-6 w-6 text-muted-foreground" />}
-          title="Your library is empty"
-          description="Run a prompt, save a pack, or follow a creator — it'll all show up here."
-          action={{ label: "Browse prompts", href: "/prompts" }}
-        />
+      <div className="mx-auto max-w-[1120px] px-6 py-16 md:px-10">
+        <Masthead />
+        <div className="mt-12">
+          <EmptyState
+            icon={<Compass className="h-6 w-6 text-foreground-subtle" />}
+            title="Your library is empty"
+            description="Run a prompt, save a pack, or follow a creator — it'll all show up here."
+            action={{ label: "Browse prompts", href: "/prompts" }}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container py-10 max-w-3xl space-y-12">
-      <LibraryHeader />
+    <div className="mx-auto max-w-[1120px] px-6 pb-24 pt-14 md:px-10">
+      <Masthead />
 
       {claimedPrompt && (
-        <p className="text-sm text-foreground-muted -mt-8">
-          You claimed <span className="text-foreground font-medium">{claimedPrompt.title}</span> — it&apos;s saved
-          below. <Link href="/prompts" className="underline underline-offset-2 hover:text-foreground">Browse more</Link> to
-          add to your library.
+        <p className="-mt-8 mb-14 text-sm text-foreground-muted">
+          You claimed{" "}
+          <span className="font-medium text-foreground">{claimedPrompt.title}</span> —
+          it&apos;s saved below.{" "}
+          <Link href="/prompts" className="underline underline-offset-2 hover:text-foreground">
+            Browse more
+          </Link>{" "}
+          to add to your library.
         </p>
       )}
 
       {/* Z1 — Resume strip */}
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3">Resume</h2>
+      <section className="mb-16">
+        <ZoneHeader label="Recent runs" />
         {runList.length === 0 ? (
           <p className="text-sm text-foreground-muted">Nothing to resume yet.</p>
         ) : (
-          <div className="flex gap-3 flex-wrap">
+          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
             {runList.slice(0, 3).map((run) => (
-              <div key={run.id} className="border border-border rounded-md px-4 py-3 min-w-[220px] max-w-xs">
-                <p className="text-sm font-medium truncate">{run.prompts!.title}</p>
-                <div className="flex items-center justify-between mt-1.5">
-                  <span className="text-xs text-foreground-subtle">{relativeTime(run.created_at)}</span>
+              <div key={run.id} className="bg-background px-5 py-5">
+                <div className="text-[18px] font-medium leading-tight text-foreground">
+                  {run.prompts!.title}
+                </div>
+                <div className="mt-3.5 flex items-center justify-between">
+                  <span className="text-xs text-foreground-subtle">
+                    {relativeTime(run.created_at)}
+                  </span>
                   <Link
                     href={`/prompts/${run.prompts!.slug}?run=${run.id}`}
-                    className="text-xs text-foreground-subtle hover:text-foreground underline underline-offset-2"
+                    className="text-[13px] font-medium text-foreground transition-colors hover:text-foreground-muted"
                   >
-                    Run again
+                    Run again &rarr;
                   </Link>
                 </div>
               </div>
@@ -198,146 +216,160 @@ export default async function LibraryPage() {
         )}
       </section>
 
-      <Separator />
-
       {/* Z2 — Your packs */}
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3">Your packs</h2>
+      <section className="mb-16">
+        <ZoneHeader
+          label="Your packs"
+          meta={savedPacks.length > 0 ? `${savedPacks.length} pack${savedPacks.length === 1 ? "" : "s"}` : undefined}
+        />
         {savedPacks.length === 0 ? (
           <p className="text-sm text-foreground-muted">No saved packs yet.</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
             {savedPacks.map((r) => {
               const pack = r.packs!;
               const updated = hasUpdateSince(pack.id, r.created_at);
               return (
-                <Link key={r.id} href={`/packs/${pack.profiles?.username}/${pack.slug}`} className="group block">
-                  <div className="relative">
+                <Link
+                  key={r.id}
+                  href={`/packs/${pack.profiles?.username}/${pack.slug}`}
+                  className="group block"
+                >
+                  <div className="overflow-hidden rounded-2xl">
                     <PackCover title={pack.title} seed={pack.cover_seed ?? pack.id} accent={pack.accent} />
-                    {updated && (
-                      <span className="absolute top-1.5 left-1.5 bg-primary text-primary-foreground text-[10px] font-mono px-1.5 py-0.5 rounded">
-                        v{pack.version} · new
-                      </span>
-                    )}
                   </div>
-                  <p className="text-sm font-medium mt-1.5 truncate group-hover:text-brand-400 transition-colors">
+                  <p className="mt-3 truncate text-sm font-medium leading-tight text-foreground">
                     {pack.title}
+                  </p>
+                  <p className="mt-1 text-xs text-foreground-subtle">
+                    v{pack.version}
+                    {updated && " · new"}
                   </p>
                 </Link>
               );
             })}
           </div>
         )}
-
-        {/* Singles */}
-        <h3 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mt-6 mb-3">Singles</h3>
-        {promptSaveList.length === 0 ? (
-          <p className="text-sm text-foreground-muted">No saved prompts yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {promptSaveList.map((r) => (
-              <PromptCard key={r.id} prompt={r.prompts!} />
-            ))}
-          </div>
-        )}
       </section>
 
-      <Separator />
+      {/* Z3 / Z4 — presets & history, alongside following + singles */}
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.7fr_1fr] lg:gap-16">
+        <section>
+          <ZoneHeader label="Presets & history" />
 
-      {/* Z3 — Presets & history */}
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3">
-          Named presets
-        </h2>
-        {presetList.length === 0 ? (
-          <p className="text-sm text-foreground-muted mb-6">No saved presets yet.</p>
-        ) : (
-          <div className="space-y-1.5 mb-6">
-            {presetList.map((p) => (
-              <div key={p.id} className="flex items-center justify-between gap-3 py-1.5 border-b border-border/60 last:border-b-0">
-                <div className="min-w-0">
-                  <span className="text-sm font-medium">{p.name}</span>{" "}
-                  <span className="text-xs text-foreground-subtle">— {p.prompts!.title}</span>
-                </div>
+          {presetList.length > 0 && (
+            <div className="mb-7 flex flex-wrap gap-2">
+              {presetList.map((p) => (
                 <Link
+                  key={p.id}
                   href={`/prompts/${p.prompts!.slug}?preset=${p.id}`}
-                  className="text-xs text-foreground-subtle hover:text-foreground underline underline-offset-2 shrink-0"
+                  title={p.prompts!.title}
+                  className="inline-flex h-8 items-center rounded-full border border-border-strong px-3.5 text-[13px] text-foreground-muted transition-colors hover:border-foreground hover:text-foreground"
                 >
-                  Load
+                  {p.name}
                 </Link>
+              ))}
+            </div>
+          )}
+
+          <LibraryHistoryTable
+            rows={runList.map((r) => ({
+              id: r.id,
+              promptTitle: r.prompts!.title,
+              promptSlug: r.prompts!.slug,
+              createdAt: r.created_at,
+            }))}
+          />
+        </section>
+
+        <div>
+          <section className="mb-14">
+            <ZoneHeader label="From creators you follow" />
+            {followedProfiles.length === 0 ? (
+              <p className="text-sm text-foreground-muted">Not following any creators yet.</p>
+            ) : (
+              <div className="flex flex-col gap-5">
+                {followedProfiles.map((p) => {
+                  const initials = p.display_name
+                    ? p.display_name.slice(0, 2).toUpperCase()
+                    : p.username.slice(0, 2).toUpperCase();
+                  const latestPack = latestPackByCreator.get(p.id);
+                  const latestPrompt = latestPromptByCreator.get(p.id);
+                  const release = latestPack
+                    ? { href: `/packs/${latestPack.creatorUsername}/${latestPack.slug}`, text: `Released ${latestPack.title}` }
+                    : latestPrompt
+                      ? { href: `/prompts/${latestPrompt.slug}`, text: `New single: ${latestPrompt.title}` }
+                      : null;
+                  return (
+                    <div key={p.id} className="flex items-center gap-3">
+                      <Link href={`/u/${p.username}`} className="shrink-0">
+                        <Avatar className="h-9 w-9">
+                          <AvatarImage src={p.avatar_url ?? undefined} alt={p.display_name ?? p.username} />
+                          <AvatarFallback className="bg-secondary text-[11px] text-foreground-muted">
+                            {initials}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Link>
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          href={`/u/${p.username}`}
+                          className="block truncate text-sm font-medium text-foreground"
+                        >
+                          {p.display_name ?? p.username}
+                        </Link>
+                        {release ? (
+                          <Link
+                            href={release.href}
+                            className="mt-0.5 block truncate text-[12.5px] text-foreground-subtle transition-colors hover:text-foreground-muted"
+                          >
+                            {release.text}
+                          </Link>
+                        ) : (
+                          <span className="mt-0.5 block text-[12.5px] text-foreground-subtle">
+                            No releases yet
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        )}
+            )}
+          </section>
 
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3 flex items-center gap-1.5">
-          <HistoryIcon className="h-3 w-3" />
-          Run history
-        </h2>
-        <LibraryHistoryTable
-          rows={runList.map((r) => ({
-            id: r.id,
-            promptTitle: r.prompts!.title,
-            promptSlug: r.prompts!.slug,
-            createdAt: r.created_at,
-          }))}
-        />
-      </section>
-
-      <Separator />
-
-      {/* Z4 — Following */}
-      <section>
-        <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3 flex items-center gap-1.5">
-          <UserPlus className="h-3 w-3" />
-          Following
-        </h2>
-        {followedProfiles.length === 0 ? (
-          <p className="text-sm text-foreground-muted">Not following any creators yet.</p>
-        ) : (
-          <div className="space-y-3">
-            {followedProfiles.map((p) => {
-              const initials = p.display_name ? p.display_name.slice(0, 2).toUpperCase() : p.username.slice(0, 2).toUpperCase();
-              const latestPack = latestPackByCreator.get(p.id);
-              const latestPrompt = latestPromptByCreator.get(p.id);
-              return (
-                <div key={p.id} className="flex items-center justify-between gap-3 py-1.5">
-                  <Link href={`/u/${p.username}`} className="flex items-center gap-2 min-w-0">
-                    <Avatar className="h-7 w-7 shrink-0">
-                      <AvatarImage src={p.avatar_url ?? undefined} alt={p.display_name ?? p.username} />
-                      <AvatarFallback className="text-xs bg-brand-100 text-brand-700">{initials}</AvatarFallback>
-                    </Avatar>
-                    <span className="text-sm font-medium truncate">{p.display_name ?? p.username}</span>
-                  </Link>
-                  <div className="flex items-center gap-3 text-xs shrink-0">
-                    {latestPack && (
-                      <Link href={`/packs/${latestPack.creatorUsername}/${latestPack.slug}`} className="flex items-center gap-1 text-foreground-subtle hover:text-foreground transition-colors">
-                        <Layers className="h-3 w-3" />
-                        {latestPack.title}
-                      </Link>
-                    )}
-                    {latestPrompt && (
-                      <Link href={`/prompts/${latestPrompt.slug}`} className="text-foreground-subtle hover:text-foreground transition-colors">
-                        {latestPrompt.title}
-                      </Link>
-                    )}
-                    {!latestPack && !latestPrompt && <span className="text-foreground-subtle">No releases yet</span>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+          <section>
+            <ZoneHeader label="Saved singles" />
+            {promptSaveList.length === 0 ? (
+              <p className="text-sm text-foreground-muted">No saved prompts yet.</p>
+            ) : (
+              <div className="flex flex-col gap-[18px]">
+                {promptSaveList.map((r) => {
+                  const prompt = r.prompts!;
+                  return (
+                    <Link key={r.id} href={`/prompts/${prompt.slug}`} className="group block">
+                      <div className="text-sm font-medium text-foreground">{prompt.title}</div>
+                      <div className="mt-0.5 text-xs text-foreground-subtle">
+                        @{prompt.profiles?.username}
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
     </div>
   );
 }
 
-function LibraryHeader() {
+function Masthead() {
   return (
-    <div className="rounded-lg px-6 py-7 mb-2 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
-      <h1 className="text-3xl font-medium tracking-tight font-serif">Your library</h1>
-      <p className="text-muted-foreground mt-1">Your AI toolbox — everything you&apos;ve run, saved, and followed.</p>
+    <div className="mb-14">
+      <div className="mb-4 text-[13px] text-foreground-muted">Your toolbox</div>
+      <h1 className="m-0 max-w-[16ch] text-[clamp(2.2rem,4.4vw,52px)] font-normal leading-[0.98] -tracking-[0.025em] text-foreground">
+        Everything you keep, in reach.
+      </h1>
     </div>
   );
 }

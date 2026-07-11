@@ -11,7 +11,9 @@ interface PackCoverProps {
 
 const HEX_SIZE = 34;
 const VIEWBOX = 320;
-const DEFAULT_ACCENT = "#3C5F86";
+// Slate is retired as a content hue. The mockups' covers are near-black with a
+// single grey facet; a pack's own `accent` still overrides this.
+const DEFAULT_ACCENT = "#4A4A52";
 
 // Deterministic string hash → 32-bit seed, then a small PRNG. Never
 // Math.random(): the same pack + seed must always render the same cover.
