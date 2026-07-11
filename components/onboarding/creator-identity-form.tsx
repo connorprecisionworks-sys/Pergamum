@@ -2,17 +2,17 @@
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import { completeOnboarding, skipOnboarding } from "./actions";
+import { completeOnboarding, skipOnboarding } from "@/app/onboarding/actions";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/lib/types/database";
 
-interface OnboardingFormProps {
+interface CreatorIdentityFormProps {
   profile: Profile;
 }
 
 const USERNAME_RE = /^[a-zA-Z0-9_-]+$/;
 
-export function OnboardingForm({ profile }: OnboardingFormProps) {
+export function CreatorIdentityForm({ profile }: CreatorIdentityFormProps) {
   const [step, setStep] = useState(0);
   // Don't pre-fill the display name with an email-shaped string — Supabase's
   // signup trigger sometimes drops the user's email into display_name as a

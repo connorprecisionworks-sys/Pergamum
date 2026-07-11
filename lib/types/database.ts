@@ -904,6 +904,7 @@ export type Database = {
           industry: Industry | null;
           company_size: CompanySize | null;
           goals: string[] | null;
+          need_text: string | null;
           job_title: string | null;
           company_name: string | null;
           linkedin_url: string | null;
@@ -916,6 +917,7 @@ export type Database = {
           industry?: Industry | null;
           company_size?: CompanySize | null;
           goals?: string[] | null;
+          need_text?: string | null;
           job_title?: string | null;
           company_name?: string | null;
           linkedin_url?: string | null;
@@ -927,6 +929,7 @@ export type Database = {
           industry?: Industry | null;
           company_size?: CompanySize | null;
           goals?: string[] | null;
+          need_text?: string | null;
           job_title?: string | null;
           company_name?: string | null;
           linkedin_url?: string | null;
