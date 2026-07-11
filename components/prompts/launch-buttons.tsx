@@ -1,6 +1,5 @@
 "use client";
 
-import { ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/analytics";
@@ -50,12 +49,12 @@ export function LaunchButtons({ text, promptId, currentUserId, values, className
       {LAUNCHERS.map(({ platform, label, buildUrl }) => (
         <Button
           key={platform}
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={() => handleLaunch(platform, label, buildUrl)}
           aria-label={`Open in ${label}`}
+          className="h-[46px] px-3.5 text-xs font-normal text-foreground-muted hover:text-foreground"
         >
-          <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
           {label}
         </Button>
       ))}

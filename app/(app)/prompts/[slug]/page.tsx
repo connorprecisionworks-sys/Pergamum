@@ -5,8 +5,6 @@ import dynamic from "next/dynamic";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { relativeTime } from "@/lib/utils";
 import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
 import type { PromptWithAuthor, CommentWithAuthor, VoteValue } from "@/lib/types/database";
@@ -128,7 +126,9 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
   };
 
   return (
-    <div className="container py-8">
+    // The document floats on the mockup's soft desk rather than sitting on the
+    // app's white content surface.
+    <div className="min-h-full bg-background-inset px-6 pb-24 pt-8 md:px-12">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -137,13 +137,21 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
           __html: JSON.stringify(jsonLd).replace(/<\/script>/gi, "<\\/script>"),
         }}
       />
-      <Link
-        href="/prompts"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-8 transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back to prompts
-      </Link>
+
+      <div className="mx-auto mb-8 flex max-w-[760px] items-center">
+        <Link
+          href="/prompts"
+          className="inline-flex items-center gap-1.5 text-sm text-foreground-muted transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to prompts
+        </Link>
+        {promptAuthor?.username && (
+          <span className="ml-auto text-[11px] uppercase tracking-[0.08em] text-foreground-subtle">
+            Shared by @{promptAuthor.username}
+          </span>
+        )}
+      </div>
 
       <PromptDetail
         prompt={prompt as PromptWithAuthor}
@@ -155,7 +163,7 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
       />
 
       {user && (
-        <div className="max-w-3xl mx-auto flex justify-end mt-4">
+        <div className="mx-auto mt-4 flex max-w-[760px] justify-end">
           <AddToCollectionButton
             promptId={prompt.id}
             currentUserId={user.id}
@@ -164,16 +172,14 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
         </div>
       )}
 
-      <Separator className="my-12" />
-
       {/* Comments */}
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center gap-2 mb-6">
-          <MessageSquare className="h-5 w-5" />
-          <h2 className="text-xl font-medium">
+      <div className="mx-auto mt-16 max-w-[760px] rounded-[20px] bg-card p-8 shadow-[0_12px_34px_rgba(28,30,40,0.12)] md:p-10">
+        <div className="mb-6 flex items-center gap-2">
+          <MessageSquare className="h-4 w-4 text-foreground-muted" />
+          <h2 className="text-lg font-medium">
             Comments{" "}
             {comments && comments.length > 0 && (
-              <span className="text-muted-foreground font-normal text-base">
+              <span className="text-base font-normal text-foreground-subtle">
                 ({comments.length})
               </span>
             )}
