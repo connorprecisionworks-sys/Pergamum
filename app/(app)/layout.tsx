@@ -1,5 +1,6 @@
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppTopbar } from "@/components/layout/app-topbar";
+import { ClaimReconciler } from "@/components/layout/claim-reconciler";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AppLayout({
@@ -28,10 +29,15 @@ export default async function AppLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header profile={profile} unreadNotifications={unreadNotifications} />
-      <main id="main" className="flex-1">{children}</main>
-      <Footer />
+    <div className="flex min-h-screen bg-background">
+      <ClaimReconciler profileId={profile?.id} />
+      <AppSidebar profile={profile} unreadNotifications={unreadNotifications} />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <AppTopbar />
+        <main id="main" className="flex-1">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
