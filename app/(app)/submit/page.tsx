@@ -121,8 +121,8 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
           <>
             <h1 className="text-3xl font-medium tracking-tight">Submit a prompt</h1>
             <p className="mt-2 text-muted-foreground">
-              Share a prompt that&apos;s made your AI workflow better. Quality over
-              quantity — the community will vote.
+              Publish a prompt your audience can run in one tap. Quality over
+              quantity — this is what your clients judge you on.
             </p>
           </>
         )}

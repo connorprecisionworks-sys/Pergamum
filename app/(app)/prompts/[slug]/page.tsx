@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PromptDetail } from "@/components/prompts/prompt-detail";
 import { relativeTime } from "@/lib/utils";
 import { AddToCollectionButton } from "@/components/collections/add-to-collection-button";
-import type { PromptWithAuthor, CommentWithAuthor, VoteValue } from "@/lib/types/database";
+import type { PromptWithAuthor, CommentWithAuthor } from "@/lib/types/database";
 
 const CommentSection = dynamic(
   () => import("./comment-section").then((m) => ({ default: m.CommentSection })),
@@ -60,14 +60,13 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
     notFound();
   }
 
-  // Fetch current user's vote + collections containing this prompt
-  let currentVote: VoteValue | null = null;
+  // Collections containing this prompt, plus any saved/restored input values.
+  // Voting is dormant — the votes table still exists but nothing here reads it.
   let containingCollectionIds: string[] = [];
   let initiallySaved = false;
   let initialValues: Record<string, string> | undefined;
   if (user) {
-    const [voteResult, containingResult, saveResult, runResult, presetResult] = await Promise.all([
-      supabase.from("votes").select("value").eq("user_id", user.id).eq("prompt_id", prompt.id).single(),
+    const [containingResult, saveResult, runResult, presetResult] = await Promise.all([
       supabase
         .from("collection_prompts")
         .select("collection_id, collections!inner(owner_id)")
@@ -81,7 +80,6 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
         ? supabase.from("prompt_presets").select("values").eq("id", presetId).eq("user_id", user.id).eq("prompt_id", prompt.id).maybeSingle()
         : Promise.resolve({ data: null }),
     ]);
-    if (voteResult.data) currentVote = voteResult.data.value as VoteValue;
     containingCollectionIds = (containingResult.data ?? []).map(
       (r: { collection_id: string }) => r.collection_id
     );
@@ -156,7 +154,6 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
       <PromptDetail
         prompt={prompt as PromptWithAuthor}
         currentUserId={user?.id ?? null}
-        currentVote={currentVote}
         versions={versions ?? []}
         initiallySaved={initiallySaved}
         initialValues={initialValues}

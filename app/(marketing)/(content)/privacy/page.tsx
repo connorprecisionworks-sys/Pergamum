@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           </p>
           <p>
             <strong className="font-medium text-foreground">Content you submit.</strong>{" "}
-            Prompts you publish, votes you cast, prompts you copy, comments you write, and collections you create. All of this is associated with your account.
+            Prompts you publish, prompts you copy or save, comments you write, and collections you create. All of this is associated with your account.
           </p>
           <p>
             <strong className="font-medium text-foreground">Anonymous usage events.</strong>{" "}

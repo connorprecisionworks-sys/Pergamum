@@ -59,7 +59,7 @@ export default function Image() {
             letterSpacing: "0.02em",
           }}
         >
-          A community archive of prompts for every AI tool.
+          Hand over your prompt like a pro.
         </p>
       </div>
     ),

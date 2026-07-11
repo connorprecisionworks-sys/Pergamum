@@ -51,9 +51,9 @@ export default async function FeedPage() {
       {followingIds.length === 0 ? (
         <EmptyState
           icon={<Users className="h-6 w-6 text-muted-foreground" />}
-          title="Follow people to see their prompts here"
-          description="Discover contributors worth following on the leaderboards."
-          action={{ label: "View leaderboards", href: "/leaderboards" }}
+          title="Follow creators to see their prompts here"
+          description="Follow a creator and their updates land here automatically."
+          action={{ label: "Browse prompts", href: "/prompts" }}
         />
       ) : prompts.length === 0 ? (
         <EmptyState

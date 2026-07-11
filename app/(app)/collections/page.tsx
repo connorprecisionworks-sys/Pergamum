@@ -7,7 +7,7 @@ import type { Collection, Profile } from "@/lib/types/database";
 
 export const metadata: Metadata = {
   title: "Collections",
-  description: "Browse curated prompt collections from the Prmpt community.",
+  description: "Browse curated prompt collections from Prmpt creators.",
 };
 
 export default async function CollectionsPage() {
@@ -28,7 +28,7 @@ export default async function CollectionsPage() {
       <div className="rounded-lg px-6 py-7 mb-8 bg-[radial-gradient(circle_at_top_left,#f5f3ff99,transparent_60%)] dark:bg-[radial-gradient(circle_at_top_left,#2d195933,transparent_60%)]">
         <h1 className="text-3xl font-medium tracking-tight font-serif">Collections</h1>
         <p className="text-muted-foreground mt-1">
-          Curated prompt sets from the community.
+          Curated prompt sets from creators.
         </p>
       </div>
 

@@ -44,7 +44,7 @@ const RUNTIME_OPTIONS = ["claude-code", "cowork", "claude-api"];
 const SORT_OPTIONS = [
   { value: "trending",  label: "Trending" },
   { value: "newest",    label: "Newest" },
-  { value: "top",       label: "Top all-time" },
+  { value: "most-used", label: "Most used" },
 ] as const;
 
 export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps) {
@@ -84,8 +84,9 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
 
   if (sort === "newest") {
     query = query.order("published_at", { ascending: false });
-  } else if (sort === "top") {
-    query = query.order("upvotes", { ascending: false });
+  } else if (sort === "most-used") {
+    // Usage, not applause — installs is the signal the product is built around.
+    query = query.order("copies", { ascending: false });
   } else {
     query = query.order("trending_score", { ascending: false });
   }
@@ -204,7 +205,7 @@ export default async function SkillsBrowsePage({ searchParams }: SkillsPageProps
               description={
                 params.q
                   ? "Try different search terms or browse all skills."
-                  : "Be the first to share a skill with the community."
+                  : "Be the first to publish a skill your audience can run."
               }
               action={
                 params.q || params.category || params.runtime || params.tag

@@ -278,14 +278,27 @@ button:active:not(:disabled) {
    as classes rather than inline hex in the JSX.
    ═══════════════════════════════════════════════════════════════════ */
 
+/* The tint runs the full height of the band, then dissolves into the white the
+   demo frame opens on — so the two sections read as one continuous backdrop
+   instead of meeting at a hard line. */
 .landing-hero-bg {
-  background: linear-gradient(140deg, #c3d2e8 0%, #a7c0de 52%, #93b0d6 100%);
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 68%,
+      rgba(255, 255, 255, 0.45) 86%,
+      rgba(255, 255, 255, 0.85) 95%,
+      #ffffff 100%
+    ),
+    linear-gradient(140deg, #c3d2e8 0%, #a7c0de 52%, #93b0d6 100%);
 }
 .landing-finale-bg {
   background: linear-gradient(135deg, #ffffff 0%, #eaf2f7 34%, #cfe4ef 70%, #b7d6e7 100%);
 }
+/* Matches the demo frame's own white, so the seam stays invisible while the
+   video is still decoding and the poster hasn't painted. */
 .landing-demo-bg {
-  background: #efede7;
+  background: #ffffff;
 }
 
 /* Soft white blooms drifting over the hero gradient. */

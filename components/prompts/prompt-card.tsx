@@ -26,7 +26,7 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
       style={{ borderLeftColor: accentColor, borderLeftWidth: "3px" }}
     >
       <CardContent className="p-5 pb-3">
-        {/* Top row: dot + category label | upvote count */}
+        {/* Top row: dot + category label | usage count */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 min-w-0">
             <span
@@ -42,8 +42,8 @@ export function PromptCard({ prompt, blurred = false, className }: PromptCardPro
               </Link>
             )}
           </div>
-          <span className="font-mono text-[11px] text-brand-400 shrink-0 ml-2">
-            ↑ {formatCount(prompt.upvotes)}
+          <span className="font-mono text-[11px] text-foreground-subtle shrink-0 ml-2">
+            {formatCount(prompt.copies)} uses
           </span>
         </div>
 

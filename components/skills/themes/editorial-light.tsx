@@ -88,9 +88,9 @@ export function EditorialLight({ skill, mode = "card" }: ThemeProps) {
         />
       </svg>
 
-      {/* Upvote count — subtle, top-left */}
+      {/* Install count — subtle, top-left */}
       <div className="absolute top-4 left-5 font-mono text-[11px] text-zinc-400 z-10">
-        ↑ {skill.upvotes}
+        ⤓ {skill.copies}
       </div>
 
       <div className="relative px-7 pt-16 pb-7 h-full flex flex-col">

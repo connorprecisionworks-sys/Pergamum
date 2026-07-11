@@ -117,7 +117,7 @@ export function AuthForm({ mode, returnTo }: AuthFormProps) {
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-          Email me a magic link
+          {mode === "signup" ? "Set up your account" : "Email me a sign-in link"}
         </Button>
       </form>
 

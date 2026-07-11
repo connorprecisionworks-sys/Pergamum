@@ -28,9 +28,9 @@ interface BrowsePageProps {
 const PAGE_SIZE = 24;
 
 const SORT_OPTIONS = [
-  { value: "trending", label: "Trending" },
-  { value: "newest",   label: "Newest" },
-  { value: "top",      label: "Top all-time" },
+  { value: "trending",  label: "Trending" },
+  { value: "newest",    label: "Newest" },
+  { value: "most-used", label: "Most used" },
 ] as const;
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
@@ -82,8 +82,9 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
 
   if (sort === "newest") {
     query = query.order("published_at", { ascending: false });
-  } else if (sort === "top") {
-    query = query.order("upvotes", { ascending: false });
+  } else if (sort === "most-used") {
+    // Usage, not applause — copies is the signal the product is built around.
+    query = query.order("copies", { ascending: false });
   } else {
     query = query.order("trending_score", { ascending: false });
   }

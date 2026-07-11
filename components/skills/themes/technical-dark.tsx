@@ -67,7 +67,7 @@ export function TechnicalDark({ skill, mode = "card" }: ThemeProps) {
       </svg>
 
       <div className="absolute top-4 left-5 font-mono text-[11px] text-zinc-500 z-10">
-        ↑ {skill.upvotes}
+        ⤓ {skill.copies}
       </div>
 
       <div className="relative px-7 pt-20 pb-7 h-full flex flex-col">

@@ -77,7 +77,7 @@ export default async function OnboardingPage() {
       .from("profiles")
       .select("id, username, display_name, avatar_url, bio")
       .neq("id", user.id)
-      .order("reputation", { ascending: false })
+      .order("lifetime_copies", { ascending: false })
       .limit(6),
     supabase.from("follows").select("following_id").eq("follower_id", user.id),
   ]);

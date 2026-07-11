@@ -64,14 +64,21 @@ export function PackBuilder({
         Your packs
       </Link>
 
-      <input
-        value={titleDraft}
-        onChange={(e) => setTitleDraft(e.target.value)}
-        onBlur={saveTitle}
-        placeholder="Untitled pack"
-        className="w-full bg-transparent text-3xl font-medium tracking-tight font-serif mb-6 focus:outline-none focus-visible:ring-0 border-b border-transparent focus:border-border-strong pb-1"
-        aria-label="Pack title"
-      />
+      {/* A bare heading-shaped input read as static text, so nobody found the
+          rename. Labelled and boxed, it reads as the field it always was. */}
+      <div className="mb-6 space-y-1.5">
+        <label htmlFor="pack-title" className="label-mono block">
+          Pack title
+        </label>
+        <input
+          id="pack-title"
+          value={titleDraft}
+          onChange={(e) => setTitleDraft(e.target.value)}
+          onBlur={saveTitle}
+          placeholder="Untitled pack"
+          className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-3xl font-medium tracking-tight font-serif transition-colors hover:border-border-strong focus:border-primary focus:outline-none"
+        />
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <div className="lg:col-span-1 order-2 lg:order-1 space-y-6">
@@ -98,6 +105,7 @@ export function PackBuilder({
               accent={pack.accent ?? "#3C5F86"}
               itemTitles={items.map((i) => (i.item_type === "prompt" ? i.prompts?.title : i.skills?.name) ?? "").filter(Boolean)}
               creatorDisplayName={creatorProfile.display_name ?? creatorProfile.username}
+              buildAccessOk={buildAccessOk}
               onChange={(patch) => setPack((p) => ({ ...p, ...patch }))}
             />
           )}

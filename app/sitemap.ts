@@ -7,9 +7,7 @@ const STATIC_PAGES: MetadataRoute.Sitemap = [
   { url: `${BASE_URL}/`,            changeFrequency: "daily",  priority: 1   },
   { url: `${BASE_URL}/prompts`,     changeFrequency: "daily",  priority: 0.9 },
   { url: `${BASE_URL}/tools`,       changeFrequency: "weekly", priority: 0.7 },
-  { url: `${BASE_URL}/leaderboards`,changeFrequency: "daily",  priority: 0.7 },
   { url: `${BASE_URL}/collections`, changeFrequency: "daily",  priority: 0.6 },
-  { url: `${BASE_URL}/badges`,      changeFrequency: "weekly", priority: 0.5 },
   { url: `${BASE_URL}/feed`,        changeFrequency: "daily",  priority: 0.6 },
 ];
 

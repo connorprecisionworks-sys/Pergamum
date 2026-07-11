@@ -57,7 +57,7 @@ export default async function ToolsPage() {
             Free AI Tools Directory
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl">
-            The best free (or freemium) AI tools, curated and community-maintained.
+            The best free (or freemium) AI tools, hand-curated and kept current.
           </p>
         </div>
 
@@ -65,7 +65,7 @@ export default async function ToolsPage() {
           <EmptyState
             icon={<Wrench className="h-6 w-6 text-muted-foreground" />}
             title="No tools listed yet"
-            description="Know a great free AI tool? Suggest it and help the community."
+            description="Know a great free AI tool? Suggest it and we'll take a look."
             action={{ label: "Suggest a tool", href: "/submit" }}
           />
         )}

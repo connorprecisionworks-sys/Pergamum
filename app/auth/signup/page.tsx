@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 };
 
 const VALUE_PROPS = [
-  "Free forever — no paywalls, no credits",
-  "Vote on the prompts that actually work",
-  "Build a personal library you can come back to",
+  "Save any prompt to your toolbox",
+  "Get creators’ updates automatically",
+  "Your inputs remembered, ready to reuse",
 ];
 
 export default function SignupPage({
@@ -32,7 +32,7 @@ export default function SignupPage({
           </Link>
           <h1 className="text-2xl font-medium tracking-tight">Create your account</h1>
           <p className="text-sm text-muted-foreground">
-            Join the library — submit, vote, and save prompts.
+            Keep the prompts you use, and the updates that follow.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export default function SignupPage({
         <AuthForm mode="signup" returnTo={next} />
 
         <p className="text-center text-sm text-muted-foreground">
-          No password to set — we&apos;ll email you a link, or continue with Google or Apple.
+          We&apos;ll email you a secure sign-in link.
         </p>
 
         <p className="text-center text-sm text-muted-foreground">
@@ -62,8 +62,8 @@ export default function SignupPage({
         </p>
 
         <p className="text-center text-xs text-muted-foreground">
-          By creating an account, you agree to our community guidelines and
-          terms of use.
+          By creating an account, you agree to our terms of use and privacy
+          policy.
         </p>
       </div>
     </div>

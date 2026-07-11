@@ -84,14 +84,9 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
                 </Link>
               )}
             </div>
-            <div className="flex items-center gap-2 shrink-0 ml-2">
-              <span className="font-mono text-[11px] text-foreground-subtle">
-                ⤓ {formatCount(skill.copies)}
-              </span>
-              <span className="font-mono text-[11px] text-brand-400">
-                ↑ {formatCount(skill.upvotes)}
-              </span>
-            </div>
+            <span className="font-mono text-[11px] text-foreground-subtle shrink-0 ml-2">
+              ⤓ {formatCount(skill.copies)}
+            </span>
           </div>
 
           <Link href={`/skills/${skill.slug}`}>
@@ -252,8 +247,8 @@ export function SkillCard({ skill, className, compact = false }: SkillCardProps)
                 </Link>
               )}
             </div>
-            <span className="font-mono text-[11px] text-brand-400 shrink-0 ml-2">
-              ↑ {formatCount(skill.upvotes)}
+            <span className="font-mono text-[11px] text-foreground-subtle shrink-0 ml-2">
+              ⤓ {formatCount(skill.copies)}
             </span>
           </div>
 

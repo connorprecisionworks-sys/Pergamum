@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { hasBuildAccess } from "@/lib/build-access";
 import { chatComplete, OpenAIError } from "@/lib/openai";
 
 /**
@@ -18,6 +19,15 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Sign in required." }, { status: 401 });
+  }
+
+  // Rides the same private beta as /build. The rest of the pack flow — adding
+  // prompts, arranging, cover variants, release — stays open to everyone.
+  if (!(await hasBuildAccess())) {
+    return NextResponse.json(
+      { error: "AI drafting is in private beta. Enter your access code at /build." },
+      { status: 403 }
+    );
   }
 
   let body: Record<string, unknown>;

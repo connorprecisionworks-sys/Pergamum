@@ -20,6 +20,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { NewPromptSheet } from "@/components/packs/builder/new-prompt-sheet";
 import { addPackItem, removePackItem, reorderPackItems, updatePackItem } from "@/app/(app)/dashboard/packs/actions";
 import { createClient } from "@/lib/supabase/client";
@@ -230,6 +231,7 @@ export function PackContentsStage({
                     onPromiseLineChange={(v) => handlePromiseLineChange(item.id, v)}
                     onPromiseLineBlur={(v) => handlePromiseLineBlur(item.id, v)}
                     onAiDraft={() => handleAiDraftPromise(item)}
+                    buildAccessOk={buildAccessOk}
                   />
                 ))}
               </div>
@@ -250,6 +252,7 @@ function SortableTrackItem({
   onPromiseLineChange,
   onPromiseLineBlur,
   onAiDraft,
+  buildAccessOk,
 }: {
   item: PackItemWithContent;
   index: number;
@@ -257,6 +260,7 @@ function SortableTrackItem({
   onPromiseLineChange: (v: string) => void;
   onPromiseLineBlur: (v: string) => void;
   onAiDraft: () => void;
+  buildAccessOk: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
@@ -293,9 +297,24 @@ function SortableTrackItem({
             placeholder="Promise line — what they get from this"
             className="h-7 text-xs"
           />
-          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onAiDraft} aria-label="Draft with AI">
-            <Sparkles className="h-3.5 w-3.5 text-foreground-subtle" />
-          </Button>
+          {buildAccessOk ? (
+            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onAiDraft} aria-label="Draft with AI">
+              <Sparkles className="h-3.5 w-3.5 text-foreground-subtle" />
+            </Button>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" disabled aria-label="Draft with AI — private beta">
+                      <Sparkles className="h-3.5 w-3.5 text-foreground-subtle" />
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>AI drafting is in private beta — enter your access code at /build.</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
       </div>
       <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-foreground-subtle hover:text-destructive" onClick={onRemove} aria-label="Remove from pack">

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Search, Menu, X, Zap, Star, Bell } from "lucide-react";
+import { Search, Menu, X, Zap, Bell } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -227,14 +227,6 @@ export function Header({ profile, unreadNotifications = 0 }: HeaderProps) {
                       {profile.display_name ?? profile.username}
                     </div>
                     <div className="label-mono mt-0.5">@{profile.username}</div>
-                    {typeof profile.reputation === "number" && (
-                      <div className="flex items-center gap-1 mt-1">
-                        <Star className="h-3 w-3 fill-brand-500 text-brand-500" />
-                        <span className="label-mono text-brand-400">
-                          {profile.reputation} rep
-                        </span>
-                      </div>
-                    )}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-border" />
                   <DropdownMenuItem asChild>

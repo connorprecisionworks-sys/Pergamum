@@ -56,18 +56,62 @@ export function PackReleaseStage({
     typeof window !== "undefined" ? `${window.location.origin}/packs/${creatorUsername}/${pack.slug}?via=dm` : "";
   const dmSnippet = `Here's the pack — ${pack.title}: ${funnelUrl}`;
 
-  const checklist: { label: string; ok: boolean; stage: "contents" | "cover" | null }[] = [
-    { label: "Pack has a title", ok: pack.title.trim().length > 1 && pack.title !== "Untitled pack", stage: "contents" },
-    { label: "At least one track added", ok: items.length > 0, stage: "contents" },
-    { label: "Every track has a promise line", ok: items.every((i) => !!i.promise_line?.trim()), stage: "contents" },
+  const checklist: {
+    label: string;
+    hint: string;
+    ok: boolean;
+    stage: "contents" | "cover" | null;
+    /** DOM id to focus when "Fix" is clicked, for fields outside the stage panes. */
+    focusId?: string;
+  }[] = [
+    {
+      label: "Pack has a title",
+      hint: "It's the first thing a saver reads, and it names the link you send.",
+      ok: pack.title.trim().length > 1 && pack.title !== "Untitled pack",
+      stage: "contents",
+      focusId: "pack-title",
+    },
+    {
+      label: "At least one track added",
+      hint: "A pack delivers prompts or skills — there has to be something inside.",
+      ok: items.length > 0,
+      stage: "contents",
+    },
+    {
+      label: "Every track has a promise line",
+      hint: "One line per track telling someone what they get from running it.",
+      ok: items.every((i) => !!i.promise_line?.trim()),
+      stage: "contents",
+    },
     ...(pack.gating === "paid"
       ? [
-          { label: "Price is set", ok: pack.price_cents > 0, stage: null },
-          { label: "At least one preview track picked", ok: items.some((i) => i.is_preview), stage: null },
+          {
+            label: "Price is set",
+            hint: "A paid pack can't go out at $0. Set it under Gating above.",
+            ok: pack.price_cents > 0,
+            stage: null,
+          },
+          {
+            label: "At least one preview track picked",
+            hint: "Buyers need to see something real before they pay.",
+            ok: items.some((i) => i.is_preview),
+            stage: null,
+          },
         ]
       : []),
   ];
   const checklistPassed = checklist.every((c) => c.ok);
+
+  /** Jump to the stage that owns the failing item, then put the cursor on it. */
+  const handleFix = (stage: "contents" | "cover" | null, focusId?: string) => {
+    if (stage) onJumpToStage(stage);
+    if (!focusId) return;
+    requestAnimationFrame(() => {
+      const el = document.getElementById(focusId);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) el.focus();
+    });
+  };
 
   const copySnippet = async () => {
     try {
@@ -180,16 +224,30 @@ export function PackReleaseStage({
       </div>
 
       <div>
-        <h3 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-3">Publish checklist</h3>
-        <div className="space-y-1.5">
+        <h3 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle mb-1.5">Publish checklist</h3>
+        <p className="text-xs text-foreground-muted mb-3">
+          Every item has to pass before the pack can go out — this is what a saver sees on day one.
+        </p>
+        <div className="space-y-3">
           {checklist.map((c) => (
-            <div key={c.label} className="flex items-center justify-between gap-2 text-sm">
-              <span className="flex items-center gap-2">
-                {c.ok ? <Check className="h-3.5 w-3.5 text-primary" /> : <Circle className="h-3.5 w-3.5 text-foreground-subtle" />}
-                <span className={c.ok ? "text-foreground" : "text-foreground-muted"}>{c.label}</span>
+            <div key={c.label} className="flex items-start justify-between gap-2 text-sm">
+              <span className="flex items-start gap-2">
+                {c.ok ? (
+                  <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                ) : (
+                  <Circle className="h-3.5 w-3.5 text-foreground-subtle mt-0.5 shrink-0" />
+                )}
+                <span>
+                  <span className={cn("block", c.ok ? "text-foreground" : "text-foreground-muted")}>{c.label}</span>
+                  <span className="block text-xs text-foreground-subtle mt-0.5">{c.hint}</span>
+                </span>
               </span>
-              {!c.ok && c.stage && (
-                <button type="button" onClick={() => onJumpToStage(c.stage!)} className="text-xs text-foreground-subtle hover:text-foreground underline underline-offset-2">
+              {!c.ok && (c.stage || c.focusId) && (
+                <button
+                  type="button"
+                  onClick={() => handleFix(c.stage, c.focusId)}
+                  className="text-xs text-foreground-subtle hover:text-foreground underline underline-offset-2 shrink-0"
+                >
                   Fix
                 </button>
               )}

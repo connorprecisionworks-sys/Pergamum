@@ -7,11 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
-import { SkillVoteButtons } from "@/components/skills/skill-vote-buttons";
 import { SkillReportButton } from "@/components/skills/skill-report-button";
 import { SimilarSkills } from "@/components/skills/similar-skills";
 import { relativeTime, formatCount, categoryColor } from "@/lib/utils";
-import type { SkillWithAuthor, VoteValue } from "@/lib/types/database";
+import type { SkillWithAuthor } from "@/lib/types/database";
 
 interface SkillPageProps {
   params: Promise<{ slug: string }>;
@@ -68,17 +67,6 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
     } catch {
       // Silent — view tracking is best-effort.
     }
-  }
-
-  let currentVote: VoteValue | null = null;
-  if (user) {
-    const { data } = await supabase
-      .from("skill_votes")
-      .select("value")
-      .eq("user_id", user.id)
-      .eq("skill_id", skill.id)
-      .single();
-    if (data) currentVote = data.value as VoteValue;
   }
 
   const typed = skill as SkillWithAuthor;
@@ -210,17 +198,9 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
         {/* Install command — headline action */}
         {typed.install_command && (
           <div className="space-y-3">
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
-                Install
-              </h2>
-              <SkillVoteButtons
-                skillId={typed.id}
-                initialUpvotes={typed.upvotes}
-                initialDownvotes={typed.downvotes}
-                currentVote={currentVote}
-              />
-            </div>
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">
+              Install
+            </h2>
             <InstallCommandBlock skillId={typed.id} command={typed.install_command} />
             <p className="text-xs text-muted-foreground">
               Paste this into Claude Code (or your terminal) to install. Always

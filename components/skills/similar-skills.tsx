@@ -21,7 +21,7 @@ export async function SimilarSkills({ skill }: SimilarSkillsProps) {
     .eq("status", "published")
     .neq("id", skill.id)
     .or(orParts.join(","))
-    .order("upvotes", { ascending: false })
+    .order("copies", { ascending: false })
     .limit(3);
 
   const similar = (data ?? []) as SkillWithAuthor[];

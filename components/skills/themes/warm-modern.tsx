@@ -70,7 +70,7 @@ export function WarmModern({ skill, mode = "card" }: ThemeProps) {
       </div>
 
       <div className="absolute top-4 left-5 font-mono text-[11px] text-stone-500 z-10">
-        ↑ {skill.upvotes}
+        ⤓ {skill.copies}
       </div>
 
       <div className="relative px-7 pt-16 pb-7 h-full flex flex-col">

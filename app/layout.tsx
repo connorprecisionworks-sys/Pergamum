@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Prmpt",
   },
   description:
-    "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
+    "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   keywords: [
     "AI prompts",
     "prompt library",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     "Claude prompts",
     "prompt engineering",
     "LLM prompts",
-    "community prompts",
+    "prompt packs",
   ],
   openGraph: {
     type: "website",
@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     siteName: "Prmpt",
     title: "Prmpt — A living library of prompts.",
     description:
-      "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
+      "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Prmpt — A living library of prompts.",
     description:
-      "Discover, share, and refine prompts for every AI tool. Built by the community, free forever.",
+      "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   },
 };
 

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
-  Award,
   Bell,
   Compass,
   FolderOpen,
@@ -15,7 +14,6 @@ import {
   Library,
   Menu,
   Sparkles,
-  Trophy,
   Upload,
   Users,
   X,
@@ -42,6 +40,10 @@ interface AppSidebarProps {
 /**
  * Every (app) route reaches the user from here or from the avatar menu below —
  * the shell is the only chrome these routes get, so nothing may be orphaned.
+ *
+ * Exception: /leaderboards and /badges are deliberately unlinked. They're
+ * community-ranking surfaces from the Pergamum era that don't fit the creator↔
+ * client model; the routes still resolve, but nothing navigates to them.
  */
 const PRIMARY = [
   { href: "/dashboard", label: "Home", icon: Home },
@@ -56,11 +58,6 @@ const CREATE = [
   { href: "/skills", label: "Skills", icon: Sparkles },
   { href: "/dashboard/packs", label: "Packs", icon: Layers },
   { href: "/collections", label: "Collections", icon: FolderOpen },
-];
-
-const DISCOVER = [
-  { href: "/leaderboards", label: "Leaderboards", icon: Trophy },
-  { href: "/badges", label: "Badges", icon: Award },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -153,8 +150,6 @@ export function AppSidebar({ profile, unreadNotifications = 0 }: AppSidebarProps
         <NavList items={PRIMARY} pathname={pathname} onNavigate={close} />
         <SectionLabel>Create</SectionLabel>
         <NavList items={CREATE} pathname={pathname} onNavigate={close} />
-        <SectionLabel>Discover</SectionLabel>
-        <NavList items={DISCOVER} pathname={pathname} onNavigate={close} />
       </div>
 
       <div className="border-t border-border pt-3">

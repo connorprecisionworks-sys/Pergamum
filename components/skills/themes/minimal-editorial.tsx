@@ -65,7 +65,7 @@ export function MinimalEditorial({ skill, mode = "card" }: ThemeProps) {
       style={{ minHeight: 460 }}
     >
       <div className="absolute top-4 right-5 font-mono text-[11px] text-zinc-400 z-10">
-        ↑ {skill.upvotes}
+        ⤓ {skill.copies}
       </div>
 
       <div className="relative px-7 pt-7 pb-7 h-full flex flex-col">

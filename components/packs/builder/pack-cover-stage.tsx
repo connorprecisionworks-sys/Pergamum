@@ -24,6 +24,8 @@ interface PackCoverStageProps {
   accent: string;
   itemTitles: string[];
   creatorDisplayName: string;
+  /** AI drafting rides the /build private beta; the rest of the stage stays open. */
+  buildAccessOk: boolean;
   onChange: (patch: { liner_note?: string; cover_seed?: string; accent?: string }) => void;
 }
 
@@ -35,6 +37,7 @@ export function PackCoverStage({
   accent,
   itemTitles,
   creatorDisplayName,
+  buildAccessOk,
   onChange,
 }: PackCoverStageProps) {
   const [drafting, setDrafting] = useState(false);
@@ -104,7 +107,7 @@ export function PackCoverStage({
               <span>
                 <Button variant="outline" size="sm" disabled className="mt-3 gap-1.5 text-xs">
                   <Upload className="h-3.5 w-3.5" />
-                  Upload cover
+                  Upload — coming soon
                 </Button>
               </span>
             </TooltipTrigger>
@@ -135,10 +138,26 @@ export function PackCoverStage({
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-mono text-[10px] uppercase tracking-[0.12em] text-foreground-subtle">Liner note</h3>
-          <Button variant="ghost" size="sm" onClick={draftLinerNote} disabled={drafting} className="h-7 gap-1.5 text-xs text-foreground-subtle">
-            {drafting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
-            Draft with AI
-          </Button>
+          {buildAccessOk ? (
+            <Button variant="ghost" size="sm" onClick={draftLinerNote} disabled={drafting} className="h-7 gap-1.5 text-xs text-foreground-subtle">
+              {drafting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+              Draft with AI
+            </Button>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <Button variant="ghost" size="sm" disabled className="h-7 gap-1.5 text-xs text-foreground-subtle">
+                      <Sparkles className="h-3 w-3" />
+                      Draft with AI
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>AI drafting is in private beta — enter your access code at /build.</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
         <Textarea
           value={linerNote}

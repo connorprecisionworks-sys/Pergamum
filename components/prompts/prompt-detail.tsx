@@ -12,17 +12,15 @@ import { LaunchButtons } from "./launch-buttons";
 import { PresetPanel } from "./preset-panel";
 import { ClaimButton } from "./claim-button";
 import { SavePromptButton } from "./save-prompt-button";
-import { VoteButtons } from "./vote-buttons";
 import { ModelBadge } from "./model-badge";
 import { formatCount, relativeTime, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { savePendingClaim } from "@/lib/anon-claim";
-import type { PromptWithAuthor, VoteValue, PromptVariable, PromptVersion } from "@/lib/types/database";
+import type { PromptWithAuthor, PromptVariable, PromptVersion } from "@/lib/types/database";
 
 interface PromptDetailProps {
   prompt: PromptWithAuthor;
   currentUserId: string | null;
-  currentVote: VoteValue | null;
   /** Ordered version DESC; empty unless the prompt has been edited-and-republished at least once. */
   versions: PromptVersion[];
   /** Whether the current user already has this prompt in prompt_saves. */
@@ -34,7 +32,6 @@ interface PromptDetailProps {
 export function PromptDetail({
   prompt,
   currentUserId,
-  currentVote,
   versions,
   initiallySaved = false,
   initialValues,
@@ -139,9 +136,9 @@ export function PromptDetail({
             {prompt.model_tags.map((m) => (
               <ModelBadge key={m} model={m} />
             ))}
-            {(prompt.views ?? 0) >= 5 && (
+            {(prompt.copies ?? 0) >= 5 && (
               <span className="text-xs text-foreground-subtle">
-                {formatCount(prompt.views)} uses
+                {formatCount(prompt.copies)} uses
               </span>
             )}
             <span className="text-xs text-foreground-subtle">
@@ -208,13 +205,6 @@ export function PromptDetail({
       {/* Secondary rail — everything the mockup's rail doesn't show but the
           route already wires up. Kept, quieted. */}
       <div className="flex flex-wrap items-center gap-4 border-t border-border px-8 py-4 md:px-[72px]">
-        <VoteButtons
-          promptId={prompt.id}
-          initialUpvotes={prompt.upvotes}
-          initialDownvotes={prompt.downvotes}
-          currentVote={currentVote}
-        />
-
         {prompt.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             {prompt.tags.map((tag) => (

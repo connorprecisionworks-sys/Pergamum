@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   Calendar, MapPin, Globe, Twitter, Github,
-  ArrowUp, Eye, Award, Star, FileText, Bookmark, Users,
+  Copy, FileText, Bookmark,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -12,11 +12,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { PromptCard } from "@/components/prompts/prompt-card";
 import { CollectionCard } from "@/components/collections/collection-card";
-import { BadgeShowcase } from "@/components/profile/badge-showcase";
 import { FollowButton } from "@/components/profile/follow-button";
 import { formatCount, relativeTime } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import type { PromptWithAuthor, Badge as BadgeType, UserBadge, Collection } from "@/lib/types/database";
+import type { PromptWithAuthor, Collection } from "@/lib/types/database";
 
 interface ProfilePageProps {
   params: Promise<{ username: string }>;
@@ -46,8 +45,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
   const [
     promptsResult,
     collectionsResult,
-    badgesResult,
-    userBadgesResult,
     followerCountResult,
     followingCountResult,
     isFollowingResult,
@@ -58,7 +55,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       .select(`*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`)
       .eq("author_id", profile.id)
       .eq("status", "published")
-      .order("upvotes", { ascending: false }),
+      .order("copies", { ascending: false }),
 
     supabase
       .from("collections")
@@ -66,10 +63,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       .eq("owner_id", profile.id)
       .eq("is_public", true)
       .order("created_at", { ascending: false }),
-
-    supabase.from("badges").select("*").order("tier"),
-
-    supabase.from("user_badges").select("*").eq("user_id", profile.id),
 
     supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", profile.id),
 
@@ -86,8 +79,7 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
 
   const prompts = (promptsResult.data ?? []) as PromptWithAuthor[];
   const collections = (collectionsResult.data ?? []) as Collection[];
-  const allBadges = (badgesResult.data ?? []) as BadgeType[];
-  const userBadges = (userBadgesResult.data ?? []) as UserBadge[];
+  const totalUses = prompts.reduce((acc, p) => acc + (p.copies ?? 0), 0);
   const followerCount = followerCountResult.count ?? 0;
   const followingCount = followingCountResult.count ?? 0;
   const isFollowing = !!isFollowingResult.data;
@@ -107,11 +99,10 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
     return acc;
   }, {});
 
-  // Activity feed: last 20 events across prompts + collections + badges
+  // Activity feed: last 20 events across prompts + collections
   type ActivityItem =
     | { kind: "prompt"; title: string; slug: string; ts: string }
-    | { kind: "collection"; title: string; ownerUsername: string; collSlug: string; ts: string }
-    | { kind: "badge"; name: string; icon: string; tier: string; ts: string };
+    | { kind: "collection"; title: string; ownerUsername: string; collSlug: string; ts: string };
 
   const activity: ActivityItem[] = [
     ...prompts.slice(0, 10).map((p) => ({
@@ -127,16 +118,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       collSlug: c.slug,
       ts: c.created_at,
     })),
-    ...userBadges.slice(0, 5).map((ub) => {
-      const badge = allBadges.find((b) => b.id === ub.badge_id);
-      return {
-        kind: "badge" as const,
-        name: badge?.name ?? "Badge",
-        icon: badge?.icon ?? "Award",
-        tier: badge?.tier ?? "bronze",
-        ts: ub.earned_at,
-      };
-    }),
   ]
     .sort((a, b) => new Date(b.ts).getTime() - new Date(a.ts).getTime())
     .slice(0, 20);
@@ -223,37 +204,17 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
       {/* ── Stats ──────────────────────────────────────────────── */}
       <div className="border-t border-b border-border py-3 mb-8 flex flex-wrap items-center gap-x-6 gap-y-2">
         <div className="flex items-center gap-1.5">
-          <Star className="h-3 w-3 text-foreground-subtle" />
-          <span className="label-mono text-foreground-subtle">Reputation</span>
-          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(profile.reputation)}</span>
-        </div>
-        <span className="opacity-40 text-foreground-subtle select-none">·</span>
-        <div className="flex items-center gap-1.5">
           <FileText className="h-3 w-3 text-foreground-subtle" />
           <span className="label-mono text-foreground-subtle">Prompts</span>
           <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(prompts.length)}</span>
         </div>
         <span className="opacity-40 text-foreground-subtle select-none">·</span>
         <div className="flex items-center gap-1.5">
-          <ArrowUp className="h-3 w-3 text-foreground-subtle" />
-          <span className="label-mono text-foreground-subtle">Upvotes</span>
-          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(profile.lifetime_upvotes_received ?? 0)}</span>
-        </div>
-        <span className="opacity-40 text-foreground-subtle select-none">·</span>
-        <div className="flex items-center gap-1.5">
-          <Award className="h-3 w-3 text-foreground-subtle" />
-          <span className="label-mono text-foreground-subtle">Badges</span>
-          <span className="font-mono text-[14px] text-foreground ml-1">{userBadges.length}</span>
+          <Copy className="h-3 w-3 text-foreground-subtle" />
+          <span className="label-mono text-foreground-subtle">Uses</span>
+          <span className="font-mono text-[14px] text-foreground ml-1">{formatCount(totalUses)}</span>
         </div>
       </div>
-
-      {/* ── Badges ─────────────────────────────────────────────── */}
-      {allBadges.length > 0 && (
-        <div className="mb-8">
-          <h2 className="label-mono mb-3">Badges</h2>
-          <BadgeShowcase allBadges={allBadges} earnedBadges={userBadges} />
-        </div>
-      )}
 
       {/* ── Featured prompt ────────────────────────────────────── */}
       {featuredPrompt && (
@@ -326,7 +287,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                   <div className="mt-0.5 w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0">
                     {item.kind === "prompt" && <FileText className="h-3.5 w-3.5 text-muted-foreground" />}
                     {item.kind === "collection" && <Bookmark className="h-3.5 w-3.5 text-muted-foreground" />}
-                    {item.kind === "badge" && <Award className="h-3.5 w-3.5 text-amber-500" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     {item.kind === "prompt" && (
@@ -343,12 +303,6 @@ export default async function UserProfilePage({ params }: ProfilePageProps) {
                         <Link href={`/collections/${item.ownerUsername}/${item.collSlug}`} className="font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
                           {item.title}
                         </Link>
-                      </p>
-                    )}
-                    {item.kind === "badge" && (
-                      <p className="leading-snug">
-                        Earned badge{" "}
-                        <span className="font-medium">{item.name}</span>
                       </p>
                     )}
                     <span className="text-xs text-muted-foreground">{relativeTime(item.ts)}</span>
