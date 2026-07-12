@@ -81,7 +81,7 @@ export function GetPackButton({
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Save this pack and we&apos;ll remember it.</DialogTitle>
-            <DialogDescription>One tap — no password, nothing to fill in.</DialogDescription>
+            <DialogDescription>Create an account — or continue with Google.</DialogDescription>
           </DialogHeader>
           <AuthForm mode="signup" returnTo={returnTo} />
         </DialogContent>

@@ -1,10 +1,18 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
+import { postAuthDestination } from "@/lib/supabase/post-auth-redirect";
 import { track } from "@/lib/analytics";
 
 interface AuthFormProps {
@@ -15,25 +23,22 @@ interface AuthFormProps {
 
 const APPLE_ENABLED = process.env.NEXT_PUBLIC_APPLE_ENABLED === "true";
 
-function callbackUrl(returnTo?: string): string {
-  const url = new URL("/auth/callback", window.location.origin);
+function redirectUrl(path: string, returnTo?: string): string {
+  const url = new URL(path, window.location.origin);
   if (returnTo) url.searchParams.set("next", returnTo);
   return url.toString();
 }
 
-// Magic-link sign-in — unused now that auth is Google-only, kept here so the
-// email path is easy to re-add later without reconstructing the Supabase call.
-async function sendMagicLink(email: string, returnTo?: string) {
-  const supabase = createClient();
-  return supabase.auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: callbackUrl(returnTo) },
-  });
+export function AuthForm({ mode, returnTo }: AuthFormProps) {
+  return mode === "signup" ? (
+    <SignupForm returnTo={returnTo} />
+  ) : (
+    <LoginForm returnTo={returnTo} />
+  );
 }
 
-export function AuthForm({ mode, returnTo }: AuthFormProps) {
+function useOAuth(mode: "login" | "signup", returnTo?: string) {
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
-
   const supabase = createClient();
 
   const handleOAuth = async (provider: "google" | "apple") => {
@@ -41,7 +46,7 @@ export function AuthForm({ mode, returnTo }: AuthFormProps) {
     if (mode === "signup") track("signup_started");
     const { error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: callbackUrl(returnTo) },
+      options: { redirectTo: redirectUrl("/auth/callback", returnTo) },
     });
     if (error) {
       toast.error(error.message);
@@ -50,12 +55,23 @@ export function AuthForm({ mode, returnTo }: AuthFormProps) {
     // On success the browser navigates away to the provider — nothing else to do here.
   };
 
+  return { oauthLoading, handleOAuth };
+}
+
+function OAuthButtons({
+  oauthLoading,
+  onSelect,
+}: {
+  oauthLoading: "google" | "apple" | null;
+  onSelect: (provider: "google" | "apple") => void;
+}) {
   return (
     <div className="space-y-3">
       <Button
         type="button"
+        variant="outline"
         className="w-full"
-        onClick={() => handleOAuth("google")}
+        onClick={() => onSelect("google")}
         disabled={oauthLoading !== null}
       >
         {oauthLoading === "google" ? (
@@ -88,7 +104,7 @@ export function AuthForm({ mode, returnTo }: AuthFormProps) {
           type="button"
           variant="outline"
           className="w-full"
-          onClick={() => handleOAuth("apple")}
+          onClick={() => onSelect("apple")}
           disabled={oauthLoading !== null}
         >
           {oauthLoading === "apple" ? (
@@ -101,6 +117,298 @@ export function AuthForm({ mode, returnTo }: AuthFormProps) {
           <span className="ml-2">Continue with Apple</span>
         </Button>
       )}
+    </div>
+  );
+}
+
+function Divider() {
+  return (
+    <div className="relative">
+      <div className="absolute inset-0 flex items-center">
+        <Separator />
+      </div>
+      <div className="relative flex justify-center text-xs uppercase">
+        <span className="bg-background px-2 text-muted-foreground">or</span>
+      </div>
+    </div>
+  );
+}
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(1, "Please enter your password"),
+});
+
+type LoginValues = z.infer<typeof loginSchema>;
+
+function LoginForm({ returnTo }: { returnTo?: string }) {
+  const [loading, setLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [resetSent, setResetSent] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+  const { oauthLoading, handleOAuth } = useOAuth("login", returnTo);
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    trigger,
+    formState: { errors },
+  } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
+
+  const onSubmit = async (values: LoginValues) => {
+    setFormError(null);
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword(values);
+    if (error) {
+      setFormError(error.message);
+      setLoading(false);
+      return;
+    }
+    const dest = await postAuthDestination(supabase, returnTo);
+    router.push(dest);
+    router.refresh();
+  };
+
+  const handleForgotPassword = async () => {
+    const valid = await trigger("email");
+    if (!valid) return;
+
+    setFormError(null);
+    setResetSent(false);
+    setResetLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(getValues("email"), {
+      redirectTo: redirectUrl("/auth/update-password", returnTo),
+    });
+    setResetLoading(false);
+    if (error) {
+      setFormError(error.message);
+      return;
+    }
+    setResetSent(true);
+  };
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+        <div className="space-y-2">
+          <Label htmlFor="email" className="sr-only">
+            Email
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            {...register("email")}
+          />
+          {errors.email && (
+            <p id="email-error" className="text-sm text-destructive">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password" className="sr-only">
+            Password
+          </Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="Password"
+            autoComplete="current-password"
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? "password-error" : undefined}
+            {...register("password")}
+          />
+          {errors.password && (
+            <p id="password-error" className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            disabled={resetLoading}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-60"
+          >
+            {resetLoading ? "Sending…" : "Forgot password?"}
+          </button>
+        </div>
+
+        {formError && (
+          <p role="alert" className="text-sm text-destructive">
+            {formError}
+          </p>
+        )}
+        {resetSent && (
+          <p className="text-sm text-muted-foreground">
+            Check your email for a link to reset your password.
+          </p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+          Log in
+        </Button>
+      </form>
+
+      <Divider />
+
+      <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />
+    </div>
+  );
+}
+
+const signupSchema = z
+  .object({
+    email: z.string().email("Please enter a valid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type SignupValues = z.infer<typeof signupSchema>;
+
+function SignupForm({ returnTo }: { returnTo?: string }) {
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [confirmSent, setConfirmSent] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
+  const { oauthLoading, handleOAuth } = useOAuth("signup", returnTo);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupValues>({ resolver: zodResolver(signupSchema) });
+
+  const onSubmit = async (values: SignupValues) => {
+    setFormError(null);
+    setLoading(true);
+    track("signup_started");
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: { emailRedirectTo: redirectUrl("/auth/callback", returnTo) },
+    });
+    if (error) {
+      setFormError(error.message);
+      setLoading(false);
+      return;
+    }
+    track("signup_completed");
+    if (data.session) {
+      const dest = await postAuthDestination(supabase, returnTo);
+      router.push(dest);
+      router.refresh();
+    } else {
+      // Project has email confirmation enabled — no session until they click the link.
+      setConfirmSent(true);
+      setLoading(false);
+    }
+  };
+
+  if (confirmSent) {
+    return (
+      <div className="text-center space-y-2 py-4">
+        <p className="text-sm text-muted-foreground">
+          Check your email to confirm your account.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+        <div className="space-y-2">
+          <Label htmlFor="email" className="sr-only">
+            Email
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            {...register("email")}
+          />
+          {errors.email && (
+            <p id="email-error" className="text-sm text-destructive">
+              {errors.email.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="password" className="sr-only">
+            Password
+          </Label>
+          <Input
+            id="password"
+            type="password"
+            placeholder="Password"
+            autoComplete="new-password"
+            aria-invalid={!!errors.password}
+            aria-describedby={errors.password ? "password-error" : undefined}
+            {...register("password")}
+          />
+          {errors.password && (
+            <p id="password-error" className="text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="confirmPassword" className="sr-only">
+            Confirm password
+          </Label>
+          <Input
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirm password"
+            autoComplete="new-password"
+            aria-invalid={!!errors.confirmPassword}
+            aria-describedby={errors.confirmPassword ? "confirm-password-error" : undefined}
+            {...register("confirmPassword")}
+          />
+          {errors.confirmPassword && (
+            <p id="confirm-password-error" className="text-sm text-destructive">
+              {errors.confirmPassword.message}
+            </p>
+          )}
+        </div>
+
+        {formError && (
+          <p role="alert" className="text-sm text-destructive">
+            {formError}
+          </p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+          Create account
+        </Button>
+      </form>
+
+      <Divider />
+
+      <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />
     </div>
   );
 }

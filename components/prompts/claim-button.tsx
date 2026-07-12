@@ -31,7 +31,7 @@ export function ClaimButton({ returnTo }: ClaimButtonProps) {
           <DialogHeader>
             <DialogTitle>Save this and we&apos;ll remember what you typed.</DialogTitle>
             <DialogDescription>
-              One tap — no password, nothing to fill in.
+              Create an account — or continue with Google.
             </DialogDescription>
           </DialogHeader>
           <AuthForm mode="signup" returnTo={returnTo} />
