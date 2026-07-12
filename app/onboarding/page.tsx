@@ -66,21 +66,28 @@ export default async function OnboardingPage() {
 
   // Payoff candidates. There is no demand-matching model yet, so the form ranks
   // these against the user's own answers and falls back to popularity.
-  const [{ data: prompts }, { data: creators }, { data: following }] = await Promise.all([
-    supabase
-      .from("prompts")
-      .select("id, title, slug, description, tags, variables, profiles:profiles!prompts_author_id_fkey(username)")
-      .eq("status", "published")
-      .order("copies", { ascending: false })
-      .limit(12),
-    supabase
-      .from("profiles")
-      .select("id, username, display_name, avatar_url, bio")
-      .neq("id", user.id)
-      .order("lifetime_copies", { ascending: false })
-      .limit(6),
-    supabase.from("follows").select("following_id").eq("follower_id", user.id),
-  ]);
+  const [{ data: prompts }, { data: packs }, { data: creators }, { data: following }] =
+    await Promise.all([
+      supabase
+        .from("prompts")
+        .select("id, title, slug, description, tags, variables, profiles:profiles!prompts_author_id_fkey(username)")
+        .eq("status", "published")
+        .order("copies", { ascending: false })
+        .limit(12),
+      supabase
+        .from("packs")
+        .select("id, title, slug, liner_note, profiles:profiles!packs_creator_id_fkey(username)")
+        .eq("status", "published")
+        .order("released_at", { ascending: false })
+        .limit(6),
+      supabase
+        .from("profiles")
+        .select("id, username, display_name, avatar_url, bio")
+        .neq("id", user.id)
+        .order("lifetime_copies", { ascending: false })
+        .limit(6),
+      supabase.from("follows").select("following_id").eq("follower_id", user.id),
+    ]);
 
   const followingIds = new Set((following ?? []).map((f) => f.following_id));
 
@@ -104,6 +111,49 @@ export default async function OnboardingPage() {
     fieldCount: Array.isArray(p.variables) ? p.variables.length : 0,
   }));
 
+  const candidatePacks = (
+    (packs ?? []) as unknown as {
+      id: string;
+      title: string;
+      slug: string;
+      liner_note: string | null;
+      profiles: { username: string } | null;
+    }[]
+  )
+    .filter((p) => p.profiles?.username)
+    .map((p) => ({
+      id: p.id,
+      title: p.title,
+      slug: p.slug,
+      linerNote: p.liner_note,
+      creatorUsername: p.profiles!.username,
+    }));
+
+  // The candidate pools are popularity-ranked, so it's possible (if unlikely)
+  // the user already saved one — check so the payoff cards open on the right
+  // saved/unsaved state instead of always defaulting to "Save".
+  const candidatePromptIds = candidatePrompts.map((p) => p.id);
+  const candidatePackIds = candidatePacks.map((p) => p.id);
+  const [{ data: alreadySavedPrompts }, { data: alreadySavedPacks }] = await Promise.all([
+    candidatePromptIds.length > 0
+      ? supabase
+          .from("prompt_saves")
+          .select("prompt_id")
+          .eq("user_id", user.id)
+          .in("prompt_id", candidatePromptIds)
+      : Promise.resolve({ data: [] as { prompt_id: string }[] }),
+    candidatePackIds.length > 0
+      ? supabase
+          .from("pack_saves")
+          .select("pack_id")
+          .eq("user_id", user.id)
+          .in("pack_id", candidatePackIds)
+      : Promise.resolve({ data: [] as { pack_id: string }[] }),
+  ]);
+
+  const savedPromptIds = (alreadySavedPrompts ?? []).map((r) => r.prompt_id);
+  const savedPackIds = (alreadySavedPacks ?? []).map((r) => r.pack_id);
+
   const candidateCreators = (creators ?? []).map((c) => ({
     id: c.id,
     username: c.username,
@@ -118,6 +168,9 @@ export default async function OnboardingPage() {
       currentUserId={user.id}
       justUsed={justUsed}
       candidatePrompts={candidatePrompts}
+      candidatePacks={candidatePacks}
+      savedPromptIds={savedPromptIds}
+      savedPackIds={savedPackIds}
       candidateCreators={candidateCreators}
     />
   );

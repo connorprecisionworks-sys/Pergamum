@@ -5,12 +5,10 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { Check, Loader2 } from "lucide-react";
 
-import {
-  completeClientOnboarding,
-  skipClientOnboarding,
-} from "@/app/onboarding/actions";
+import { completeClientOnboarding } from "@/app/onboarding/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FollowButton } from "@/components/profile/follow-button";
+import { MatchedItemSaveButton } from "@/components/onboarding/matched-item-save-button";
 import type { Industry, RoleCategory } from "@/lib/types/database";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +52,31 @@ interface CandidatePrompt {
   fieldCount: number;
 }
 
+interface CandidatePack {
+  id: string;
+  title: string;
+  slug: string;
+  linerNote: string | null;
+  creatorUsername: string;
+}
+
+type MatchedItem =
+  | {
+      kind: "prompt";
+      id: string;
+      title: string;
+      slug: string;
+      authorUsername: string | null;
+      fieldCount: number;
+    }
+  | {
+      kind: "pack";
+      id: string;
+      title: string;
+      slug: string;
+      creatorUsername: string;
+    };
+
 interface CandidateCreator {
   id: string;
   username: string;
@@ -67,6 +90,9 @@ interface ClientOnboardingFormProps {
   currentUserId: string;
   justUsed: { title: string; slug: string; authorUsername: string | null } | null;
   candidatePrompts: CandidatePrompt[];
+  candidatePacks: CandidatePack[];
+  savedPromptIds: string[];
+  savedPackIds: string[];
   candidateCreators: CandidateCreator[];
 }
 
@@ -123,6 +149,9 @@ export function ClientOnboardingForm({
   currentUserId,
   justUsed,
   candidatePrompts,
+  candidatePacks,
+  savedPromptIds,
+  savedPackIds,
   candidateCreators,
 }: ClientOnboardingFormProps) {
   const [step, setStep] = useState(0);
@@ -142,29 +171,61 @@ export function ClientOnboardingForm({
     );
 
   // No demand-matching model exists yet (it lands with the real needs model —
-  // see migration 0020). Until then the payoff ranks the popular-prompt pool by
-  // naive keyword overlap with what the user actually told us, and falls back
-  // to popularity order. Honest heuristic, not a fake "match".
-  const matched = useMemo(() => {
+  // see migration 0020). Until then the payoff ranks the popular prompt+pack
+  // pool by naive keyword overlap with what the user actually told us, and
+  // falls back to popularity order. Honest heuristic, not a fake "match".
+  const matched = useMemo<MatchedItem[]>(() => {
+    const pool: { item: MatchedItem; haystack: string }[] = [
+      ...candidatePrompts.map((p) => ({
+        item: {
+          kind: "prompt" as const,
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          authorUsername: p.authorUsername,
+          fieldCount: p.fieldCount,
+        },
+        haystack: [p.title, p.description ?? "", ...p.tags].join(" ").toLowerCase(),
+      })),
+      ...candidatePacks.map((p) => ({
+        item: {
+          kind: "pack" as const,
+          id: p.id,
+          title: p.title,
+          slug: p.slug,
+          creatorUsername: p.creatorUsername,
+        },
+        haystack: [p.title, p.linerNote ?? ""].join(" ").toLowerCase(),
+      })),
+    ];
+
     const terms = [...goals, needText]
       .join(" ")
       .toLowerCase()
       .split(/[^a-z]+/)
       .filter((t) => t.length > 3);
 
-    if (terms.length === 0) return candidatePrompts.slice(0, 3);
+    if (terms.length === 0) {
+      // No signal to rank by. Prompt candidates always outnumber pack
+      // candidates, so a plain slice(0, 3) would never reach a pack — reserve
+      // it a spot instead of letting array order crowd it out.
+      const packSlot = pool.find((x) => x.item.kind === "pack");
+      const prompts = pool.filter((x) => x.item.kind === "prompt").slice(0, packSlot ? 2 : 3);
+      return [...prompts, ...(packSlot ? [packSlot] : [])].map((x) => x.item);
+    }
 
-    const score = (p: CandidatePrompt) => {
-      const haystack = [p.title, p.description ?? "", ...p.tags].join(" ").toLowerCase();
-      return terms.reduce((n, term) => (haystack.includes(term) ? n + 1 : n), 0);
-    };
+    const score = (haystack: string) =>
+      terms.reduce((n, term) => (haystack.includes(term) ? n + 1 : n), 0);
 
-    return [...candidatePrompts]
-      .map((p) => ({ p, s: score(p) }))
+    return [...pool]
+      .map((x) => ({ ...x, s: score(x.haystack) }))
       .sort((a, b) => b.s - a.s)
       .slice(0, 3)
-      .map((x) => x.p);
-  }, [candidatePrompts, goals, needText]);
+      .map((x) => x.item);
+  }, [candidatePrompts, candidatePacks, goals, needText]);
+
+  const savedPromptIdSet = useMemo(() => new Set(savedPromptIds), [savedPromptIds]);
+  const savedPackIdSet = useMemo(() => new Set(savedPackIds), [savedPackIds]);
 
   const save = () => {
     setError(null);
@@ -234,40 +295,23 @@ export function ClientOnboardingForm({
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="mb-3 flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Continue
               </button>
-              <form action={skipClientOnboarding}>
-                <button
-                  type="submit"
-                  className="h-9 w-full text-[13px] text-foreground-subtle transition-colors hover:text-foreground"
-                >
-                  Skip for now
-                </button>
-              </form>
             </div>
           )}
 
           {/* ── Step 1 · You ──────────────────────────────────────────── */}
           {step === 1 && (
             <div>
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <h1 className="m-0 mb-2 text-[28px] font-normal leading-[1.1] -tracking-[0.02em]">
-                    What do you do?
-                  </h1>
-                  <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
-                    So your prompts show up tuned to you.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="shrink-0 text-[13px] text-foreground-subtle transition-colors hover:text-foreground"
-                >
-                  Skip
-                </button>
+              <div className="mb-6">
+                <h1 className="m-0 mb-2 text-[28px] font-normal leading-[1.1] -tracking-[0.02em]">
+                  What do you do?
+                </h1>
+                <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
+                  So your prompts show up tuned to you.
+                </p>
               </div>
 
               <div className="mb-6">
@@ -301,33 +345,29 @@ export function ClientOnboardingForm({
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                disabled={!role}
+                className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Continue
               </button>
+              {!role && (
+                <p className="mt-3 text-center text-[13px] text-foreground-subtle">
+                  Pick what you do to continue.
+                </p>
+              )}
             </div>
           )}
 
           {/* ── Step 2 · Goal ─────────────────────────────────────────── */}
           {step === 2 && (
             <div>
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <h1 className="m-0 mb-2 text-[28px] font-normal leading-[1.1] -tracking-[0.02em]">
-                    What do you need help with right now?
-                  </h1>
-                  <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
-                    So we point you to the right prompts and the right people.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={save}
-                  disabled={pending}
-                  className="shrink-0 text-[13px] text-foreground-subtle transition-colors hover:text-foreground"
-                >
-                  Skip
-                </button>
+              <div className="mb-6">
+                <h1 className="m-0 mb-2 text-[28px] font-normal leading-[1.1] -tracking-[0.02em]">
+                  What do you need help with right now?
+                </h1>
+                <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
+                  So we point you to the right prompts and the right people.
+                </p>
               </div>
 
               <div className="mb-7 flex flex-wrap gap-2">
@@ -409,14 +449,42 @@ export function ClientOnboardingForm({
                     Prompts &amp; packs
                   </div>
                   <div className="flex flex-col gap-4">
-                    {matched.map((p) => (
-                      <Link key={p.id} href={`/prompts/${p.slug}`} className="block">
-                        <div className="text-[15px] font-medium leading-tight">{p.title}</div>
-                        <div className="mt-1 text-[12.5px] text-foreground-subtle">
-                          {p.authorUsername ? `@${p.authorUsername}` : "prmpt"} · single
-                          {p.fieldCount > 0 && ` · ${p.fieldCount} field${p.fieldCount === 1 ? "" : "s"}`}
-                        </div>
-                      </Link>
+                    {matched.map((item) => (
+                      <div key={`${item.kind}-${item.id}`} className="flex items-center gap-3">
+                        <Link
+                          href={
+                            item.kind === "prompt"
+                              ? `/prompts/${item.slug}`
+                              : `/packs/${item.creatorUsername}/${item.slug}`
+                          }
+                          className="block min-w-0 flex-1"
+                        >
+                          <div className="truncate text-[15px] font-medium leading-tight">
+                            {item.title}
+                          </div>
+                          <div className="mt-1 text-[12.5px] text-foreground-subtle">
+                            {item.kind === "prompt" ? (
+                              <>
+                                {item.authorUsername ? `@${item.authorUsername}` : "prmpt"} · single
+                                {item.fieldCount > 0 &&
+                                  ` · ${item.fieldCount} field${item.fieldCount === 1 ? "" : "s"}`}
+                              </>
+                            ) : (
+                              <>@{item.creatorUsername} · pack</>
+                            )}
+                          </div>
+                        </Link>
+                        <MatchedItemSaveButton
+                          kind={item.kind}
+                          itemId={item.id}
+                          currentUserId={currentUserId}
+                          initiallySaved={
+                            item.kind === "prompt"
+                              ? savedPromptIdSet.has(item.id)
+                              : savedPackIdSet.has(item.id)
+                          }
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>

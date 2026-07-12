@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppTopbar } from "@/components/layout/app-topbar";
 import { ClaimReconciler } from "@/components/layout/claim-reconciler";
@@ -26,6 +27,13 @@ export default async function AppLayout({
     ]);
     profile = data;
     unreadNotifications = count ?? 0;
+  }
+
+  // Onboarding is mandatory (post-value, not a signup wall). Every (app)
+  // route shares this layout, so gating here — not per-page — is what makes
+  // it impossible to reach /library, /dashboard, etc. by typing the URL.
+  if (user && profile && !profile.onboarding_complete) {
+    redirect("/onboarding");
   }
 
   return (
