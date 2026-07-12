@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
 import { VariableForm } from "@/components/prompts/variable-form";
 import { CopyButton } from "@/components/prompts/copy-button";
-import { LaunchButtons } from "@/components/prompts/launch-buttons";
+import { LaunchMenu } from "@/components/prompts/launch-menu";
 import { PresetPanel } from "@/components/prompts/preset-panel";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
 import { detectVariableNames, substituteVariables, cn } from "@/lib/utils";
@@ -161,7 +161,7 @@ function PromptTrackBody({
       </div>
       <div className="flex items-center gap-2 flex-wrap">
         <CopyButton text={substitutedBody} promptId={prompt.id} currentUserId={currentUserId} values={values} />
-        <LaunchButtons text={substitutedBody} promptId={prompt.id} currentUserId={currentUserId} values={values} />
+        <LaunchMenu text={substitutedBody} promptId={prompt.id} currentUserId={currentUserId} values={values} />
       </div>
       <Separator />
     </div>

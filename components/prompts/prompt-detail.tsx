@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "./copy-button";
 import { InlinePromptBody } from "./inline-prompt-body";
-import { LaunchButtons } from "./launch-buttons";
+import { LaunchMenu } from "./launch-menu";
 import { PresetPanel } from "./preset-panel";
 import { ClaimButton } from "./claim-button";
 import { SavePromptButton } from "./save-prompt-button";
@@ -184,11 +184,12 @@ export function PromptDetail({
           values={values}
           className="h-[46px] rounded-full px-7 text-[15px] font-semibold"
         />
-        <LaunchButtons
+        <LaunchMenu
           text={substitutedBody}
           promptId={prompt.id}
           currentUserId={currentUserId}
           values={values}
+          className="h-[46px]"
         />
         {!currentUserId && <ClaimButton returnTo={`/prompts/${prompt.slug}`} />}
         {currentUserId && (
