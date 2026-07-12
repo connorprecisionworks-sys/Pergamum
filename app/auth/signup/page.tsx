@@ -48,10 +48,6 @@ export default function SignupPage({
         <AuthForm mode="signup" returnTo={next} />
 
         <p className="text-center text-sm text-muted-foreground">
-          We&apos;ll email you a secure sign-in link.
-        </p>
-
-        <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
           <Link
             href={next ? `/auth/login?next=${encodeURIComponent(next)}` : "/auth/login"}
