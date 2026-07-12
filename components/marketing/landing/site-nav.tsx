@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
 // The mockup points every nav link at a placeholder anchor. The three that have
 // real routes are wired to them; Pricing has no route yet, so it keeps the
@@ -12,7 +13,12 @@ const LINKS = [
   { label: "Resources", href: "/the-science" },
 ];
 
-export function SiteNav() {
+export async function SiteNav() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <header className="sticky top-0 z-40 grid h-[72px] grid-cols-[1fr_auto_1fr] items-center border-b border-border bg-background/80 px-6 backdrop-blur-xl md:px-10">
       <Link href="/" className="flex items-center gap-2.5 justify-self-start">
@@ -50,18 +56,29 @@ export function SiteNav() {
           <Search className="h-3.5 w-3.5 text-foreground-subtle" />
           Find a pack
         </Link>
-        <Link
-          href="/auth/login"
-          className="hidden h-10 items-center rounded-full border border-border-strong px-[18px] text-sm font-medium text-foreground transition-colors hover:bg-secondary sm:inline-flex"
-        >
-          Log in
-        </Link>
-        <Link
-          href="/auth/signup"
-          className="inline-flex h-10 items-center rounded-full bg-primary px-[22px] text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          Get started
-        </Link>
+        {user ? (
+          <Link
+            href="/dashboard"
+            className="inline-flex h-10 items-center rounded-full bg-primary px-[22px] text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          <>
+            <Link
+              href="/auth/login"
+              className="hidden h-10 items-center rounded-full border border-border-strong px-[18px] text-sm font-medium text-foreground transition-colors hover:bg-secondary sm:inline-flex"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="inline-flex h-10 items-center rounded-full bg-primary px-[22px] text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Get started
+            </Link>
+          </>
+        )}
       </div>
     </header>
   );
