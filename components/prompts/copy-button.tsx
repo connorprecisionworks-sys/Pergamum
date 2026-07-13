@@ -12,9 +12,11 @@ interface CopyButtonProps {
   currentUserId: string | null;
   values: Record<string, string>;
   className?: string;
+  /** Fires on every successful copy, signed in or not — reveals the offer slot. */
+  onSuccess?: () => void;
 }
 
-export function CopyButton({ text, promptId, currentUserId, values, className }: CopyButtonProps) {
+export function CopyButton({ text, promptId, currentUserId, values, className, onSuccess }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -35,6 +37,7 @@ export function CopyButton({ text, promptId, currentUserId, values, className }:
       if (currentUserId) {
         logPromptRun(promptId, currentUserId, values);
       }
+      onSuccess?.();
 
       // Reset after 2s
       setTimeout(() => setCopied(false), 2000);

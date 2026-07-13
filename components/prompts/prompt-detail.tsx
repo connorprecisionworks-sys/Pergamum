@@ -13,6 +13,7 @@ import { PresetPanel } from "./preset-panel";
 import { ClaimButton } from "./claim-button";
 import { SavePromptButton } from "./save-prompt-button";
 import { ModelBadge } from "./model-badge";
+import { OfferSlotCard } from "./offer-slot-card";
 import { formatCount, relativeTime, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { savePendingClaim } from "@/lib/anon-claim";
@@ -27,6 +28,8 @@ interface PromptDetailProps {
   initiallySaved?: boolean;
   /** Seeds the variable form — used by /library's "Run again" and preset "Load" deep-links. */
   initialValues?: Record<string, string>;
+  /** Resolved per-prompt override or creator default — null if neither is active. */
+  offerSlot?: { id: string; label: string; url: string; description: string | null } | null;
 }
 
 export function PromptDetail({
@@ -35,7 +38,9 @@ export function PromptDetail({
   versions,
   initiallySaved = false,
   initialValues,
+  offerSlot = null,
 }: PromptDetailProps) {
+  const [hasRun, setHasRun] = useState(false);
   const author = prompt.profiles;
   const category = prompt.categories;
 
@@ -183,6 +188,7 @@ export function PromptDetail({
           currentUserId={currentUserId}
           values={values}
           className="h-[46px] rounded-full px-7 text-[15px] font-semibold"
+          onSuccess={() => setHasRun(true)}
         />
         <LaunchMenu
           text={substitutedBody}
@@ -190,6 +196,7 @@ export function PromptDetail({
           currentUserId={currentUserId}
           values={values}
           className="h-[46px]"
+          onSuccess={() => setHasRun(true)}
         />
         {!currentUserId && <ClaimButton returnTo={`/prompts/${prompt.slug}`} />}
         {currentUserId && (
@@ -202,6 +209,21 @@ export function PromptDetail({
           </span>
         )}
       </div>
+
+      {/* Offer slot — the peak-value moment right after a run, per
+          HOT-LEAD-HEAT-SPEC.md section 6. Anonymous visitors see it too. */}
+      {hasRun && offerSlot && (
+        <div className="border-t border-border px-8 py-6 md:px-[72px]">
+          <OfferSlotCard
+            offerSlotId={offerSlot.id}
+            promptId={prompt.id}
+            currentUserId={currentUserId}
+            label={offerSlot.label}
+            url={offerSlot.url}
+            description={offerSlot.description}
+          />
+        </div>
+      )}
 
       {/* Secondary rail — everything the mockup's rail doesn't show but the
           route already wires up. Kept, quieted. */}

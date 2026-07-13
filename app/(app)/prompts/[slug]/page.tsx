@@ -104,6 +104,20 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
     .eq("prompt_id", prompt.id)
     .order("version", { ascending: false });
 
+  // Offer slot: a per-prompt override beats the creator's default
+  // (prompt_id null applies to all their prompts) — HOT-LEAD-HEAT-SPEC.md
+  // section 6. .in() can't match a NULL prompt_id, hence .or().
+  const { data: candidateSlots } = await supabase
+    .from("offer_slots")
+    .select("id, prompt_id, label, url, description")
+    .eq("creator_id", prompt.author_id)
+    .eq("active", true)
+    .or(`prompt_id.eq.${prompt.id},prompt_id.is.null`);
+  const offerSlot =
+    (candidateSlots ?? []).find((s) => s.prompt_id === prompt.id) ??
+    (candidateSlots ?? []).find((s) => s.prompt_id === null) ??
+    null;
+
   const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://useprmpt.com";
   const promptAuthor = (prompt as PromptWithAuthor).profiles;
   const jsonLd = {
@@ -157,6 +171,7 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
         versions={versions ?? []}
         initiallySaved={initiallySaved}
         initialValues={initialValues}
+        offerSlot={offerSlot}
       />
 
       {user && (

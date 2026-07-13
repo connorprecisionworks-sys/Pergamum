@@ -1914,3 +1914,6 @@ export type CommentWithAuthor = Comment & {
 
 // Must match the CHECK constraint on profiles.account_type in 0022_creator_accounts.sql.
 export type AccountType = "client" | "creator";
+
+export type OfferSlot = Database["public"]["Tables"]["offer_slots"]["Row"];
+export type CreatorAlertSettings = Database["public"]["Tables"]["creator_alert_settings"]["Row"];

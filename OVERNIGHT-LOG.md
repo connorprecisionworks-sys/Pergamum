@@ -55,7 +55,7 @@ Vercel: confirmed green.
 
 ## Phase 4 — Hot-lead heat spine wiring + /dashboard/leads
 
-**Commit:** (pending — see below)
+**Commit:** `397c9a7`
 **Files:** `lib/lead-events.ts` (new, shared `recordLeadEvent` helper), `lib/claim.ts`, `lib/prompt-runs.ts`, `components/prompts/preset-panel.tsx`, `components/prompts/save-prompt-button.tsx`, `components/packs/get-pack-button.tsx`, `components/onboarding/matched-item-save-button.tsx`, `app/(app)/dashboard/leads/page.tsx` (new), `app/(app)/notifications/page.tsx`, `components/layout/app-sidebar.tsx`
 
 Wired `record_lead_event` into every real write site I could find for claim/run/preset/save (searched the whole app for every `.from("prompt_runs"|"prompt_presets"|"prompt_saves"|"pack_saves"|"follows")` call before touching anything, not just the ones the prompt named), built the ranked `/dashboard/leads` list off `get_my_leads()` + `get_lead_detail()`, rendered `hot_lead` notifications, and added a creator-only "Leads" nav entry.
@@ -68,6 +68,33 @@ Wired `record_lead_event` into every real write site I could find for claim/run/
 
 **Scope note on the leads page:** "minimal ... ranked list" per Phase 1's own scoping language. Signal breakdown resolves prompt/pack titles via a follow-up query (the RPCs only return raw ids, and I can't touch the RPC without a migration this run forbids). "Lead #" handle is derived deterministically from the user id (first 6 hex chars) rather than a rank-based number, since rank changes as scores decay and a shifting label would be confusing — spec's "Lead #14" reads as illustrative, not a literal requirement for a small sequential integer.
 
+Vercel: confirmed green.
+
+---
+
+## Phase 5 — Offer slot render + email
+
+**Commit:** (pending — see below)
+**Files:** `components/prompts/offer-slot-card.tsx` (new), `components/prompts/copy-button.tsx`, `components/prompts/launch-menu.tsx`, `components/prompts/prompt-detail.tsx`, `app/(app)/prompts/[slug]/page.tsx`, `app/(app)/dashboard/offers/{page,actions,offers-manager}.tsx` (new), `app/(app)/dashboard/leads/alert-settings-panel.tsx` (new + wired into the leads page), `lib/lead-events.ts`, `lib/email/{resend,hot-lead}.ts` (new), `app/api/leads/{send-alert-email,send-digest}/route.ts` (new), `vercel.json` (new), `lib/types/database.ts` (added `OfferSlot`/`CreatorAlertSettings` aliases), `.env.local` (`NEXT_PUBLIC_APP_URL` fix), `package.json` (added `resend`).
+
+No schema changes anywhere in this phase or any of the four before it — never hit the "seems like it needs a migration" stop condition.
+
+**The offer card, read carefully before touching anything:** `prompt-detail.tsx` is the biggest single page in the app (`/prompts/[slug]`, ~52 kB), so I read the whole component plus `copy-button.tsx` and `launch-menu.tsx` before writing a line, to find exactly where a "successful run" already happens. Both buttons already call `logPromptRun` post-copy/post-launch (only when signed in) — added an `onSuccess` prop to both, fired unconditionally (signed in or not, since anonymous visitors are supposed to see the card too), which flips a `hasRun` state in `PromptDetail` that reveals the card below the action rail. The resolved slot itself (per-prompt override beating the creator's default) is fetched server-side in `page.tsx` and passed down as a prop — `.in()` can't match a NULL `prompt_id`, so that query uses `.or('prompt_id.eq.X,prompt_id.is.null')` instead.
+
+**Architectural call the prompt didn't specify: how email actually gets triggered.** The spec says "sent from the app layer... when record_lead_event returns alert_fired." But `recordLeadEvent` (the Phase 4 helper) is called from both client components (browser-side `supabase.rpc()`) and one server action (`claim.ts`), and Resend can only ever run server-side — a client component can't import it, and there's no `RESEND_API_KEY` anywhere near the browser. Rather than duplicate "check alert_fired, maybe email" logic at every call site, `recordLeadEvent` now inspects the RPC's own return value and, on `alert_fired`, fires a fetch to a new `/api/leads/send-alert-email` route — one code path, works uniformly whether the caller was client or server. The route re-derives the creator from prompt/pack itself (never trusts one from the request body, same rule the RPC follows) and always returns 200 so a failure here can never surface as a user-facing error for an action that already succeeded. Building this meant `recordLeadEvent`'s fetch needs an absolute URL (`NEXT_PUBLIC_APP_URL` — a server action has no browser origin to resolve a relative path against), which is a second, independent reason that env var needed fixing this run beyond what the prompt asked for.
+
+**Also fixed while writing the email copy:** the instant-alert template originally called `stageHeadline(stage)` with no second argument, so it could never distinguish an offer-click alert from a plain threshold-crossing one — every instant email would have said "hasn't clicked your offer yet," including the ones sent *because* they just clicked it. Threaded `triggerEventType` through from `lead-events.ts` (it already had the event type in scope) to the API route to the email function so the two payload variants from spec section 4 actually render differently.
+
+**Digest "unsent" tracking:** there's no `emailed_at` column and this run can't add one, so the daily-digest cron treats unread `hot_lead` notifications from the last 24h as the unsent set, then marks them read after a successful send so tomorrow's digest doesn't repeat them. This reuses `read_at` for a second purpose beyond "the creator viewed /notifications" — reasonable given the constraint, but worth knowing about if `read_at` semantics matter elsewhere later.
+
+**Security note on the cron route:** `/api/leads/send-digest` checks a `CRON_SECRET` bearer token *if one is set*, but doesn't require it to exist — matching the same "no-op/degrade gracefully when an env is absent" posture the whole phase uses for `RESEND_API_KEY`. That's a deliberately softer stance than a cron endpoint sending real email arguably deserves; set `CRON_SECRET` in Vercel alongside `RESEND_API_KEY` if you want this actually locked down rather than just discouraged.
+
+**Lint gate note:** this repo's `.eslintrc.json` has `"no-console": "error"` with no exceptions (not even `console.error`), which I hit immediately in the email code and had to strip every log line to match — worth knowing if you add server-side logging anywhere later, since there's currently no sanctioned way to log from this codebase at all.
+
+`vercel.json` is new (no prior file to conflict with) — one cron entry, `/api/leads/send-digest` at 14:00 UTC daily (~9am ET). No existing crons to preserve.
+
 Vercel: (pending — see below)
+
+---
 
 ---

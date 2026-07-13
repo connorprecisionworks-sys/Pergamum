@@ -58,9 +58,11 @@ interface LaunchMenuProps {
   currentUserId: string | null;
   values: Record<string, string>;
   className?: string;
+  /** Fires on every successful launch, signed in or not — reveals the offer slot. */
+  onSuccess?: () => void;
 }
 
-export function LaunchMenu({ text, promptId, currentUserId, values, className }: LaunchMenuProps) {
+export function LaunchMenu({ text, promptId, currentUserId, values, className, onSuccess }: LaunchMenuProps) {
   const [platform, setPlatform] = useState<LaunchPlatform>(DEFAULT_PLATFORM);
 
   // Read after mount: localStorage doesn't exist during SSR, so seeding state
@@ -99,6 +101,7 @@ export function LaunchMenu({ text, promptId, currentUserId, values, className }:
     if (currentUserId) {
       logPromptRun(promptId, currentUserId, values);
     }
+    onSuccess?.();
   };
 
   return (

@@ -4,6 +4,7 @@ import { Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
+import { AlertSettingsPanel } from "./alert-settings-panel";
 import { relativeTime } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -103,6 +104,12 @@ export default async function LeadsPage() {
   const { data: leads } = await supabase.rpc("get_my_leads");
   const leadList = leads ?? [];
 
+  const { data: alertSettings } = await supabase
+    .from("creator_alert_settings")
+    .select("*")
+    .eq("creator_id", user.id)
+    .maybeSingle();
+
   const [{ data: offerSlots }, detailResults] = await Promise.all([
     supabase.from("offer_slots").select("id").eq("creator_id", user.id).limit(1),
     Promise.all(
@@ -163,11 +170,15 @@ export default async function LeadsPage() {
 
   return (
     <div className="container max-w-3xl py-10">
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="text-3xl font-medium tracking-tight font-serif">Leads</h1>
         <p className="mt-1 text-muted-foreground">
           Everyone who&rsquo;s used your prompts, ranked by how likely they are to hire you.
         </p>
+      </div>
+
+      <div className="mb-8">
+        <AlertSettingsPanel initial={alertSettings ?? null} />
       </div>
 
       {rows.length === 0 ? (
