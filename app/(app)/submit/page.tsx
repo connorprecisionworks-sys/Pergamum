@@ -130,7 +130,6 @@ export default async function SubmitPage({ searchParams }: SubmitPageProps) {
 
       <SubmitForm
         categories={categories}
-        authorId={user.id}
         isAdmin={profile?.is_admin ?? false}
         isFirstPrompt={isFirstPrompt}
         forkedFrom={sourcePrompt ?? undefined}

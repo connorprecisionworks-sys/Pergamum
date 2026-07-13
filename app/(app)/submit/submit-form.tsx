@@ -29,8 +29,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { createClient } from "@/lib/supabase/client";
-import { slugify, normalizeTags, substituteVariables, detectVariableNames } from "@/lib/utils";
+import { normalizeTags, substituteVariables, detectVariableNames } from "@/lib/utils";
 import { track } from "@/lib/analytics";
+import { createLibraryPrompt } from "./actions";
 import type { Category, Prompt, PromptVariable } from "@/lib/types/database";
 
 // Granular model tiers — keeps "any" as the catch-all, and groups by provider.
@@ -74,7 +75,6 @@ type PromptFormValues = z.infer<typeof promptSchema>;
 
 interface SubmitFormProps {
   categories: Category[];
-  authorId: string;
   isAdmin: boolean;
   isFirstPrompt: boolean;
   forkedFrom?: Pick<Prompt, "id" | "title" | "description" | "body" | "model_tags" | "category_id" | "tags" | "variables">;
@@ -100,7 +100,6 @@ interface SubmitFormProps {
 
 export function SubmitForm({
   categories,
-  authorId,
   isAdmin,
   isFirstPrompt,
   forkedFrom,
@@ -286,55 +285,24 @@ export function SubmitForm({
         return;
       }
 
-      // Generate slug with collision check
-      const base = slugify(values.title);
-      const { data: existing } = await supabase
-        .from("prompts")
-        .select("slug")
-        .like("slug", `${base}%`);
+      const result = await createLibraryPrompt({
+        title: values.title.trim(),
+        body: values.body.trim(),
+        description: values.description.trim(),
+        category_id: values.category_id,
+        model_tags: values.model_tags,
+        tags: normalizeTags(values.tags ?? ""),
+        variables,
+        forked_from_id: forkedFrom?.id ?? null,
+      });
 
-      const existingSlugs = (existing ?? []).map((p) => p.slug);
-      let slug = base;
-      if (existingSlugs.includes(slug)) {
-        let i = 2;
-        while (existingSlugs.includes(`${base}-${i}`)) i++;
-        slug = `${base}-${i}`;
+      if (result.error || !result.prompt) {
+        throw new Error(result.error ?? "Failed to publish.");
       }
 
-      // Every non-admin submission enters review before publishing
-      const needsReview = !isAdmin;
-      const status = needsReview ? "pending" : "published";
-      const published_at = needsReview ? null : new Date().toISOString();
-
-      const { data, error } = await supabase
-        .from("prompts")
-        .insert({
-          author_id: authorId,
-          title: values.title.trim(),
-          slug,
-          body: values.body.trim(),
-          description: values.description.trim(),
-          category_id: values.category_id,
-          model_tags: values.model_tags,
-          tags: normalizeTags(values.tags ?? ""),
-          variables,
-          status,
-          published_at,
-          forked_from_id: forkedFrom?.id ?? null,
-        })
-        .select("slug")
-        .single();
-
-      if (error) throw error;
-
-      if (needsReview) {
-        if (isFirstPrompt) track("first_prompt_submitted");
-        toast.success("Prompt submitted — it'll go live once approved, usually within an hour.");
-        router.push("/dashboard");
-      } else {
-        toast.success("Prompt published — it's live!");
-        router.push(`/prompts/${data.slug}`);
-      }
+      if (isFirstPrompt) track("first_prompt_submitted");
+      toast.success("Prompt published — it's live!");
+      router.push(`/prompts/${result.prompt.slug}`);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to submit";
       toast.error(message);
@@ -355,7 +323,7 @@ export function SubmitForm({
         <div className="flex gap-3 p-4 rounded-lg bg-brand-50 dark:bg-brand-950/20 border border-brand-200 dark:border-brand-800">
           <Info className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
           <p className="text-sm text-brand-800 dark:text-brand-300">
-            Welcome! Every prompt is reviewed before going live, usually under an hour.
+            Welcome! Your prompt goes live the moment you publish it.
           </p>
         </div>
       )}
@@ -410,9 +378,6 @@ export function SubmitForm({
                 </span>
               </p>
             </div>
-            <p className="text-xs text-muted-foreground pt-2 border-t border-border/60">
-              Every prompt is reviewed before going live (usually under an hour).
-            </p>
           </div>
         </DialogContent>
       </Dialog>
@@ -700,17 +665,6 @@ Code:
           </p>
         )}
       </div>
-
-      {/* Moderation note */}
-      {!editing && !isAdmin && (
-        <div className="flex gap-3 p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800">
-          <Info className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800 dark:text-amber-300">
-            Every prompt is reviewed before going live (usually under an hour).
-            We&apos;ll let you know when yours is approved.
-          </p>
-        </div>
-      )}
 
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={loading}>

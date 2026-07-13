@@ -48,7 +48,6 @@ export default async function EditPromptPage({ params }: EditPromptPageProps) {
 
       <SubmitForm
         categories={(categories as Category[] | null) ?? []}
-        authorId={user.id}
         isAdmin={false}
         isFirstPrompt={false}
         editing={prompt}
