@@ -21,7 +21,7 @@ Vercel: confirmed green.
 
 ## Phase 2 — Account-type routing
 
-**Commit:** (pending — see below)
+**Commit:** `ed033fe`
 **Files:** `app/(app)/layout.tsx`, `lib/supabase/post-auth-redirect.ts`, `app/auth/callback/route.ts`, `lib/claim.ts`, `app/welcome/page.tsx` (new), `app/welcome/actions.ts` (new), `components/welcome/welcome-picker.tsx` (new), `app/(app)/dashboard/profile/actions.ts`, `app/(app)/dashboard/profile/become-creator-button.tsx` (new), `app/(app)/dashboard/profile/page.tsx`, `lib/types/database.ts` (added `AccountType` alias)
 
 Built the three-lane gate, `/welcome` (server guard + client picker that short-circuits claimers without clearing their pending claim — `ClaimReconciler` still needs to read it later), `chooseAccountType`, the `claimPendingState` belt-and-suspenders write, and the "Turn on creator tools" settings toggle.
@@ -31,6 +31,23 @@ Built the three-lane gate, `/welcome` (server guard + client picker that short-c
 **Also added:** a server-side idempotency guard inside `chooseAccountType` itself (re-checks `account_type IS NULL` before writing) rather than trusting the client-side "already set → redirect away" guard alone — the spec's "no back-door re-pick" rule should hold even against a replayed or malformed action call, not just the happy-path UI.
 
 **Known gap until Phase 3 lands:** `/creator/onboarding` doesn't exist yet, so between this deploy and Phase 3's, a user picking "I'm here to get clients" hits a 404. Expected per `CREATOR-ONBOARDING-SPEC.md`'s own build order (Phase A ships before Phase B); Phase 3 follows immediately in this run.
+
+Vercel: confirmed green.
+
+---
+
+## Phase 3 — Creator onboarding flow
+
+**Commit:** (pending — see below)
+**Files:** `app/creator/onboarding/page.tsx` (new), `app/creator/onboarding/actions.ts` (new), `components/onboarding/creator-onboarding-form.tsx` (new)
+
+Built the 5-step flow mirroring `app/onboarding` + `client-onboarding-form.tsx`'s structure and visual language exactly (same card, stepper, button treatment).
+
+**Judgment call, spec-vs-reality gap:** Step 2's spec text describes two doors, "Build" and "Import (paste text/Doc/PDF -> the existing `/api/packs/ai-draft` path generates a fillable prompt)." I read `ai-draft`'s actual route handler before building anything: it only drafts promise-line/liner-note *copy* for a pack that already has prompts in it (`kind: "promise_line" | "liner_note"`) — there is no document-to-fillable-prompt extraction feature anywhere in the codebase (checked `/admin/import` too; that's an admin CSV/JSON bulk-importer for already-structured prompt data, unrelated). Rather than build a new AI document-extraction pipeline unattended (a real new feature, not onboarding wiring, and outside what "no schema changes" scoping implies is safe for this run) or ship a second button that silently does the same thing as the first, I shipped Step 2 with one real door ("Build a pack" -> `/dashboard/packs/new`, confirmed to be a working, param-free redirect-to-draft route) plus the "I'll do this later" skip. No "Import" button. Flagging this clearly since it's a visible deviation from the spec's described UI, not just an internal implementation choice.
+
+**Step persistence:** used data-driven resume (server computes the furthest-completed step from `profiles.offer_headline` / a published pack existing / an `offer_slots` default row existing / a `creator_alert_settings` row existing) instead of a `?step=` param — the spec offered both as options. This means "resume at Step 3 after publishing" (the one case that actually needs to survive a real page reload, since Step 2's "Build" door navigates away to a different route) falls out of the logic naturally rather than needing round-trip plumbing through the pack builder, which I'd rather not modify mid-run.
+
+**Also worth a look:** `saveOfferSlot` does a manual select-then-insert-or-update instead of `.upsert()` — the "one default offer slot per creator" rule from Phase 1's migration is a *partial* unique index (`WHERE prompt_id IS NULL`), and Supabase's `.upsert({...}, {onConflict: 'creator_id'})` emits a plain `ON CONFLICT (creator_id)` that doesn't match a partial index, which would have thrown at runtime the first time someone completed this step twice.
 
 Vercel: (pending — see below)
 
