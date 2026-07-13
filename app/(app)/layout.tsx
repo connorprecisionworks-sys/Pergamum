@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { AppTopbar } from "@/components/layout/app-topbar";
 import { ClaimReconciler } from "@/components/layout/claim-reconciler";
@@ -35,10 +36,19 @@ export default async function AppLayout({
   // Three lanes (CREATOR-ONBOARDING-SPEC.md "The routing problem"):
   // unchosen -> pick a lane; creator, unfinished -> creator onboarding;
   // client, unfinished -> the existing client onboarding, untouched.
+  //
+  // Exception: /dashboard/packs* is exempt from the creator-onboarding
+  // bounce. Onboarding step 2 links to the pack builder there ("Build a
+  // pack," encouraged not required) — without this exemption a mid-
+  // onboarding creator following that link gets bounced straight back by
+  // this same gate, an unreachable loop. Every other route still bounces
+  // them back, so leaving the packs area auto-returns them to finish.
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const inPackBuilder = pathname.startsWith("/dashboard/packs");
   if (user && profile) {
     if (profile.account_type === null) {
       redirect("/welcome");
-    } else if (profile.account_type === "creator" && !profile.creator_onboarding_complete) {
+    } else if (profile.account_type === "creator" && !profile.creator_onboarding_complete && !inPackBuilder) {
       redirect("/creator/onboarding");
     } else if (profile.account_type === "client" && !profile.onboarding_complete) {
       redirect("/onboarding");
