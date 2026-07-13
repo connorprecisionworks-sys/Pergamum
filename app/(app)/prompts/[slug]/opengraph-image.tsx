@@ -38,17 +38,16 @@ export default async function Image({
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px",
-          background:
-            "linear-gradient(135deg, #1a0a2e 0%, #0f0f0f 60%, #000000 100%)",
+          background: "#ffffff",
         }}
       >
         {/* Top: wordmark */}
         <p
           style={{
-            fontFamily: "serif",
+            fontFamily: "sans-serif",
             fontSize: 26,
             fontWeight: 700,
-            color: "#9370db",
+            color: "#0a0a0a",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             margin: 0,
@@ -61,10 +60,10 @@ export default async function Image({
         <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
           <p
             style={{
-              fontFamily: "serif",
+              fontFamily: "sans-serif",
               fontSize: 56,
               fontWeight: 700,
-              color: "#ffffff",
+              color: "#0a0a0a",
               lineHeight: 1.1,
               margin: 0,
             }}
@@ -76,7 +75,7 @@ export default async function Image({
               style={{
                 fontFamily: "monospace",
                 fontSize: 26,
-                color: "#9370db",
+                color: "#888888",
                 margin: 0,
               }}
             >
@@ -90,7 +89,7 @@ export default async function Image({
           style={{
             fontFamily: "monospace",
             fontSize: 18,
-            color: "#555555",
+            color: "#888888",
             margin: 0,
             letterSpacing: "0.06em",
           }}

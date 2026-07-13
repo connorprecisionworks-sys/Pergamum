@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Prmpt — A living library of prompts";
+export const alt = "Prmpt — Turn comments into clients.";
 
 export default function Image() {
   return new ImageResponse(
@@ -15,17 +15,17 @@ export default function Image() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          background: "#f5f2ee",
+          background: "#ffffff",
           padding: "80px",
         }}
       >
-        {/* Big serif P */}
+        {/* Big sans-serif P mark */}
         <p
           style={{
-            fontFamily: "serif",
+            fontFamily: "sans-serif",
             fontSize: 180,
-            fontWeight: 400,
-            color: "#6b26d9",
+            fontWeight: 700,
+            color: "#0a0a0a",
             lineHeight: 1,
             margin: "0 0 24px",
           }}
@@ -36,10 +36,10 @@ export default function Image() {
         {/* Wordmark */}
         <p
           style={{
-            fontFamily: "serif",
+            fontFamily: "sans-serif",
             fontSize: 48,
-            fontWeight: 400,
-            color: "#1a1a1a",
+            fontWeight: 600,
+            color: "#0a0a0a",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             margin: "0 0 20px",
@@ -59,7 +59,7 @@ export default function Image() {
             letterSpacing: "0.02em",
           }}
         >
-          Hand over your prompt like a pro.
+          Turn comments into clients.
         </p>
       </div>
     ),
