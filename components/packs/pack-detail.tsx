@@ -6,6 +6,7 @@ import { PackCover } from "@/components/packs/pack-cover";
 import { PackTrackRow } from "@/components/packs/pack-track-row";
 import { GetPackButton } from "@/components/packs/get-pack-button";
 import { relativeTime } from "@/lib/utils";
+import { isEntitledToPack, isPackItemLocked } from "@/lib/packs";
 import type { PackGating, PackItemWithContent, PackVersion, PackWithCreator } from "@/lib/types/database";
 
 interface PackDetailProps {
@@ -39,9 +40,12 @@ export function PackDetail({
 }: PackDetailProps) {
   const creator = pack.profiles;
   const isOwner = currentUserId === pack.creator_id;
+  const entitled = isEntitledToPack(isOwner, pack.gating as PackGating, initiallyFollowing);
+  const hasPreviewItem = items.some((i) => i.is_preview);
   const promptCount = items.filter((i) => i.item_type === "prompt").length;
   const skillCount = items.filter((i) => i.item_type === "skill").length;
   const returnTo = `/packs/${creator.username}/${pack.slug}`;
+  const creatorName = creator.display_name ?? creator.username;
 
   const initials = creator.display_name
     ? creator.display_name.slice(0, 2).toUpperCase()
@@ -76,10 +80,14 @@ export function PackDetail({
             <p className="text-foreground/90 text-[15px] leading-relaxed max-w-xl">{pack.liner_note}</p>
           )}
 
-          <div className="pt-1">
+          <div id="unlock-cta" className="pt-1">
             {previewMode ? (
               <span className="inline-flex items-center h-10 px-4 rounded-md bg-primary/40 text-primary-foreground text-sm font-medium select-none">
-                {pack.gating === "paid" ? `Get for $${(pack.price_cents / 100).toFixed(0)}` : "Get this pack"}
+                {pack.gating === "paid"
+                  ? `Get for $${(pack.price_cents / 100).toFixed(0)}`
+                  : pack.gating === "follower"
+                    ? "Follow to unlock"
+                    : "Get this pack"}
               </span>
             ) : (
               <GetPackButton
@@ -89,6 +97,10 @@ export function PackDetail({
                 priceCents={pack.price_cents}
                 currentUserId={currentUserId}
                 initiallySaved={initiallySaved}
+                initiallyFollowing={initiallyFollowing}
+                creatorId={pack.creator_id}
+                creatorName={creatorName}
+                promptCount={promptCount}
                 returnTo={returnTo}
               />
             )}
@@ -106,7 +118,14 @@ export function PackDetail({
             // In the builder's live preview, currentUserId is always the
             // creator (isOwner), which would otherwise hide the lock state
             // they're trying to configure — simulate a visitor's view there.
-            const locked = pack.gating === "paid" && !item.is_preview && (previewMode || !isOwner);
+            const locked = isPackItemLocked(
+              pack.gating as PackGating,
+              item,
+              index,
+              hasPreviewItem,
+              entitled,
+              previewMode
+            );
             return (
               <PackTrackRow
                 key={item.id}
@@ -114,6 +133,8 @@ export function PackDetail({
                 index={index}
                 currentUserId={currentUserId}
                 ownerUsername={creator.username}
+                creatorName={creatorName}
+                gating={pack.gating as PackGating}
                 packSlug={pack.slug}
                 locked={locked}
                 defaultOpen={funnelMode && index === 0}

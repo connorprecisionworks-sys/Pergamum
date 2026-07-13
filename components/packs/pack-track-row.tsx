@@ -11,13 +11,15 @@ import { LaunchMenu } from "@/components/prompts/launch-menu";
 import { PresetPanel } from "@/components/prompts/preset-panel";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
 import { detectVariableNames, substituteVariables, cn } from "@/lib/utils";
-import type { PackItemWithContent, PromptVariable } from "@/lib/types/database";
+import type { PackGating, PackItemWithContent, PromptVariable } from "@/lib/types/database";
 
 interface PackTrackRowProps {
   item: PackItemWithContent;
   index: number;
   currentUserId: string | null;
   ownerUsername: string;
+  creatorName: string;
+  gating: PackGating;
   packSlug: string;
   locked: boolean;
   defaultOpen: boolean;
@@ -28,12 +30,18 @@ export function PackTrackRow({
   index,
   currentUserId,
   ownerUsername,
+  creatorName,
+  gating,
   packSlug,
   locked,
   defaultOpen,
 }: PackTrackRowProps) {
   const [open, setOpen] = useState(defaultOpen && !locked);
   const number = String(index + 1).padStart(2, "0");
+  // A follower-locked row is a moment of desire, not a dead end — clicking
+  // it scrolls to the unlock CTA instead of doing nothing. A paid-locked row
+  // has no working purchase flow yet, so it stays a plain disabled preview.
+  const unlockable = locked && gating === "follower";
 
   const content = item.item_type === "prompt" ? item.prompts : item.skills;
   if (!content) return null;
@@ -55,15 +63,25 @@ export function PackTrackRow({
     }
   };
 
+  const scrollToUnlock = () => {
+    document.getElementById("unlock-cta")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
     <div className="border-b border-border last:border-b-0">
       <button
         type="button"
-        onClick={() => !locked && setOpen((v) => !v)}
-        disabled={locked}
+        onClick={() => {
+          if (unlockable) {
+            scrollToUnlock();
+            return;
+          }
+          if (!locked) setOpen((v) => !v);
+        }}
+        disabled={locked && !unlockable}
         className={cn(
           "w-full flex items-center gap-4 py-4 px-1 text-left transition-colors",
-          locked ? "cursor-default opacity-70" : "hover:bg-background-subtle/40"
+          locked && !unlockable ? "cursor-default opacity-70" : "hover:bg-background-subtle/40"
         )}
         aria-expanded={open}
       >
@@ -78,8 +96,11 @@ export function PackTrackRow({
           {item.promise_line && (
             <p className="text-[13px] text-foreground-muted truncate mt-0.5">{item.promise_line}</p>
           )}
+          {unlockable && (
+            <p className="text-[13px] text-foreground-subtle mt-0.5">Follow {creatorName} to unlock →</p>
+          )}
         </div>
-        {item.item_type === "prompt" && (
+        {!locked && item.item_type === "prompt" && (
           <span className="label-mono shrink-0 hidden sm:inline">
             {(item.prompts!.variables as unknown as PromptVariable[] | null)?.length
               ? `${(item.prompts!.variables as unknown as PromptVariable[]).length} fields`

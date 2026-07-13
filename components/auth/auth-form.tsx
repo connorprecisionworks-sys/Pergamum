@@ -18,6 +18,8 @@ interface AuthFormProps {
   mode: "login" | "signup";
   /** Relative path to return to after auth completes, e.g. a prompt page. */
   returnTo?: string;
+  /** Lead with the Google button instead of the email form — for contexts where OAuth is the primary path (e.g. a follower-unlock dialog). */
+  oauthFirst?: boolean;
 }
 
 const APPLE_ENABLED = process.env.NEXT_PUBLIC_APPLE_ENABLED === "true";
@@ -28,11 +30,11 @@ function redirectUrl(path: string, returnTo?: string): string {
   return url.toString();
 }
 
-export function AuthForm({ mode, returnTo }: AuthFormProps) {
+export function AuthForm({ mode, returnTo, oauthFirst }: AuthFormProps) {
   return mode === "signup" ? (
-    <SignupForm returnTo={returnTo} />
+    <SignupForm returnTo={returnTo} oauthFirst={oauthFirst} />
   ) : (
-    <LoginForm returnTo={returnTo} />
+    <LoginForm returnTo={returnTo} oauthFirst={oauthFirst} />
   );
 }
 
@@ -140,7 +142,7 @@ const loginSchema = z.object({
 
 type LoginValues = z.infer<typeof loginSchema>;
 
-function LoginForm({ returnTo }: { returnTo?: string }) {
+function LoginForm({ returnTo, oauthFirst }: { returnTo?: string; oauthFirst?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -187,80 +189,94 @@ function LoginForm({ returnTo }: { returnTo?: string }) {
     setResetSent(true);
   };
 
+  const form = (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+      <div className="space-y-2">
+        <Label htmlFor="email" className="sr-only">
+          Email
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "email-error" : undefined}
+          {...register("email")}
+        />
+        {errors.email && (
+          <p id="email-error" className="text-sm text-destructive">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="password" className="sr-only">
+          Password
+        </Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Password"
+          autoComplete="current-password"
+          aria-invalid={!!errors.password}
+          aria-describedby={errors.password ? "password-error" : undefined}
+          {...register("password")}
+        />
+        {errors.password && (
+          <p id="password-error" className="text-sm text-destructive">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
+
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={handleForgotPassword}
+          disabled={resetLoading}
+          className="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-60"
+        >
+          {resetLoading ? "Sending…" : "Forgot password?"}
+        </button>
+      </div>
+
+      {formError && (
+        <p role="alert" className="text-sm text-destructive">
+          {formError}
+        </p>
+      )}
+      {resetSent && (
+        <p className="text-sm text-muted-foreground">
+          Check your email for a link to reset your password.
+        </p>
+      )}
+
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+        Log in
+      </Button>
+    </form>
+  );
+
+  const oauth = <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />;
+
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
-        <div className="space-y-2">
-          <Label htmlFor="email" className="sr-only">
-            Email
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            {...register("email")}
-          />
-          {errors.email && (
-            <p id="email-error" className="text-sm text-destructive">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password" className="sr-only">
-            Password
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Password"
-            autoComplete="current-password"
-            aria-invalid={!!errors.password}
-            aria-describedby={errors.password ? "password-error" : undefined}
-            {...register("password")}
-          />
-          {errors.password && (
-            <p id="password-error" className="text-sm text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            disabled={resetLoading}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-60"
-          >
-            {resetLoading ? "Sending…" : "Forgot password?"}
-          </button>
-        </div>
-
-        {formError && (
-          <p role="alert" className="text-sm text-destructive">
-            {formError}
-          </p>
-        )}
-        {resetSent && (
-          <p className="text-sm text-muted-foreground">
-            Check your email for a link to reset your password.
-          </p>
-        )}
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-          Log in
-        </Button>
-      </form>
-
-      <Divider />
-
-      <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />
+      {oauthFirst ? (
+        <>
+          {oauth}
+          <Divider />
+          {form}
+        </>
+      ) : (
+        <>
+          {form}
+          <Divider />
+          {oauth}
+        </>
+      )}
     </div>
   );
 }
@@ -278,7 +294,7 @@ const signupSchema = z
 
 type SignupValues = z.infer<typeof signupSchema>;
 
-function SignupForm({ returnTo }: { returnTo?: string }) {
+function SignupForm({ returnTo, oauthFirst }: { returnTo?: string; oauthFirst?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmSent, setConfirmSent] = useState(false);
@@ -326,84 +342,98 @@ function SignupForm({ returnTo }: { returnTo?: string }) {
     );
   }
 
-  return (
-    <div className="space-y-6">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
-        <div className="space-y-2">
-          <Label htmlFor="email" className="sr-only">
-            Email
-          </Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            {...register("email")}
-          />
-          {errors.email && (
-            <p id="email-error" className="text-sm text-destructive">
-              {errors.email.message}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="password" className="sr-only">
-            Password
-          </Label>
-          <Input
-            id="password"
-            type="password"
-            placeholder="Password"
-            autoComplete="new-password"
-            aria-invalid={!!errors.password}
-            aria-describedby={errors.password ? "password-error" : undefined}
-            {...register("password")}
-          />
-          {errors.password && (
-            <p id="password-error" className="text-sm text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="sr-only">
-            Confirm password
-          </Label>
-          <Input
-            id="confirmPassword"
-            type="password"
-            placeholder="Confirm password"
-            autoComplete="new-password"
-            aria-invalid={!!errors.confirmPassword}
-            aria-describedby={errors.confirmPassword ? "confirm-password-error" : undefined}
-            {...register("confirmPassword")}
-          />
-          {errors.confirmPassword && (
-            <p id="confirm-password-error" className="text-sm text-destructive">
-              {errors.confirmPassword.message}
-            </p>
-          )}
-        </div>
-
-        {formError && (
-          <p role="alert" className="text-sm text-destructive">
-            {formError}
+  const form = (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
+      <div className="space-y-2">
+        <Label htmlFor="email" className="sr-only">
+          Email
+        </Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? "email-error" : undefined}
+          {...register("email")}
+        />
+        {errors.email && (
+          <p id="email-error" className="text-sm text-destructive">
+            {errors.email.message}
           </p>
         )}
+      </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-          Create account
-        </Button>
-      </form>
+      <div className="space-y-2">
+        <Label htmlFor="password" className="sr-only">
+          Password
+        </Label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Password"
+          autoComplete="new-password"
+          aria-invalid={!!errors.password}
+          aria-describedby={errors.password ? "password-error" : undefined}
+          {...register("password")}
+        />
+        {errors.password && (
+          <p id="password-error" className="text-sm text-destructive">
+            {errors.password.message}
+          </p>
+        )}
+      </div>
 
-      <Divider />
+      <div className="space-y-2">
+        <Label htmlFor="confirmPassword" className="sr-only">
+          Confirm password
+        </Label>
+        <Input
+          id="confirmPassword"
+          type="password"
+          placeholder="Confirm password"
+          autoComplete="new-password"
+          aria-invalid={!!errors.confirmPassword}
+          aria-describedby={errors.confirmPassword ? "confirm-password-error" : undefined}
+          {...register("confirmPassword")}
+        />
+        {errors.confirmPassword && (
+          <p id="confirm-password-error" className="text-sm text-destructive">
+            {errors.confirmPassword.message}
+          </p>
+        )}
+      </div>
 
-      <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />
+      {formError && (
+        <p role="alert" className="text-sm text-destructive">
+          {formError}
+        </p>
+      )}
+
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+        Create account
+      </Button>
+    </form>
+  );
+
+  const oauth = <OAuthButtons oauthLoading={oauthLoading} onSelect={handleOAuth} />;
+
+  return (
+    <div className="space-y-6">
+      {oauthFirst ? (
+        <>
+          {oauth}
+          <Divider />
+          {form}
+        </>
+      ) : (
+        <>
+          {form}
+          <Divider />
+          {oauth}
+        </>
+      )}
     </div>
   );
 }

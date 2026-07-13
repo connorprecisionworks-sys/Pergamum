@@ -7,7 +7,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PackFocusHeader } from "@/components/packs/pack-focus-header";
 import { PackDetail } from "@/components/packs/pack-detail";
-import type { PackItemWithContent, PackWithCreator } from "@/lib/types/database";
+import { isEntitledToPack, isPackItemLocked } from "@/lib/packs";
+import type { Json, PackGating, PackItemWithContent, PackWithCreator } from "@/lib/types/database";
 
 interface PackPageProps {
   params: Promise<{ username: string; slug: string }>;
@@ -65,7 +66,7 @@ export default async function PackPage({ params, searchParams }: PackPageProps) 
     .eq("pack_id", pack.id)
     .order("position");
 
-  const items = (itemRows ?? []) as unknown as PackItemWithContent[];
+  const rawItems = (itemRows ?? []) as unknown as PackItemWithContent[];
 
   const { data: versions } = await supabase
     .from("pack_versions")
@@ -94,6 +95,24 @@ export default async function PackPage({ params, searchParams }: PackPageProps) 
     headerProfile = profileResult.data;
     unreadNotifications = notifResult.count ?? 0;
   }
+
+  // A locked item must never reach the client with its real body,
+  // variables, or install command — a signup gate that ships the content in
+  // page source isn't a gate. Recomputed here (not just in pack-detail) so
+  // the strip happens before this data ever leaves the server.
+  const isOwner = user?.id === pack.creator_id;
+  const gating = pack.gating as PackGating;
+  const entitled = isEntitledToPack(isOwner, gating, initiallyFollowing);
+  const hasPreviewItem = rawItems.some((i) => i.is_preview);
+  const items: PackItemWithContent[] = rawItems.map((item, index) => {
+    const locked = isPackItemLocked(gating, item, index, hasPreviewItem, entitled);
+    if (!locked) return item;
+    return {
+      ...item,
+      prompts: item.prompts ? { ...item.prompts, body: "", variables: [] as Json } : null,
+      skills: item.skills ? { ...item.skills, install_command: null, readme: null } : null,
+    };
+  });
 
   const packWithCreator: PackWithCreator = { ...pack, profiles: owner };
 
