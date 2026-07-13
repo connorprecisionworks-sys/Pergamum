@@ -32,6 +32,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { saveDraft, deleteDraft, type DraftInput } from "./actions";
 // The visual artifact at the top of the builder. The PromptStrength meter
 // scores the prompt and surfaces actionable suggestions. The Constellation
@@ -191,6 +192,8 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
   // takes over the page when this is true; the normal builder layout returns
   // once the user finishes (Continue on last question) or skips.
   const [inQuestionFlow, setInQuestionFlow] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [confirmNewOpen, setConfirmNewOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -434,13 +437,18 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
 
   const onDelete = () => {
     if (!draftId) return;
-    if (!confirm("Delete this draft? This can't be undone.")) return;
+    setConfirmDeleteOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (!draftId) return;
     startDeleting(async () => {
       const r = await deleteDraft(draftId);
       if (!r.success) {
         toast.error(r.error ?? "Failed to delete.");
         return;
       }
+      setConfirmDeleteOpen(false);
       toast.success("Draft deleted.");
       onNew();
     });
@@ -454,13 +462,7 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
     });
   };
 
-  const onNew = () => {
-    if (
-      hasResult &&
-      !confirm("Start a new prompt? Unsaved changes in this one will be lost.")
-    ) {
-      return;
-    }
+  const resetBuilder = () => {
     setDraftId(null);
     setGoal("");
     setResult(emptyResult());
@@ -469,6 +471,19 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
     setInput("");
     setShowManual(false);
     router.replace("/build");
+  };
+
+  const onNew = () => {
+    if (hasResult) {
+      setConfirmNewOpen(true);
+      return;
+    }
+    resetBuilder();
+  };
+
+  const confirmNew = () => {
+    setConfirmNewOpen(false);
+    resetBuilder();
   };
 
   // ─── Render ────────────────────────────────────────────────────
@@ -495,6 +510,24 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
 
   return (
     <div className="max-w-[760px] mx-auto">
+      <ConfirmDialog
+        open={confirmDeleteOpen}
+        onOpenChange={setConfirmDeleteOpen}
+        title="Delete this draft?"
+        description="This can't be undone."
+        confirmLabel="Delete"
+        loading={isDeleting}
+        onConfirm={confirmDelete}
+      />
+      <ConfirmDialog
+        open={confirmNewOpen}
+        onOpenChange={setConfirmNewOpen}
+        title="Start a new prompt?"
+        description="Unsaved changes in this one will be lost."
+        confirmLabel="Start new"
+        onConfirm={confirmNew}
+      />
+
       {/* Top bar — minimal: new prompt + drafts dropdown */}
       <div className="flex items-center justify-end gap-2 mb-3">
         <Button

@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { saveOfferSlot } from "@/app/creator/onboarding/actions";
 import { savePromptOfferSlot, deleteOfferSlot, toggleOfferSlotActive } from "./actions";
 import type { OfferSlot } from "@/lib/types/database";
@@ -116,6 +117,7 @@ function SlotForm({
 
 export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: OffersManagerProps) {
   const [addingForPromptId, setAddingForPromptId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const overriddenPromptIds = new Set(promptSlots.map((s) => s.prompt_id));
@@ -129,11 +131,13 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
   };
 
   const handleDelete = (slotId: string) => {
-    if (!window.confirm("Remove this offer button?")) return;
     startTransition(async () => {
       const result = await deleteOfferSlot(slotId);
       if (result?.error) toast.error(result.error);
-      else toast.success("Removed.");
+      else {
+        toast.success("Removed.");
+        setConfirmDeleteId(null);
+      }
     });
   };
 
@@ -191,7 +195,7 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
                       <button
                         type="button"
                         aria-label="Remove"
-                        onClick={() => handleDelete(slot.id)}
+                        onClick={() => setConfirmDeleteId(slot.id)}
                         disabled={isPending}
                         className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
                       >
@@ -244,6 +248,15 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
           </div>
         )}
       </section>
+
+      <ConfirmDialog
+        open={confirmDeleteId !== null}
+        onOpenChange={(open) => { if (!open) setConfirmDeleteId(null); }}
+        title="Remove this offer button?"
+        confirmLabel="Remove"
+        loading={isPending}
+        onConfirm={() => confirmDeleteId && handleDelete(confirmDeleteId)}
+      />
     </div>
   );
 }
