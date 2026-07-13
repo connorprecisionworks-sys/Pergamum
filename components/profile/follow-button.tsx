@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { useSharedFollowState } from "@/components/profile/follow-state";
+import { recordLeadEvent } from "@/lib/lead-events";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -47,6 +48,7 @@ export function FollowButton({
         if (error) { toast.error("Couldn't follow."); return; }
         setFollowing(true);
         onFollowerCountChange?.(1);
+        void recordLeadEvent(supabase, "follow", null, null, {}, targetUserId);
       }
     });
   };

@@ -1546,6 +1546,7 @@ export type Database = {
       purge_old_rate_limit_logs: { Args: never; Returns: undefined }
       record_lead_event: {
         Args: {
+          p_creator_id?: string
           p_event_type: string
           p_meta?: Json
           p_pack_id?: string

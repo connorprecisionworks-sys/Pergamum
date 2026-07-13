@@ -31,7 +31,8 @@ export function recordLeadEvent(
   eventType: string,
   promptId: string | null,
   packId: string | null,
-  meta: Record<string, unknown> = {}
+  meta: Record<string, unknown> = {},
+  creatorId: string | null = null
 ): Promise<void> {
   return Promise.resolve(
     supabase.rpc("record_lead_event", {
@@ -39,6 +40,7 @@ export function recordLeadEvent(
       p_prompt_id: promptId ?? undefined,
       p_pack_id: packId ?? undefined,
       p_meta: meta as Json,
+      p_creator_id: creatorId ?? undefined,
     })
   ).then(
     (result) => {

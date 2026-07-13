@@ -85,6 +85,7 @@ export function GetPackButton({
       .insert({ follower_id: currentUserId, following_id: creatorId })
       .then(({ error }) => {
         if (error && error.code !== "23505") return;
+        if (!error) void recordLeadEvent(supabase, "follow", null, null, {}, creatorId);
         setFollowing(true);
         router.refresh();
       });
@@ -111,6 +112,7 @@ export function GetPackButton({
           toast.error("Couldn't unlock this pack. Try again.");
           return;
         }
+        if (!error) void recordLeadEvent(supabase, "follow", null, null, {}, creatorId);
         setFollowing(true);
         toast.success(`Unlocked — you're following ${creatorName}.`);
         router.refresh();
