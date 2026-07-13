@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -146,7 +145,6 @@ function LoginForm({ returnTo }: { returnTo?: string }) {
   const [resetLoading, setResetLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [resetSent, setResetSent] = useState(false);
-  const router = useRouter();
   const supabase = createClient();
   const { oauthLoading, handleOAuth } = useOAuth("login", returnTo);
 
@@ -168,8 +166,7 @@ function LoginForm({ returnTo }: { returnTo?: string }) {
       return;
     }
     const dest = await postAuthDestination(supabase, returnTo);
-    router.push(dest);
-    router.refresh();
+    window.location.assign(dest);
   };
 
   const handleForgotPassword = async () => {
@@ -285,7 +282,6 @@ function SignupForm({ returnTo }: { returnTo?: string }) {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmSent, setConfirmSent] = useState(false);
-  const router = useRouter();
   const supabase = createClient();
   const { oauthLoading, handleOAuth } = useOAuth("signup", returnTo);
 
@@ -312,8 +308,7 @@ function SignupForm({ returnTo }: { returnTo?: string }) {
     track("signup_completed");
     if (data.session) {
       const dest = await postAuthDestination(supabase, returnTo);
-      router.push(dest);
-      router.refresh();
+      window.location.assign(dest);
     } else {
       // Project has email confirmation enabled — no session until they click the link.
       setConfirmSent(true);
