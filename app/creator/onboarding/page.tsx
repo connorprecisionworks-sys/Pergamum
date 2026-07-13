@@ -31,13 +31,14 @@ export default async function CreatorOnboardingPage() {
   if (profile.account_type === "client") redirect("/dashboard");
   if (profile.creator_onboarding_complete) redirect("/dashboard");
 
-  const [{ data: publishedPacks }, { data: offerSlot }, { data: alertSettings }] = await Promise.all([
+  const [{ data: publishedPacksRaw }, { data: offerSlot }, { data: alertSettings }] = await Promise.all([
     supabase
       .from("packs")
-      .select("id, slug")
+      .select("id, slug, released_at, created_at")
       .eq("creator_id", user.id)
       .eq("status", "published")
-      .limit(1),
+      .order("released_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false }),
     supabase
       .from("offer_slots")
       .select("*")
@@ -51,7 +52,25 @@ export default async function CreatorOnboardingPage() {
       .maybeSingle(),
   ]);
 
-  const hasPublishedPack = (publishedPacks?.length ?? 0) > 0;
+  const publishedPacks = publishedPacksRaw ?? [];
+  const hasPublishedPack = publishedPacks.length > 0;
+
+  // Point the share link at the pack the creator actually built, not just
+  // any published pack — .limit(1) with no ordering used to return an
+  // arbitrary one, which could be an empty "Untitled pack". publishedPacks
+  // is already ordered released_at desc nulls last, created_at desc, so
+  // .find() below returns the most recent match; fall back to the most
+  // recent published pack overall if none of them have items yet.
+  let publishedPackSlug: string | null = null;
+  if (hasPublishedPack) {
+    const { data: itemRows } = await supabase
+      .from("pack_items")
+      .select("pack_id")
+      .in("pack_id", publishedPacks.map((p) => p.id));
+    const packIdsWithItems = new Set((itemRows ?? []).map((r) => r.pack_id));
+    const packWithItems = publishedPacks.find((p) => packIdsWithItems.has(p.id));
+    publishedPackSlug = (packWithItems ?? publishedPacks[0]).slug;
+  }
 
   // Data-driven resume, not a ?step= param: each condition only advances the
   // step further, so reloading mid-flow (or returning from the pack builder
@@ -70,7 +89,7 @@ export default async function CreatorOnboardingPage() {
       initialStep={initialStep}
       initialOfferHeadline={profile.offer_headline}
       hasPublishedPack={hasPublishedPack}
-      publishedPackSlug={publishedPacks?.[0]?.slug ?? null}
+      publishedPackSlug={publishedPackSlug}
       initialOfferSlot={
         offerSlot ? { label: offerSlot.label, url: offerSlot.url, description: offerSlot.description } : null
       }
