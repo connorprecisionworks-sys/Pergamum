@@ -46,7 +46,7 @@ export function PackTrackRow({
 
   const copyPermalink = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = `${window.location.origin}${permalink}`;
+    const url = `${window.location.origin}${permalink}?via=share`;
     try {
       await navigator.clipboard.writeText(url);
       toast.success("Link copied.");

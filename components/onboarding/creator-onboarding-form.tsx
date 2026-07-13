@@ -159,10 +159,16 @@ export function CreatorOnboardingForm({
   const shareUrl =
     typeof window !== "undefined"
       ? publishedPackSlug
-        ? `${window.location.origin}/packs/${username}/${publishedPackSlug}`
-        : `${window.location.origin}/u/${username}`
+        ? `${window.location.origin}/packs/${username}/${publishedPackSlug}?via=share`
+        : `${window.location.origin}/u/${username}?via=share`
       : "";
-  const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
+  const linkedInUrl =
+    typeof window !== "undefined"
+      ? publishedPackSlug
+        ? `${window.location.origin}/packs/${username}/${publishedPackSlug}?via=linkedin`
+        : `${window.location.origin}/u/${username}?via=linkedin`
+      : "";
+  const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(linkedInUrl)}`;
 
   const copyLink = async () => {
     try {
