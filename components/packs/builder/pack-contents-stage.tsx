@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GripVertical, Loader2, Plus, Sparkles, Trash2 } from "lucide-react";
+import { ClipboardPaste, GripVertical, Loader2, Plus, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { NewPromptSheet } from "@/components/packs/builder/new-prompt-sheet";
+import { PasteImportSheet } from "@/components/packs/builder/paste-import-sheet";
 import { addPackItem, removePackItem, reorderPackItems, updatePackItem } from "@/app/(app)/dashboard/packs/actions";
 import { cn } from "@/lib/utils";
 import type { PackItemWithContent, PromptWithAuthor, SkillWithAuthor } from "@/lib/types/database";
@@ -49,6 +50,7 @@ export function PackContentsStage({
   const [librarySkills] = useState(initialSkills);
   const [addingId, setAddingId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [pasteSheetOpen, setPasteSheetOpen] = useState(false);
   const inPackPromptIds = new Set(items.filter((i) => i.item_type === "prompt").map((i) => i.prompt_id));
   const inPackSkillIds = new Set(items.filter((i) => i.item_type === "skill").map((i) => i.skill_id));
 
@@ -89,6 +91,28 @@ export function PackContentsStage({
         onClick: () => handleAdd("prompt", prompt),
       },
     });
+  };
+
+  const handlePromptsImported = (prompts: PromptWithAuthor[]) => {
+    setLibraryPrompts((prev) => [...prompts, ...prev]);
+    toast.success(
+      `${prompts.length} prompt${prompts.length !== 1 ? "s" : ""} saved to your library.`,
+      {
+        action: {
+          // Sequential, not Promise.all — addPackItem computes the next
+          // position from the current max, so concurrent calls would race
+          // and collide on pack_items' UNIQUE(pack_id, position).
+          label: "Add all to pack",
+          onClick: () => {
+            void (async () => {
+              for (const prompt of prompts) {
+                await handleAdd("prompt", prompt);
+              }
+            })();
+          },
+        },
+      }
+    );
   };
 
   const handleRemove = async (itemId: string) => {
@@ -149,6 +173,10 @@ export function PackContentsStage({
             Add from your library
           </h3>
           <div className="flex items-center gap-1">
+            <Button variant="ghost" size="sm" onClick={() => setPasteSheetOpen(true)} className="h-7 gap-1.5 text-xs">
+              <ClipboardPaste className="h-3 w-3" />
+              Paste prompts
+            </Button>
             <Button variant="outline" size="sm" onClick={() => setSheetOpen(true)} className="h-7 gap-1.5 text-xs">
               <Plus className="h-3 w-3" />
               New prompt
@@ -232,6 +260,11 @@ export function PackContentsStage({
         userId={currentUserId}
         buildAccessOk={buildAccessOk}
         onPromptPublished={handlePromptPublished}
+      />
+      <PasteImportSheet
+        open={pasteSheetOpen}
+        onOpenChange={setPasteSheetOpen}
+        onPromptsImported={handlePromptsImported}
       />
     </div>
   );

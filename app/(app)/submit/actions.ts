@@ -93,3 +93,43 @@ export async function createLibraryPrompt(
   revalidatePath("/prompts");
   return { prompt: data as unknown as PromptWithAuthor };
 }
+
+export interface ImportPromptRow {
+  title: string;
+  body: string;
+}
+
+export interface ImportLibraryPromptsResult {
+  imported: PromptWithAuthor[];
+  errors: { row: number; message: string }[];
+}
+
+/**
+ * Creator-facing bulk import (CREATOR-AUTHORING-REDESIGN-SPEC.md phase 3) —
+ * a safe sibling to the admin importer (app/(app)/admin/import/actions.ts),
+ * which uses the service client and trusts a client-supplied author_id.
+ * This one runs every row through createLibraryPrompt, so it inherits the
+ * same session-derived author_id, RLS-respecting client, and slug handling —
+ * inserted one at a time (not in parallel) so each row's slug-collision
+ * check sees the previous row's insert.
+ */
+export async function importPromptsForCreator(
+  rows: ImportPromptRow[]
+): Promise<ImportLibraryPromptsResult> {
+  const imported: PromptWithAuthor[] = [];
+  const errors: { row: number; message: string }[] = [];
+
+  for (let i = 0; i < rows.length; i++) {
+    const result = await createLibraryPrompt({
+      title: rows[i].title,
+      body: rows[i].body,
+    });
+    if (result.error || !result.prompt) {
+      errors.push({ row: i + 1, message: result.error ?? "Failed to import." });
+    } else {
+      imported.push(result.prompt);
+    }
+  }
+
+  return { imported, errors };
+}
