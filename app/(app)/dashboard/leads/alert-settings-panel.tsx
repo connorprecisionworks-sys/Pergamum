@@ -5,7 +5,7 @@ import { ChevronRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { saveAlertSettings } from "@/app/creator/onboarding/actions";
 import type { CreatorAlertSettings } from "@/lib/types/database";
-import { cn } from "@/lib/utils";
+import { cn, describeHotThreshold } from "@/lib/utils";
 
 interface AlertSettingsPanelProps {
   initial: CreatorAlertSettings | null;
@@ -106,7 +106,7 @@ export function AlertSettingsPanel({ initial }: AlertSettingsPanelProps) {
 
         <div>
           <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
-            <span>Alert me when a lead is: warmer ←→ hotter</span>
+            <span>Alert threshold</span>
             <span className="font-mono text-foreground">{hotThreshold}</span>
           </div>
           <input
@@ -117,6 +117,11 @@ export function AlertSettingsPanel({ initial }: AlertSettingsPanelProps) {
             onChange={(e) => setHotThreshold(Number(e.target.value))}
             className="w-full accent-primary"
           />
+          <div className="mt-1.5 flex items-start justify-between gap-2 text-[11px] text-muted-foreground">
+            <span className="max-w-[48%]">As soon as someone really uses my prompt</span>
+            <span className="max-w-[48%] text-right">Only when someone keeps coming back</span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">{describeHotThreshold(hotThreshold)}</p>
         </div>
 
         <button

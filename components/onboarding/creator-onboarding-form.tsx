@@ -12,7 +12,7 @@ import {
   saveAlertSettings,
   completeCreatorOnboarding,
 } from "@/app/creator/onboarding/actions";
-import { cn, normalizeUrl } from "@/lib/utils";
+import { cn, describeHotThreshold, normalizeUrl } from "@/lib/utils";
 
 const OFFER_TYPES = [
   "1:1 consulting",
@@ -461,7 +461,7 @@ export function CreatorOnboardingForm({
 
               <div className="mb-8">
                 <div className="mb-2 flex items-center justify-between text-[13px] text-foreground-muted">
-                  <span>Alert me when a lead is: warmer ←→ hotter</span>
+                  <span>Alert threshold</span>
                   <span className="font-mono text-foreground">{hotThreshold}</span>
                 </div>
                 <input
@@ -472,6 +472,13 @@ export function CreatorOnboardingForm({
                   onChange={(e) => setHotThreshold(Number(e.target.value))}
                   className="w-full accent-primary"
                 />
+                <div className="mt-1.5 flex items-start justify-between gap-2 text-[11px] text-foreground-subtle">
+                  <span className="max-w-[48%]">As soon as someone really uses my prompt</span>
+                  <span className="max-w-[48%] text-right">Only when someone keeps coming back</span>
+                </div>
+                <p className="mt-2 text-[13px] text-foreground-muted">
+                  {describeHotThreshold(hotThreshold)}
+                </p>
               </div>
 
               <ContinueButton onClick={handleAlertSettingsSave} pending={pending} />
