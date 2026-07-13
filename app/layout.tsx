@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Prmpt",
   },
   description:
-    "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
+    "Turn comments into clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   keywords: [
     "AI prompts",
     "prompt library",
@@ -35,13 +35,13 @@ export const metadata: Metadata = {
     siteName: "Prmpt",
     title: "Prmpt — A living library of prompts.",
     description:
-      "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
+      "Turn comments into clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Prmpt — A living library of prompts.",
     description:
-      "Turn comment “PROMPT” into booked clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
+      "Turn comments into clients. Hand over your prompt like a pro, keep it updated, and see who actually used it.",
   },
 };
 

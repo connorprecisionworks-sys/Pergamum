@@ -7,7 +7,7 @@ import { Hero } from "@/components/marketing/landing/hero";
 import { SiteNav } from "@/components/marketing/landing/site-nav";
 
 export const metadata: Metadata = {
-  title: "prmpt — Turn comment “PROMPT” into booked clients.",
+  title: "prmpt — Turn comments into clients.",
   description:
     "A wall of comment “PROMPT” doesn’t get you clients. prmpt does — it turns every one of those comments into a lead, hands over your prompt like a pro, and books the call for you.",
 };

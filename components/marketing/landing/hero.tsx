@@ -1,74 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { Grain } from "./grain";
 import { useReducedMotion } from "./use-reduced-motion";
 
-const WORDS = ["PROMPT", "CLAUDE", "SKILL", "GUIDE", "PLAYBOOK", "RECIPE", "AUDIT"];
-const TYPE_MS = 120;
-const BACK_MS = 65;
-const HOLD_MS = 1050;
-const GAP_MS = 380;
-
 /** Base resting angles of the product panel (degrees). */
 const BASE = { ry: -14, rx: 6, rot: -1.5 };
 const REST_SHINE =
   "radial-gradient(420px circle at 30% 18%, rgba(255,255,255,0.42), rgba(255,255,255,0) 60%)";
-
-/**
- * Types one character at a time, holds, backspaces, moves to the next word.
- * No caret. The word sits on its own line, so emptying it never reflows the
- * headline around it.
- */
-function useTypewriter(enabled: boolean) {
-  const [text, setText] = useState(WORDS[0]);
-
-  useEffect(() => {
-    if (!enabled) {
-      setText(WORDS[0]);
-      return;
-    }
-
-    let timer: ReturnType<typeof setTimeout>;
-    let wordIndex = 0;
-
-    const run = () => {
-      const word = WORDS[wordIndex];
-      let charIndex = 0;
-
-      const type = () => {
-        setText(word.slice(0, charIndex));
-        if (charIndex < word.length) {
-          charIndex += 1;
-          timer = setTimeout(type, TYPE_MS);
-        } else {
-          timer = setTimeout(erase, HOLD_MS);
-        }
-      };
-
-      const erase = () => {
-        setText(word.slice(0, charIndex));
-        if (charIndex > 0) {
-          charIndex -= 1;
-          timer = setTimeout(erase, BACK_MS);
-        } else {
-          wordIndex = (wordIndex + 1) % WORDS.length;
-          timer = setTimeout(run, GAP_MS);
-        }
-      };
-
-      type();
-    };
-
-    timer = setTimeout(run, 700);
-    return () => clearTimeout(timer);
-  }, [enabled]);
-
-  return text;
-}
 
 /**
  * Magnetic tilt: the panel leans toward the pointer and a specular highlight
@@ -133,7 +75,6 @@ function useMagneticTilt(enabled: boolean) {
 
 export function Hero() {
   const reduced = useReducedMotion();
-  const word = useTypewriter(!reduced);
   const { stageRef, cardRef, shineRef } = useMagneticTilt(!reduced);
 
   return (
@@ -187,17 +128,9 @@ export function Hero() {
       <div className="relative z-[2] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-6 pb-[104px] pt-24 md:px-10 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <h1 className="m-0 text-[clamp(3rem,6.4vw,80px)] font-semibold leading-[0.98] -tracking-[0.03em] text-foreground">
-            Turn comment
+            Turn comments
             <br />
-            {/* The cycling word owns this line: clearing it never reflows the
-                lines above or below. */}
-            <span className="whitespace-nowrap">
-              &ldquo;
-              <span className="font-medium -tracking-[0.01em]">{word}</span>
-              &rdquo;
-            </span>
-            <br />
-            into booked clients.
+            into clients.
           </h1>
 
           <p className="my-8 max-w-[480px] text-[18px] leading-[1.6] text-foreground-muted">
