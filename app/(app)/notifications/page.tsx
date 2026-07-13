@@ -79,8 +79,8 @@ export default async function NotificationsPage() {
               const payload = (n.payload ?? {}) as HotLeadPayload;
               const headline =
                 payload.trigger_event_type === "offer_click"
-                  ? "A hot lead just clicked your offer button"
-                  : `A lead just went ${payload.stage ?? "hot"}`;
+                  ? "A lead just clicked your offer button"
+                  : "A lead's recent activity just crossed your alert threshold";
               return (
                 <Link
                   key={n.id}
