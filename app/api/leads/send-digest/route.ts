@@ -14,11 +14,9 @@ export const dynamic = "force-dynamic";
  * next day's digest doesn't repeat the same alerts.
  */
 export async function GET(request: Request) {
-  if (process.env.CRON_SECRET) {
-    const auth = request.headers.get("authorization");
-    if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const auth = request.headers.get("authorization");
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   if (!process.env.RESEND_API_KEY) {
