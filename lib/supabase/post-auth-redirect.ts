@@ -24,7 +24,10 @@ export async function postAuthDestination(
       .eq("id", user.id)
       .single();
 
-    if (profile && !profile.onboarding_complete) return "/onboarding";
+    if (profile && !profile.onboarding_complete) {
+      const safeNext = next.startsWith("/") && !next.startsWith("//");
+      return safeNext ? `/onboarding?next=${encodeURIComponent(next)}` : "/onboarding";
+    }
   }
 
   return next;

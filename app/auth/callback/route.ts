@@ -26,7 +26,7 @@ export async function GET(request: Request) {
           .single();
 
         if (profile && !profile.onboarding_complete) {
-          return NextResponse.redirect(`${origin}/onboarding`);
+          return NextResponse.redirect(`${origin}/onboarding?next=${encodeURIComponent(next)}`);
         }
       }
 

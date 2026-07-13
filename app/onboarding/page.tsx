@@ -7,7 +7,22 @@ export const metadata: Metadata = {
   title: "Welcome",
 };
 
-export default async function OnboardingPage() {
+interface OnboardingPageProps {
+  searchParams: Promise<{ next?: string }>;
+}
+
+export default async function OnboardingPage({ searchParams }: OnboardingPageProps) {
+  const params = await searchParams;
+  const rawNext = params.next;
+  const isSafeNext = !!rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//");
+  // Two distinct fallbacks on purpose: the already-onboarded early-exit below
+  // has always defaulted to /dashboard, so `next` preserves that. The form's
+  // own payoff CTA has always defaulted to /library instead — passing
+  // `validatedNext` (undefined when nothing was threaded through) lets the
+  // form apply its own default rather than silently changing it to /dashboard.
+  const validatedNext = isSafeNext ? rawNext : undefined;
+  const next = validatedNext ?? "/dashboard";
+
   const supabase = await createClient();
 
   const {
@@ -25,7 +40,7 @@ export default async function OnboardingPage() {
   if (!profile) redirect("/auth/login");
 
   // Skip if already onboarded
-  if (profile.onboarding_complete) redirect("/dashboard");
+  if (profile.onboarding_complete) redirect(next);
 
   // "We've kept the one you just used" — the prompt that brought them here.
   // A claim writes a run (see lib/claim.ts), so the newest run is it; a plain
@@ -172,6 +187,7 @@ export default async function OnboardingPage() {
       savedPromptIds={savedPromptIds}
       savedPackIds={savedPackIds}
       candidateCreators={candidateCreators}
+      next={validatedNext}
     />
   );
 }

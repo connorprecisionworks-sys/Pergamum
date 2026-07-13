@@ -94,6 +94,8 @@ interface ClientOnboardingFormProps {
   savedPromptIds: string[];
   savedPackIds: string[];
   candidateCreators: CandidateCreator[];
+  /** Where "Go to my toolbox" sends them, e.g. a pack they signed up to get. */
+  next?: string;
 }
 
 function Chip({
@@ -153,6 +155,7 @@ export function ClientOnboardingForm({
   savedPromptIds,
   savedPackIds,
   candidateCreators,
+  next = "/library",
 }: ClientOnboardingFormProps) {
   const [step, setStep] = useState(0);
   const [role, setRole] = useState<RoleCategory | null>(null);
@@ -532,7 +535,7 @@ export function ClientOnboardingForm({
               )}
 
               <Link
-                href="/library"
+                href={next}
                 className="flex h-12 w-full items-center justify-center rounded-full bg-primary text-[15px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
               >
                 Go to my toolbox
