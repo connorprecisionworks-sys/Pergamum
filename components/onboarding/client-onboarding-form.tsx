@@ -295,6 +295,10 @@ export function ClientOnboardingForm({
                 </div>
               )}
 
+              <p className="mb-4 text-[13px] text-foreground-subtle">
+                Answer two quick things next and it fills with more built for you.
+              </p>
+
               <button
                 type="button"
                 onClick={() => setStep(1)}
@@ -313,7 +317,8 @@ export function ClientOnboardingForm({
                   What do you do?
                 </h1>
                 <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
-                  So your prompts show up tuned to you.
+                  Two taps, ten seconds. It is how every prompt in your toolbox gets picked for
+                  your work instead of a generic feed.
                 </p>
               </div>
 
@@ -369,7 +374,8 @@ export function ClientOnboardingForm({
                   What do you need help with right now?
                 </h1>
                 <p className="m-0 text-[15px] leading-[1.55] text-foreground-muted">
-                  So we point you to the right prompts and the right people.
+                  Last one. This tunes your recommendations and surfaces the creators worth
+                  following for it.
                 </p>
               </div>
 
