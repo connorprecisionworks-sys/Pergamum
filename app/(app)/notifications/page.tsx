@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Bell } from "lucide-react";
+import { Bell, Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { EmptyState } from "@/components/ui/empty-state";
 import { relativeTime } from "@/lib/utils";
 import type { Notification } from "@/lib/types/database";
+
+interface HotLeadPayload {
+  score?: number;
+  stage?: string;
+  trigger_event_type?: string;
+}
 
 export const metadata: Metadata = {
   title: "Notifications",
@@ -69,6 +75,31 @@ export default async function NotificationsPage() {
       ) : (
         <div className="space-y-2">
           {notifications.map((n) => {
+            if (n.type === "hot_lead") {
+              const payload = (n.payload ?? {}) as HotLeadPayload;
+              const headline =
+                payload.trigger_event_type === "offer_click"
+                  ? "A hot lead just clicked your offer button"
+                  : `A lead just went ${payload.stage ?? "hot"}`;
+              return (
+                <Link
+                  key={n.id}
+                  href="/dashboard/leads"
+                  className="flex items-start gap-3 p-4 rounded-lg border hover:bg-muted/30 transition-colors"
+                >
+                  <Flame className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+                  <div className="min-w-0">
+                    <p className="text-sm">
+                      <span className="font-medium">{headline}</span>
+                      {typeof payload.score === "number" && (
+                        <span className="text-muted-foreground"> — score {Math.round(payload.score)}</span>
+                      )}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(n.created_at)}</p>
+                  </div>
+                </Link>
+              );
+            }
             if (n.prompts) {
               const authorName = n.prompts.profiles?.display_name ?? n.prompts.profiles?.username ?? "Someone";
               return (

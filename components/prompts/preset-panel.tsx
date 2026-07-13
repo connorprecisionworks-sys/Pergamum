@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { recordLeadEvent } from "@/lib/lead-events";
 import { relativeTime } from "@/lib/utils";
 import type { PromptPreset, PromptRun } from "@/lib/types/database";
 
@@ -75,6 +76,7 @@ export function PresetPanel({ promptId, currentUserId, values, onLoadValues }: P
     }
     setPresets((prev) => [data, ...(prev ?? [])]);
     toast.success("Preset saved.");
+    void recordLeadEvent(supabase, "preset_saved", promptId, null, {});
   };
 
   const handleRename = async (preset: PromptPreset) => {

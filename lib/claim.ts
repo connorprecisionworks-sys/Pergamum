@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { recordLeadEvent } from "@/lib/lead-events";
 
 /**
  * Reconciles an anonymous visitor's carried-over prompt state onto their
@@ -36,5 +37,16 @@ export async function claimPendingState(
     // SPEC.md): a claimer is a client by default and must never see the
     // account-type picker, even if they somehow reach it before this runs.
     supabase.from("profiles").update({ account_type: "client" }).eq("id", user.id),
+    // HOT-LEAD-HEAT-SPEC.md S1: the claim scores once. The bundled run/
+    // preset/follow above are ALSO reported here (claim_bundle: true) so
+    // record_lead_event still books its own ordinal/cap bookkeeping for
+    // them — e.g. the next organic run correctly scores as a repeat, not a
+    // first run — while scoring 0 themselves.
+    recordLeadEvent(supabase, "claim", promptId, null, {}),
+    recordLeadEvent(supabase, "prompt_run", promptId, null, { claim_bundle: true, values }),
+    recordLeadEvent(supabase, "preset_saved", promptId, null, { claim_bundle: true }),
+    creatorId && creatorId !== user.id
+      ? recordLeadEvent(supabase, "follow", promptId, null, { claim_bundle: true })
+      : Promise.resolve(),
   ]);
 }

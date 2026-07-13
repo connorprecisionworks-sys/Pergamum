@@ -13,6 +13,7 @@ import {
 import { AuthForm } from "@/components/auth/auth-form";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { recordLeadEvent } from "@/lib/lead-events";
 import type { PackGating } from "@/lib/types/database";
 
 interface GetPackButtonProps {
@@ -63,6 +64,7 @@ export function GetPackButton({
       }
       setSaved(true);
       toast.success("Saved to your library.");
+      void recordLeadEvent(supabase, "item_saved", null, packId, {});
     });
   };
 

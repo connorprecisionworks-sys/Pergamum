@@ -7,6 +7,7 @@ import { useState } from "react";
 import {
   Bell,
   Compass,
+  Flame,
   FolderOpen,
   Hammer,
   Home,
@@ -59,6 +60,8 @@ const CREATE = [
   { href: "/dashboard/packs", label: "Packs", icon: Layers },
   { href: "/collections", label: "Collections", icon: FolderOpen },
 ];
+
+const CREATOR = [{ href: "/dashboard/leads", label: "Leads", icon: Flame }];
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
@@ -150,6 +153,12 @@ export function AppSidebar({ profile, unreadNotifications = 0 }: AppSidebarProps
         <NavList items={PRIMARY} pathname={pathname} onNavigate={close} />
         <SectionLabel>Create</SectionLabel>
         <NavList items={CREATE} pathname={pathname} onNavigate={close} />
+        {profile?.account_type === "creator" && (
+          <>
+            <SectionLabel>Creator</SectionLabel>
+            <NavList items={CREATOR} pathname={pathname} onNavigate={close} />
+          </>
+        )}
       </div>
 
       <div className="border-t border-border pt-3">

@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { recordLeadEvent } from "@/lib/lead-events";
 import { cn } from "@/lib/utils";
 
 interface MatchedItemSaveButtonProps {
@@ -44,6 +45,7 @@ export function MatchedItemSaveButton({
             .from("prompt_saves")
             .insert({ user_id: currentUserId, prompt_id: itemId });
           if (error && error.code !== "23505") return;
+          void recordLeadEvent(supabase, "item_saved", itemId, null, {});
         }
       } else {
         if (saved) {
@@ -58,6 +60,7 @@ export function MatchedItemSaveButton({
             .from("pack_saves")
             .insert({ user_id: currentUserId, pack_id: itemId });
           if (error && error.code !== "23505") return;
+          void recordLeadEvent(supabase, "item_saved", null, itemId, {});
         }
       }
       setSaved(!saved);

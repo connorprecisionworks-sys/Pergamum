@@ -5,6 +5,7 @@ import { Bookmark, BookmarkCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { recordLeadEvent } from "@/lib/lead-events";
 
 interface SavePromptButtonProps {
   promptId: string;
@@ -43,6 +44,7 @@ export function SavePromptButton({ promptId, currentUserId, initiallySaved }: Sa
         }
         setSaved(true);
         toast.success("Saved to your library.");
+        void recordLeadEvent(supabase, "item_saved", promptId, null, {});
       }
     });
   };
