@@ -4,6 +4,19 @@ Started after Prompt 1 (`0021_hot_leads.sql` / `0022_creator_accounts.sql`) ship
 
 This file is updated after each phase completes, not just at the end, so a partial run still leaves a readable trail.
 
+**Status: all six phases shipped, green, in order. Nothing stopped early.** No migration or schema change was needed or attempted anywhere in this run — the stop condition never triggered. Six commits total: `842872c` (hotfix), `ed033fe` (phase 2), `636b4be` (phase 3), `397c9a7` (phase 4), `03cd7c8` (phase 5) — all on top of Prompt 1's `0d9db4c`. Every commit's Vercel build is confirmed green.
+
+**Read before doing anything else — three deliberate deviations from the prompts' literal text, each because the literal instruction would have silently broken something:**
+1. Phase 2 — `postAuthDestination` and `/auth/callback` also needed the three-branch account-type check, not just the `(app)` gate the prompt named, or landing signups would skip `/welcome` entirely. (details below, "Phase 2")
+2. Phase 4 — the organic-run wiring passes raw `values`, not a pre-computed `vars_filled_pct` — the RPC I built in Prompt 1 reads `values` and computes the percentage itself; passing the percentage directly would have zeroed the fill bonus for every run, forever. (details below, "Phase 4")
+3. Phase 4 — the claim bundle fires four RPC calls, not the one the prompt's text describes, because the RPC only suppresses scoring for events it's explicitly told about. (details below, "Phase 4")
+
+**Two visible product gaps, not bugs, worth your own call:**
+- Step 2 of creator onboarding has no "Import" door — the spec's target for it doesn't exist in the codebase. (details below, "Phase 3")
+- Organic follows (from `/u/[username]` or the onboarding payoff screen) never score — neither location has a prompt/pack in view, and the RPC throws without one, per your own note. (details below, "Phase 4")
+
+**One thing that needs your setup before it does anything:** email is fully wired end-to-end but silently no-ops everywhere until `RESEND_API_KEY` + a verified domain are set in Vercel, exactly as planned. Consider `CRON_SECRET` too — the digest cron checks it if present but doesn't require it (details below, "Phase 5").
+
 ---
 
 ## Hotfix — thread `next` through the onboarding detour
@@ -74,7 +87,7 @@ Vercel: confirmed green.
 
 ## Phase 5 — Offer slot render + email
 
-**Commit:** (pending — see below)
+**Commit:** `03cd7c8`
 **Files:** `components/prompts/offer-slot-card.tsx` (new), `components/prompts/copy-button.tsx`, `components/prompts/launch-menu.tsx`, `components/prompts/prompt-detail.tsx`, `app/(app)/prompts/[slug]/page.tsx`, `app/(app)/dashboard/offers/{page,actions,offers-manager}.tsx` (new), `app/(app)/dashboard/leads/alert-settings-panel.tsx` (new + wired into the leads page), `lib/lead-events.ts`, `lib/email/{resend,hot-lead}.ts` (new), `app/api/leads/{send-alert-email,send-digest}/route.ts` (new), `vercel.json` (new), `lib/types/database.ts` (added `OfferSlot`/`CreatorAlertSettings` aliases), `.env.local` (`NEXT_PUBLIC_APP_URL` fix), `package.json` (added `resend`).
 
 No schema changes anywhere in this phase or any of the four before it — never hit the "seems like it needs a migration" stop condition.
@@ -93,7 +106,7 @@ No schema changes anywhere in this phase or any of the four before it — never 
 
 `vercel.json` is new (no prior file to conflict with) — one cron entry, `/api/leads/send-digest` at 14:00 UTC daily (~9am ET). No existing crons to preserve.
 
-Vercel: (pending — see below)
+Vercel: confirmed green.
 
 ---
 
