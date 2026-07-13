@@ -79,6 +79,16 @@ export default async function PackPage({ params, searchParams }: PackPageProps) 
     .select("*", { count: "exact", head: true })
     .eq("following_id", owner.id);
 
+  // A pack has no single prompt_id of its own, so it only ever shows the
+  // creator's default offer slot — never a per-prompt override.
+  const { data: offerSlot } = await supabase
+    .from("offer_slots")
+    .select("id, label, url, description")
+    .eq("creator_id", owner.id)
+    .eq("active", true)
+    .is("prompt_id", null)
+    .maybeSingle();
+
   let initiallyFollowing = false;
   let initiallySaved = false;
   let headerProfile = null;
@@ -142,6 +152,7 @@ export default async function PackPage({ params, searchParams }: PackPageProps) 
           initiallySaved={initiallySaved}
           followerCount={followerCount ?? 0}
           funnelMode={funnelMode}
+          offerSlot={offerSlot}
         />
       </main>
       <Footer />

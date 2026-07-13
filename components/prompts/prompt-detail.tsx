@@ -217,6 +217,7 @@ export function PromptDetail({
           <OfferSlotCard
             offerSlotId={offerSlot.id}
             promptId={prompt.id}
+            packId={null}
             currentUserId={currentUserId}
             label={offerSlot.label}
             url={offerSlot.url}

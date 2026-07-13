@@ -7,7 +7,9 @@ import { recordLeadEvent } from "@/lib/lead-events";
 
 interface OfferSlotCardProps {
   offerSlotId: string;
-  promptId: string;
+  /** Exactly one of promptId/packId identifies where this offer surfaced. */
+  promptId: string | null;
+  packId: string | null;
   currentUserId: string | null;
   label: string;
   url: string;
@@ -21,6 +23,7 @@ interface OfferSlotCardProps {
 export function OfferSlotCard({
   offerSlotId,
   promptId,
+  packId,
   currentUserId,
   label,
   url,
@@ -29,7 +32,7 @@ export function OfferSlotCard({
   useEffect(() => {
     if (!currentUserId) return;
     const supabase = createClient();
-    void recordLeadEvent(supabase, "offer_view", promptId, null, { offer_slot_id: offerSlotId });
+    void recordLeadEvent(supabase, "offer_view", promptId, packId, { offer_slot_id: offerSlotId });
     // Fires once when the card first renders (i.e. once per revealing run).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -37,14 +40,14 @@ export function OfferSlotCard({
   const handleClick = () => {
     const supabase = createClient();
     if (currentUserId) {
-      void recordLeadEvent(supabase, "offer_click", promptId, null, { offer_slot_id: offerSlotId });
+      void recordLeadEvent(supabase, "offer_click", promptId, packId, { offer_slot_id: offerSlotId });
     }
     // analytics_events table is not in generated types until migration runs
     // eslint-disable-next-line
     void (supabase as any).from("analytics_events").insert({
       event: "offer_click",
       user_id: currentUserId,
-      props: { promptId, offerSlotId },
+      props: { promptId, packId, offerSlotId },
     });
   };
 

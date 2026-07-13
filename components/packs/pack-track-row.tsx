@@ -10,6 +10,7 @@ import { CopyButton } from "@/components/prompts/copy-button";
 import { LaunchMenu } from "@/components/prompts/launch-menu";
 import { PresetPanel } from "@/components/prompts/preset-panel";
 import { InstallCommandBlock } from "@/components/skills/install-command-block";
+import { usePackRunState } from "@/components/packs/pack-run-state";
 import { detectVariableNames, substituteVariables, cn } from "@/lib/utils";
 import type { PackGating, PackItemWithContent, PromptVariable } from "@/lib/types/database";
 
@@ -37,6 +38,7 @@ export function PackTrackRow({
   defaultOpen,
 }: PackTrackRowProps) {
   const [open, setOpen] = useState(defaultOpen && !locked);
+  const { markRun } = usePackRunState();
   const number = String(index + 1).padStart(2, "0");
   // A follower-locked row is a moment of desire, not a dead end — clicking
   // it scrolls to the unlock CTA instead of doing nothing. A paid-locked row
@@ -127,7 +129,7 @@ export function PackTrackRow({
       {open && !locked && (
         <div className="pb-6 px-1 space-y-5">
           {item.item_type === "prompt" ? (
-            <PromptTrackBody prompt={item.prompts!} currentUserId={currentUserId} />
+            <PromptTrackBody prompt={item.prompts!} currentUserId={currentUserId} onRun={markRun} />
           ) : (
             <SkillTrackBody skill={item.skills!} />
           )}
@@ -146,9 +148,11 @@ export function PackTrackRow({
 function PromptTrackBody({
   prompt,
   currentUserId,
+  onRun,
 }: {
   prompt: NonNullable<PackItemWithContent["prompts"]>;
   currentUserId: string | null;
+  onRun: () => void;
 }) {
   const stored = Array.isArray(prompt.variables) ? (prompt.variables as unknown as PromptVariable[]) : [];
   const storedByName = new Map(stored.map((v) => [v.name, v]));
@@ -181,8 +185,20 @@ function PromptTrackBody({
         <pre className="prompt-body p-4 overflow-x-auto text-[13px]">{substitutedBody}</pre>
       </div>
       <div className="flex items-center gap-2 flex-wrap">
-        <CopyButton text={substitutedBody} promptId={prompt.id} currentUserId={currentUserId} values={values} />
-        <LaunchMenu text={substitutedBody} promptId={prompt.id} currentUserId={currentUserId} values={values} />
+        <CopyButton
+          text={substitutedBody}
+          promptId={prompt.id}
+          currentUserId={currentUserId}
+          values={values}
+          onSuccess={onRun}
+        />
+        <LaunchMenu
+          text={substitutedBody}
+          promptId={prompt.id}
+          currentUserId={currentUserId}
+          values={values}
+          onSuccess={onRun}
+        />
       </div>
       <Separator />
     </div>
