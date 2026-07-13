@@ -34,6 +34,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { saveDraft, deleteDraft, type DraftInput } from "./actions";
+import { createLibraryPrompt } from "@/app/(app)/submit/actions";
+import { addPackItem } from "@/app/(app)/dashboard/packs/actions";
+import { createClient } from "@/lib/supabase/client";
 // The visual artifact at the top of the builder. The PromptStrength meter
 // scores the prompt and surfaces actionable suggestions. The Constellation
 // (./constellation) and TypeCase (./typecase) files are still on disk if we
@@ -44,7 +47,7 @@ import {
   type ActionTarget as StrengthActionTarget,
 } from "./strength";
 import { relativeTime } from "@/lib/utils";
-import type { PromptDraft, PromptExample } from "@/lib/types/database";
+import type { PromptDraft, PromptExample, PromptWithAuthor } from "@/lib/types/database";
 
 // ─── Types ────────────────────────────────────────────────────────
 type Result = {
@@ -78,12 +81,12 @@ interface BuilderProps {
   initialDraft: PromptDraft | null;
   recentDrafts: Pick<PromptDraft, "id" | "title" | "goal" | "updated_at">[];
   /**
-   * Overrides the default "Send to library" behavior (router.push to
-   * /submit?from_draft=). Callers embedding the builder in a context they
-   * can't navigate away from (e.g. the pack builder's slide-over) pass
-   * this to take over instead — the draft is still saved first.
+   * Overrides the default "Send to library" confirmation UI. createLibraryPrompt
+   * has already run by the time this fires — callers embedding the builder in a
+   * context they can't navigate away from (e.g. the pack builder's slide-over)
+   * pass this to receive the newly published prompt directly instead.
    */
-  onPublish?: (draftId: string) => void;
+  onPublish?: (prompt: PromptWithAuthor) => void;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -150,7 +153,7 @@ function newId() {
 }
 
 // ─── Component ────────────────────────────────────────────────────
-export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish }: BuilderProps) {
+export function Builder({ userId, initialDraft, recentDrafts, onPublish }: BuilderProps) {
   const router = useRouter();
 
   const [draftId, setDraftId] = useState<string | null>(initialDraft?.id ?? null);
@@ -188,6 +191,8 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
   const [copied, setCopied] = useState(false);
   const [isSaving, startSaving] = useTransition();
   const [isDeleting, startDeleting] = useTransition();
+  const [isPublishing, startPublishing] = useTransition();
+  const [published, setPublished] = useState<PromptWithAuthor | null>(null);
   // True when an unanswered yes/no question set is active. The QuestionView
   // takes over the page when this is true; the normal builder layout returns
   // once the user finishes (Continue on last question) or skips.
@@ -456,9 +461,24 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
 
   const onSendToLibrary = () => {
     if (!hasResult) return;
-    onSave((id) => {
-      if (onPublish) onPublish(id);
-      else router.push(`/submit?from_draft=${id}`);
+    startPublishing(async () => {
+      const res = await createLibraryPrompt({
+        title: result.title,
+        body: assembled,
+      });
+      if (res.error || !res.prompt) {
+        toast.error(res.error ?? "Failed to publish.");
+        return;
+      }
+      if (onPublish) {
+        // Embedded (pack builder slide-over): hand the published prompt to
+        // the parent and clear the builder so it's fresh if reopened.
+        onPublish(res.prompt);
+        resetBuilder();
+      } else {
+        setPublished(res.prompt);
+        toast.success("Saved to your library.");
+      }
     });
   };
 
@@ -470,7 +490,10 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
     setMessages([]);
     setInput("");
     setShowManual(false);
-    router.replace("/build");
+    setPublished(null);
+    // Embedded contexts (the pack builder's slide-over) can't navigate the
+    // page out from under themselves — only the standalone /build page resets its URL.
+    if (!onPublish) router.replace("/build");
   };
 
   const onNew = () => {
@@ -683,10 +706,10 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
             <Button
               type="button"
               onClick={onSendToLibrary}
-              disabled={isSaving}
+              disabled={isPublishing}
               className="h-10 gap-1.5"
             >
-              {isSaving ? (
+              {isPublishing ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <ArrowRight className="h-4 w-4" />
@@ -739,6 +762,23 @@ export function Builder({ userId: _userId, initialDraft, recentDrafts, onPublish
               )}
             </div>
           </div>
+
+          {/* Publish confirmation — only in the standalone builder; embedded
+              contexts (the pack slide-over) handle their own confirmation via onPublish. */}
+          {published && !onPublish && (
+            <div className="flex flex-wrap items-center gap-3 rounded-lg border border-border/60 bg-background-subtle px-4 py-3 text-sm">
+              <Check className="h-4 w-4 text-emerald-500 shrink-0" />
+              <span>Saved to your library.</span>
+              <Link
+                href={`/prompts/${published.slug}`}
+                className="text-primary hover:underline underline-offset-4"
+              >
+                View it
+              </Link>
+              <span aria-hidden="true" className="text-muted-foreground">·</span>
+              <AddToPackMenu promptId={published.id} userId={userId} />
+            </div>
+          )}
 
           {/* Edit manually — short label */}
           <details
@@ -1426,5 +1466,72 @@ function TestPanel({ assembled }: { assembled: string }) {
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Add to a pack (standalone builder's post-publish next step) ─────────
+function AddToPackMenu({ promptId, userId }: { promptId: string; userId: string }) {
+  const [packs, setPacks] = useState<{ id: string; title: string }[] | null>(null);
+  const [addedIds, setAddedIds] = useState<Set<string>>(new Set());
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  const load = async () => {
+    if (packs !== null) return;
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("packs")
+      .select("id, title")
+      .eq("creator_id", userId)
+      .order("updated_at", { ascending: false });
+    setPacks(data ?? []);
+  };
+
+  const add = async (packId: string) => {
+    setBusyId(packId);
+    const r = await addPackItem(packId, "prompt", promptId);
+    setBusyId(null);
+    if (r.error) {
+      toast.error(r.error);
+      return;
+    }
+    setAddedIds((prev) => new Set(prev).add(packId));
+    toast.success("Added to pack.");
+  };
+
+  return (
+    <DropdownMenu onOpenChange={(open) => { if (open) load(); }}>
+      <DropdownMenuTrigger asChild>
+        <button type="button" className="text-primary hover:underline underline-offset-4">
+          Add to a pack
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56">
+        {packs === null ? (
+          <div className="flex items-center justify-center py-3">
+            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+          </div>
+        ) : packs.length === 0 ? (
+          <div className="py-2 px-2 text-xs text-muted-foreground">
+            No packs yet — create one from Dashboard → Packs.
+          </div>
+        ) : (
+          packs.map((pack) => (
+            <DropdownMenuItem
+              key={pack.id}
+              onClick={() => add(pack.id)}
+              disabled={busyId === pack.id || addedIds.has(pack.id)}
+              className="justify-between gap-2"
+            >
+              <span className="truncate">{pack.title}</span>
+              {addedIds.has(pack.id) ? (
+                <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+              ) : busyId === pack.id ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+              ) : null}
+            </DropdownMenuItem>
+          ))
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -1,32 +1,31 @@
 "use client";
 
-import { toast } from "sonner";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetBody } from "@/components/ui/sheet";
 import { Builder } from "@/app/(app)/build/builder";
 import { BuildGate } from "@/app/(app)/build/gate";
+import type { PromptWithAuthor } from "@/lib/types/database";
 
 interface NewPromptSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   userId: string;
   buildAccessOk: boolean;
+  onPromptPublished: (prompt: PromptWithAuthor) => void;
 }
 
 // The pack builder's "+ New prompt" — the existing chat-first AI builder,
 // inline in a slide-over so the creator never loses their place in the
-// pack. Its own publish step still routes through /submit (variables,
-// category, model tags) which the pack builder doesn't duplicate — that
-// opens in a new tab so this one stays put; "Refresh library" in the
-// Contents stage picks the finished prompt up once it's published.
-export function NewPromptSheet({ open, onOpenChange, userId, buildAccessOk }: NewPromptSheetProps) {
+// pack. Publishing goes straight through Builder's onPublish (which has
+// already called createLibraryPrompt) — this just bubbles the new prompt
+// up to the Contents stage and closes.
+export function NewPromptSheet({ open, onOpenChange, userId, buildAccessOk, onPromptPublished }: NewPromptSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="sm:max-w-3xl p-0">
         <SheetHeader>
           <SheetTitle>New prompt</SheetTitle>
           <SheetDescription>
-            Draft it here, then finish publishing in the tab that opens — come back and hit
-            &ldquo;Refresh library&rdquo; to add it to this pack.
+            Build it here — it publishes straight to your library, ready to add to this pack.
           </SheetDescription>
         </SheetHeader>
         <SheetBody className="px-0 py-0">
@@ -36,9 +35,9 @@ export function NewPromptSheet({ open, onOpenChange, userId, buildAccessOk }: Ne
                 userId={userId}
                 initialDraft={null}
                 recentDrafts={[]}
-                onPublish={(draftId) => {
-                  window.open(`/submit?from_draft=${draftId}`, "_blank", "noopener");
-                  toast.success("Draft saved — finish publishing in the new tab.");
+                onPublish={(prompt) => {
+                  onPromptPublished(prompt);
+                  onOpenChange(false);
                 }}
               />
             </div>

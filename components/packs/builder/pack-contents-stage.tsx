@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GripVertical, Loader2, Plus, RefreshCw, Sparkles, Trash2 } from "lucide-react";
+import { GripVertical, Loader2, Plus, Sparkles, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -23,7 +23,6 @@ import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { NewPromptSheet } from "@/components/packs/builder/new-prompt-sheet";
 import { addPackItem, removePackItem, reorderPackItems, updatePackItem } from "@/app/(app)/dashboard/packs/actions";
-import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import type { PackItemWithContent, PromptWithAuthor, SkillWithAuthor } from "@/lib/types/database";
 
@@ -47,9 +46,8 @@ export function PackContentsStage({
   buildAccessOk,
 }: PackContentsStageProps) {
   const [libraryPrompts, setLibraryPrompts] = useState(initialPrompts);
-  const [librarySkills, setLibrarySkills] = useState(initialSkills);
+  const [librarySkills] = useState(initialSkills);
   const [addingId, setAddingId] = useState<string | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
   const inPackPromptIds = new Set(items.filter((i) => i.item_type === "prompt").map((i) => i.prompt_id));
   const inPackSkillIds = new Set(items.filter((i) => i.item_type === "skill").map((i) => i.skill_id));
@@ -78,6 +76,19 @@ export function PackContentsStage({
       skills: itemType === "skill" ? (content as SkillWithAuthor) : null,
     };
     onItemsChange([...items, newItem]);
+  };
+
+  // Builder/paste-import publish straight into the library now — no more
+  // manual "Refresh library" step. Append locally and offer the one-click
+  // follow-up instead of forcing a second trip back to this list.
+  const handlePromptPublished = (prompt: PromptWithAuthor) => {
+    setLibraryPrompts((prev) => [prompt, ...prev]);
+    toast.success("Saved to your library.", {
+      action: {
+        label: "Add to pack",
+        onClick: () => handleAdd("prompt", prompt),
+      },
+    });
   };
 
   const handleRemove = async (itemId: string) => {
@@ -127,27 +138,6 @@ export function PackContentsStage({
     if (r.error) toast.error("Couldn't save the new order.");
   };
 
-  const refreshLibrary = async () => {
-    setRefreshing(true);
-    const supabase = createClient();
-    const [{ data: prompts }, { data: skills }] = await Promise.all([
-      supabase
-        .from("prompts")
-        .select(`*, profiles:profiles!prompts_author_id_fkey(id, username, display_name, avatar_url), categories(id, name, slug, icon)`)
-        .eq("author_id", currentUserId)
-        .eq("status", "published"),
-      supabase
-        .from("skills")
-        .select(`*, profiles:profiles!skills_author_id_fkey(id, username, display_name, avatar_url)`)
-        .eq("author_id", currentUserId)
-        .eq("status", "published"),
-    ]);
-    setLibraryPrompts((prompts as unknown as PromptWithAuthor[]) ?? []);
-    setLibrarySkills((skills as unknown as SkillWithAuthor[]) ?? []);
-    setRefreshing(false);
-    toast.success("Library refreshed.");
-  };
-
   const addablePrompts = libraryPrompts.filter((p) => !inPackPromptIds.has(p.id));
   const addableSkills = librarySkills.filter((s) => !inPackSkillIds.has(s.id));
 
@@ -159,10 +149,6 @@ export function PackContentsStage({
             Add from your library
           </h3>
           <div className="flex items-center gap-1">
-            <Button variant="ghost" size="sm" onClick={refreshLibrary} disabled={refreshing} className="h-7 gap-1.5 text-xs">
-              {refreshing ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-              Refresh
-            </Button>
             <Button variant="outline" size="sm" onClick={() => setSheetOpen(true)} className="h-7 gap-1.5 text-xs">
               <Plus className="h-3 w-3" />
               New prompt
@@ -240,7 +226,13 @@ export function PackContentsStage({
         )}
       </div>
 
-      <NewPromptSheet open={sheetOpen} onOpenChange={setSheetOpen} userId={currentUserId} buildAccessOk={buildAccessOk} />
+      <NewPromptSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        userId={currentUserId}
+        buildAccessOk={buildAccessOk}
+        onPromptPublished={handlePromptPublished}
+      />
     </div>
   );
 }
