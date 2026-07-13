@@ -1,1098 +1,1767 @@
-// Hand-written Supabase type definitions matching the supabase-gen output format.
-// After linking a real project: supabase gen types typescript --project-id YOUR_REF > lib/types/database.ts
-
 export type Json =
   | string
   | number
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
-      profiles: {
+      analytics_events: {
         Row: {
-          id: string;
-          username: string;
-          display_name: string | null;
-          avatar_url: string | null;
-          bio: string | null;
-          contribution_count: number;
-          reputation: number;
-          is_admin: boolean;
-          onboarding_complete: boolean;
-          website: string | null;
-          twitter: string | null;
-          github: string | null;
-          location: string | null;
-          featured_prompt_id: string | null;
-          lifetime_copies: number;
-          lifetime_upvotes_received: number;
-          created_at: string;
-          updated_at: string;
-        };
+          created_at: string
+          event: string
+          id: string
+          props: Json | null
+          user_id: string | null
+        }
         Insert: {
-          id: string;
-          username: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          bio?: string | null;
-          contribution_count?: number;
-          reputation?: number;
-          is_admin?: boolean;
-          onboarding_complete?: boolean;
-          website?: string | null;
-          twitter?: string | null;
-          github?: string | null;
-          location?: string | null;
-          featured_prompt_id?: string | null;
-          lifetime_copies?: number;
-          lifetime_upvotes_received?: number;
-          created_at?: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          event: string
+          id?: string
+          props?: Json | null
+          user_id?: string | null
+        }
         Update: {
-          username?: string;
-          display_name?: string | null;
-          avatar_url?: string | null;
-          bio?: string | null;
-          contribution_count?: number;
-          reputation?: number;
-          is_admin?: boolean;
-          onboarding_complete?: boolean;
-          website?: string | null;
-          twitter?: string | null;
-          github?: string | null;
-          location?: string | null;
-          featured_prompt_id?: string | null;
-          lifetime_copies?: number;
-          lifetime_upvotes_received?: number;
-          updated_at?: string;
-        };
-        Relationships: [];
-      };
-      categories: {
-        Row: {
-          id: string;
-          name: string;
-          slug: string;
-          icon: string | null;
-          description: string | null;
-          sort_order: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          slug: string;
-          icon?: string | null;
-          description?: string | null;
-          sort_order?: number;
-          created_at?: string;
-        };
-        Update: {
-          name?: string;
-          slug?: string;
-          icon?: string | null;
-          description?: string | null;
-          sort_order?: number;
-        };
-        Relationships: [];
-      };
-      prompts: {
-        Row: {
-          id: string;
-          author_id: string;
-          title: string;
-          slug: string;
-          body: string;
-          description: string | null;
-          model_tags: string[];
-          category_id: string | null;
-          tags: string[];
-          variables: Json;
-          upvotes: number;
-          downvotes: number;
-          views: number;
-          status: string;
-          trending_score: number;
-          search_vector: string | null;
-          forked_from_id: string | null;
-          copies: number;
-          version: number;
-          created_at: string;
-          updated_at: string;
-          published_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          author_id: string;
-          title: string;
-          slug: string;
-          body: string;
-          description?: string | null;
-          model_tags?: string[];
-          category_id?: string | null;
-          tags?: string[];
-          variables?: Json;
-          upvotes?: number;
-          downvotes?: number;
-          views?: number;
-          status?: string;
-          trending_score?: number;
-          forked_from_id?: string | null;
-          copies?: number;
-          version?: number;
-          created_at?: string;
-          updated_at?: string;
-          published_at?: string | null;
-        };
-        Update: {
-          title?: string;
-          slug?: string;
-          body?: string;
-          description?: string | null;
-          model_tags?: string[];
-          category_id?: string | null;
-          tags?: string[];
-          variables?: Json;
-          upvotes?: number;
-          downvotes?: number;
-          views?: number;
-          status?: string;
-          trending_score?: number;
-          forked_from_id?: string | null;
-          copies?: number;
-          version?: number;
-          updated_at?: string;
-          published_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "prompts_author_id_fkey";
-            columns: ["author_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "prompts_category_id_fkey";
-            columns: ["category_id"];
-            isOneToOne: false;
-            referencedRelation: "categories";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      votes: {
-        Row: {
-          user_id: string;
-          prompt_id: string;
-          value: number;
-          created_at: string;
-        };
-        Insert: {
-          user_id: string;
-          prompt_id: string;
-          value: number;
-          created_at?: string;
-        };
-        Update: {
-          value?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "votes_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "votes_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      comments: {
-        Row: {
-          id: string;
-          prompt_id: string;
-          user_id: string;
-          body: string;
-          parent_id: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          prompt_id: string;
-          user_id: string;
-          body: string;
-          parent_id?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          body?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "comments_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "comments_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      tools: {
-        Row: {
-          id: string;
-          name: string;
-          slug: string;
-          description: string | null;
-          url: string;
-          category: string | null;
-          logo_url: string | null;
-          is_free: boolean;
-          pricing_note: string | null;
-          submitted_by: string | null;
-          status: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          slug: string;
-          description?: string | null;
-          url: string;
-          category?: string | null;
-          logo_url?: string | null;
-          is_free?: boolean;
-          pricing_note?: string | null;
-          submitted_by?: string | null;
-          status?: string;
-          created_at?: string;
-        };
-        Update: {
-          name?: string;
-          slug?: string;
-          description?: string | null;
-          url?: string;
-          category?: string | null;
-          logo_url?: string | null;
-          is_free?: boolean;
-          pricing_note?: string | null;
-          status?: string;
-        };
-        Relationships: [];
-      };
-      reports: {
-        Row: {
-          id: string;
-          reporter_id: string;
-          prompt_id: string | null;
-          comment_id: string | null;
-          skill_id: string | null;
-          reason: string;
-          status: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          reporter_id: string;
-          prompt_id?: string | null;
-          comment_id?: string | null;
-          skill_id?: string | null;
-          reason: string;
-          status?: string;
-          created_at?: string;
-        };
-        Update: {
-          status?: string;
-        };
-        Relationships: [];
-      };
-      skills: {
-        Row: {
-          id: string;
-          author_id: string;
-          name: string;
-          slug: string;
-          summary: string;
-          install_command: string | null;
-          source_url: string | null;
-          readme: string | null;
-          category: string | null;
-          runtimes: string[];
-          tags: string[];
-          upvotes: number;
-          downvotes: number;
-          views: number;
-          copies: number;
-          status: string;
-          trending_score: number;
-          search_vector: string | null;
-          hero_image_url: string | null;
-          hero_loop_url: string | null;
-          hero_poster_url: string | null;
-          is_featured: boolean;
-          featured_priority: number;
-          theme_id: string | null;
-          created_at: string;
-          updated_at: string;
-          published_at: string | null;
-        };
-        Insert: {
-          id?: string;
-          author_id: string;
-          name: string;
-          slug: string;
-          summary: string;
-          install_command?: string | null;
-          source_url?: string | null;
-          readme?: string | null;
-          category?: string | null;
-          runtimes?: string[];
-          tags?: string[];
-          upvotes?: number;
-          downvotes?: number;
-          views?: number;
-          copies?: number;
-          status?: string;
-          trending_score?: number;
-          hero_image_url?: string | null;
-          hero_loop_url?: string | null;
-          hero_poster_url?: string | null;
-          is_featured?: boolean;
-          featured_priority?: number;
-          theme_id?: string | null;
-          created_at?: string;
-          updated_at?: string;
-          published_at?: string | null;
-        };
-        Update: {
-          name?: string;
-          slug?: string;
-          summary?: string;
-          install_command?: string | null;
-          source_url?: string | null;
-          readme?: string | null;
-          category?: string | null;
-          runtimes?: string[];
-          tags?: string[];
-          upvotes?: number;
-          downvotes?: number;
-          views?: number;
-          copies?: number;
-          status?: string;
-          trending_score?: number;
-          hero_image_url?: string | null;
-          hero_loop_url?: string | null;
-          hero_poster_url?: string | null;
-          is_featured?: boolean;
-          featured_priority?: number;
-          theme_id?: string | null;
-          updated_at?: string;
-          published_at?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "skills_author_id_fkey";
-            columns: ["author_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      skill_votes: {
-        Row: {
-          user_id: string;
-          skill_id: string;
-          value: number;
-          created_at: string;
-        };
-        Insert: {
-          user_id: string;
-          skill_id: string;
-          value: number;
-          created_at?: string;
-        };
-        Update: {
-          value?: number;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "skill_votes_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "skill_votes_skill_id_fkey";
-            columns: ["skill_id"];
-            isOneToOne: false;
-            referencedRelation: "skills";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+          created_at?: string
+          event?: string
+          id?: string
+          props?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
-          id: string;
-          slug: string;
-          name: string;
-          description: string;
-          icon: string;
-          tier: "bronze" | "silver" | "gold";
-          criteria: Record<string, unknown>;
-          created_at: string;
-        };
+          created_at: string
+          criteria: Json
+          description: string
+          icon: string
+          id: string
+          name: string
+          slug: string
+          tier: string
+        }
         Insert: {
-          id?: string;
-          slug: string;
-          name: string;
-          description: string;
-          icon: string;
-          tier: "bronze" | "silver" | "gold";
-          criteria?: Record<string, unknown>;
-          created_at?: string;
-        };
+          created_at?: string
+          criteria?: Json
+          description: string
+          icon?: string
+          id?: string
+          name: string
+          slug: string
+          tier: string
+        }
         Update: {
-          slug?: string;
-          name?: string;
-          description?: string;
-          icon?: string;
-          tier?: "bronze" | "silver" | "gold";
-          criteria?: Record<string, unknown>;
-        };
-        Relationships: [];
-      };
-      user_badges: {
+          created_at?: string
+          criteria?: Json
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          slug?: string
+          tier?: string
+        }
+        Relationships: []
+      }
+      categories: {
         Row: {
-          user_id: string;
-          badge_id: string;
-          earned_at: string;
-        };
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
         Insert: {
-          user_id: string;
-          badge_id: string;
-          earned_at?: string;
-        };
-        Update: Record<string, never>;
-        Relationships: [
-          {
-            foreignKeyName: "user_badges_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "user_badges_badge_id_fkey";
-            columns: ["badge_id"];
-            isOneToOne: false;
-            referencedRelation: "badges";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      collections: {
-        Row: {
-          id: string;
-          owner_id: string;
-          title: string;
-          slug: string;
-          description: string | null;
-          is_public: boolean;
-          cover_color: string;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          owner_id: string;
-          title: string;
-          slug: string;
-          description?: string | null;
-          is_public?: boolean;
-          cover_color?: string;
-          created_at?: string;
-          updated_at?: string;
-        };
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
         Update: {
-          title?: string;
-          slug?: string;
-          description?: string | null;
-          is_public?: boolean;
-          cover_color?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "collections_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       collection_prompts: {
         Row: {
-          collection_id: string;
-          prompt_id: string;
-          added_at: string;
-          sort_order: number;
-        };
+          added_at: string
+          collection_id: string
+          prompt_id: string
+          sort_order: number
+        }
         Insert: {
-          collection_id: string;
-          prompt_id: string;
-          added_at?: string;
-          sort_order?: number;
-        };
+          added_at?: string
+          collection_id: string
+          prompt_id: string
+          sort_order?: number
+        }
         Update: {
-          sort_order?: number;
-        };
+          added_at?: string
+          collection_id?: string
+          prompt_id?: string
+          sort_order?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "collection_prompts_collection_id_fkey";
-            columns: ["collection_id"];
-            isOneToOne: false;
-            referencedRelation: "collections";
-            referencedColumns: ["id"];
+            foreignKeyName: "collection_prompts_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "collection_prompts_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "collection_prompts_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collections: {
+        Row: {
+          cover_color: string
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          owner_id: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_color?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          owner_id: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_color?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          owner_id?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collections_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          prompt_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          prompt_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          prompt_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_alert_settings: {
+        Row: {
+          cooldown_hours: number
+          created_at: string
+          creator_id: string
+          email: boolean
+          email_mode: string
+          hot_threshold: number
+          in_app: boolean
+          slack_webhook_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          cooldown_hours?: number
+          created_at?: string
+          creator_id: string
+          email?: boolean
+          email_mode?: string
+          hot_threshold?: number
+          in_app?: boolean
+          slack_webhook_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cooldown_hours?: number
+          created_at?: string
+          creator_id?: string
+          email?: boolean
+          email_mode?: string
+          hot_threshold?: number
+          in_app?: boolean
+          slack_webhook_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_alert_settings_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       follows: {
         Row: {
-          follower_id: string;
-          following_id: string;
-          created_at: string;
-        };
+          created_at: string
+          follower_id: string
+          following_id: string
+        }
         Insert: {
-          follower_id: string;
-          following_id: string;
-          created_at?: string;
-        };
-        Update: Record<string, never>;
+          created_at?: string
+          follower_id: string
+          following_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "follows_follower_id_fkey";
-            columns: ["follower_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "follows_following_id_fkey";
-            columns: ["following_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      prompt_versions: {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_alert_state: {
         Row: {
-          id: string;
-          prompt_id: string;
-          version: number;
-          changelog: string | null;
-          body_snapshot: string | null;
-          created_at: string;
-        };
+          creator_id: string
+          last_alerted_at: string | null
+          last_score: number
+          stage: string
+          updated_at: string
+          user_id: string
+        }
         Insert: {
-          id?: string;
-          prompt_id: string;
-          version: number;
-          changelog?: string | null;
-          body_snapshot?: string | null;
-          created_at?: string;
-        };
+          creator_id: string
+          last_alerted_at?: string | null
+          last_score?: number
+          stage?: string
+          updated_at?: string
+          user_id: string
+        }
         Update: {
-          changelog?: string | null;
-          body_snapshot?: string | null;
-        };
+          creator_id?: string
+          last_alerted_at?: string | null
+          last_score?: number
+          stage?: string
+          updated_at?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "prompt_versions_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "lead_alert_state_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_alert_state_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_events: {
+        Row: {
+          created_at: string
+          creator_id: string
+          event_type: string
+          id: string
+          meta: Json
+          pack_id: string | null
+          prompt_id: string | null
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          event_type: string
+          id?: string
+          meta?: Json
+          pack_id?: string | null
+          prompt_id?: string | null
+          user_id: string
+          weight: number
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          event_type?: string
+          id?: string
+          meta?: Json
+          pack_id?: string | null
+          prompt_id?: string | null
+          user_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_events_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_events_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_events_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
-          id: string;
-          user_id: string;
-          type: string;
-          prompt_id: string | null;
-          pack_id: string | null;
-          created_at: string;
-          read_at: string | null;
-        };
+          created_at: string
+          id: string
+          pack_id: string | null
+          payload: Json | null
+          prompt_id: string | null
+          read_at: string | null
+          type: string
+          user_id: string
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          type: string;
-          prompt_id?: string | null;
-          pack_id?: string | null;
-          created_at?: string;
-          read_at?: string | null;
-        };
+          created_at?: string
+          id?: string
+          pack_id?: string | null
+          payload?: Json | null
+          prompt_id?: string | null
+          read_at?: string | null
+          type: string
+          user_id: string
+        }
         Update: {
-          read_at?: string | null;
-        };
+          created_at?: string
+          id?: string
+          pack_id?: string | null
+          payload?: Json | null
+          prompt_id?: string | null
+          read_at?: string | null
+          type?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "notifications_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "notifications_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "notifications_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
+            foreignKeyName: "notifications_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "notifications_pack_id_fkey";
-            columns: ["pack_id"];
-            isOneToOne: false;
-            referencedRelation: "packs";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      packs: {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offer_slots: {
         Row: {
-          id: string;
-          creator_id: string;
-          title: string;
-          slug: string;
-          liner_note: string | null;
-          cover_type: string;
-          cover_seed: string | null;
-          accent: string | null;
-          status: string;
-          gating: string;
-          price_cents: number;
-          version: number;
-          released_at: string | null;
-          created_at: string;
-          updated_at: string;
-        };
+          active: boolean
+          created_at: string
+          creator_id: string
+          description: string | null
+          id: string
+          label: string
+          prompt_id: string | null
+          updated_at: string
+          url: string
+        }
         Insert: {
-          id?: string;
-          creator_id: string;
-          title: string;
-          slug: string;
-          liner_note?: string | null;
-          cover_type?: string;
-          cover_seed?: string | null;
-          accent?: string | null;
-          status?: string;
-          gating?: string;
-          price_cents?: number;
-          version?: number;
-          released_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
-        };
+          active?: boolean
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          id?: string
+          label: string
+          prompt_id?: string | null
+          updated_at?: string
+          url: string
+        }
         Update: {
-          title?: string;
-          slug?: string;
-          liner_note?: string | null;
-          cover_type?: string;
-          cover_seed?: string | null;
-          accent?: string | null;
-          status?: string;
-          gating?: string;
-          price_cents?: number;
-          version?: number;
-          released_at?: string | null;
-          updated_at?: string;
-        };
+          active?: boolean
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          id?: string
+          label?: string
+          prompt_id?: string | null
+          updated_at?: string
+          url?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "packs_creator_id_fkey";
-            columns: ["creator_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "offer_slots_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offer_slots_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pack_items: {
         Row: {
-          id: string;
-          pack_id: string;
-          item_type: string;
-          prompt_id: string | null;
-          skill_id: string | null;
-          position: number;
-          promise_line: string | null;
-          is_preview: boolean;
-          created_at: string;
-        };
+          created_at: string
+          id: string
+          is_preview: boolean
+          item_type: string
+          pack_id: string
+          position: number
+          promise_line: string | null
+          prompt_id: string | null
+          skill_id: string | null
+        }
         Insert: {
-          id?: string;
-          pack_id: string;
-          item_type: string;
-          prompt_id?: string | null;
-          skill_id?: string | null;
-          position: number;
-          promise_line?: string | null;
-          is_preview?: boolean;
-          created_at?: string;
-        };
+          created_at?: string
+          id?: string
+          is_preview?: boolean
+          item_type: string
+          pack_id: string
+          position: number
+          promise_line?: string | null
+          prompt_id?: string | null
+          skill_id?: string | null
+        }
         Update: {
-          item_type?: string;
-          prompt_id?: string | null;
-          skill_id?: string | null;
-          position?: number;
-          promise_line?: string | null;
-          is_preview?: boolean;
-        };
+          created_at?: string
+          id?: string
+          is_preview?: boolean
+          item_type?: string
+          pack_id?: string
+          position?: number
+          promise_line?: string | null
+          prompt_id?: string | null
+          skill_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "pack_items_pack_id_fkey";
-            columns: ["pack_id"];
-            isOneToOne: false;
-            referencedRelation: "packs";
-            referencedColumns: ["id"];
+            foreignKeyName: "pack_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pack_items_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
+            foreignKeyName: "pack_items_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "pack_items_skill_id_fkey";
-            columns: ["skill_id"];
-            isOneToOne: false;
-            referencedRelation: "skills";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      pack_versions: {
-        Row: {
-          id: string;
-          pack_id: string;
-          version: number;
-          changelog: string | null;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          pack_id: string;
-          version: number;
-          changelog?: string | null;
-          created_at?: string;
-        };
-        Update: {
-          changelog?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "pack_versions_pack_id_fkey";
-            columns: ["pack_id"];
-            isOneToOne: false;
-            referencedRelation: "packs";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "pack_items_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pack_saves: {
         Row: {
-          id: string;
-          user_id: string;
-          pack_id: string;
-          created_at: string;
-        };
+          created_at: string
+          id: string
+          pack_id: string
+          user_id: string
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          pack_id: string;
-          created_at?: string;
-        };
-        Update: Record<string, never>;
-        Relationships: [
-          {
-            foreignKeyName: "pack_saves_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "pack_saves_pack_id_fkey";
-            columns: ["pack_id"];
-            isOneToOne: false;
-            referencedRelation: "packs";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      prompt_saves: {
-        Row: {
-          id: string;
-          user_id: string;
-          prompt_id: string;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          prompt_id: string;
-          created_at?: string;
-        };
-        Update: Record<string, never>;
-        Relationships: [
-          {
-            foreignKeyName: "prompt_saves_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "prompt_saves_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      user_attributes: {
-        Row: {
-          user_id: string;
-          role_category: RoleCategory | null;
-          industry: Industry | null;
-          company_size: CompanySize | null;
-          goals: string[] | null;
-          need_text: string | null;
-          job_title: string | null;
-          company_name: string | null;
-          linkedin_url: string | null;
-          completed_at: string | null;
-          updated_at: string;
-        };
-        Insert: {
-          user_id: string;
-          role_category?: RoleCategory | null;
-          industry?: Industry | null;
-          company_size?: CompanySize | null;
-          goals?: string[] | null;
-          need_text?: string | null;
-          job_title?: string | null;
-          company_name?: string | null;
-          linkedin_url?: string | null;
-          completed_at?: string | null;
-          updated_at?: string;
-        };
+          created_at?: string
+          id?: string
+          pack_id: string
+          user_id: string
+        }
         Update: {
-          role_category?: RoleCategory | null;
-          industry?: Industry | null;
-          company_size?: CompanySize | null;
-          goals?: string[] | null;
-          need_text?: string | null;
-          job_title?: string | null;
-          company_name?: string | null;
-          linkedin_url?: string | null;
-          completed_at?: string | null;
-          updated_at?: string;
-        };
+          created_at?: string
+          id?: string
+          pack_id?: string
+          user_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "user_attributes_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: true;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      prompt_presets: {
-        Row: {
-          id: string;
-          user_id: string;
-          prompt_id: string;
-          name: string;
-          values: Json;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: {
-          id?: string;
-          user_id: string;
-          prompt_id: string;
-          name: string;
-          values?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
-        Update: {
-          name?: string;
-          values?: Json;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "prompt_presets_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "pack_saves_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "prompt_presets_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-      prompt_runs: {
+            foreignKeyName: "pack_saves_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pack_versions: {
         Row: {
-          id: string;
-          user_id: string;
-          prompt_id: string;
-          values: Json;
-          created_at: string;
-        };
+          changelog: string | null
+          created_at: string
+          id: string
+          pack_id: string
+          version: number
+        }
         Insert: {
-          id?: string;
-          user_id: string;
-          prompt_id: string;
-          values?: Json;
-          created_at?: string;
-        };
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          pack_id: string
+          version: number
+        }
         Update: {
-          values?: Json;
-        };
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          pack_id?: string
+          version?: number
+        }
         Relationships: [
           {
-            foreignKeyName: "prompt_runs_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
+            foreignKeyName: "pack_versions_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
           },
+        ]
+      }
+      packs: {
+        Row: {
+          accent: string | null
+          cover_seed: string | null
+          cover_type: string
+          created_at: string
+          creator_id: string
+          gating: string
+          id: string
+          liner_note: string | null
+          price_cents: number
+          released_at: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          accent?: string | null
+          cover_seed?: string | null
+          cover_type?: string
+          created_at?: string
+          creator_id: string
+          gating?: string
+          id?: string
+          liner_note?: string | null
+          price_cents?: number
+          released_at?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          accent?: string | null
+          cover_seed?: string | null
+          cover_type?: string
+          created_at?: string
+          creator_id?: string
+          gating?: string
+          id?: string
+          liner_note?: string | null
+          price_cents?: number
+          released_at?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
           {
-            foreignKeyName: "prompt_runs_prompt_id_fkey";
-            columns: ["prompt_id"];
-            isOneToOne: false;
-            referencedRelation: "prompts";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "packs_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          account_type: string | null
+          avatar_url: string | null
+          bio: string | null
+          contribution_count: number
+          created_at: string
+          creator_onboarding_complete: boolean
+          display_name: string | null
+          featured_prompt_id: string | null
+          github: string | null
+          id: string
+          is_admin: boolean
+          lifetime_copies: number
+          lifetime_upvotes_received: number
+          location: string | null
+          offer_headline: string | null
+          onboarding_complete: boolean
+          reputation: number
+          twitter: string | null
+          updated_at: string
+          username: string
+          website: string | null
+        }
+        Insert: {
+          account_type?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          contribution_count?: number
+          created_at?: string
+          creator_onboarding_complete?: boolean
+          display_name?: string | null
+          featured_prompt_id?: string | null
+          github?: string | null
+          id: string
+          is_admin?: boolean
+          lifetime_copies?: number
+          lifetime_upvotes_received?: number
+          location?: string | null
+          offer_headline?: string | null
+          onboarding_complete?: boolean
+          reputation?: number
+          twitter?: string | null
+          updated_at?: string
+          username: string
+          website?: string | null
+        }
+        Update: {
+          account_type?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          contribution_count?: number
+          created_at?: string
+          creator_onboarding_complete?: boolean
+          display_name?: string | null
+          featured_prompt_id?: string | null
+          github?: string | null
+          id?: string
+          is_admin?: boolean
+          lifetime_copies?: number
+          lifetime_upvotes_received?: number
+          location?: string | null
+          offer_headline?: string | null
+          onboarding_complete?: boolean
+          reputation?: number
+          twitter?: string | null
+          updated_at?: string
+          username?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_featured_prompt_id_fkey"
+            columns: ["featured_prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prompt_drafts: {
         Row: {
-          id: string;
-          author_id: string;
-          title: string | null;
-          goal: string | null;
-          role: string;
-          context: string;
-          task: string;
-          constraints: string;
-          output_format: string;
-          examples: Json;
-          created_at: string;
-          updated_at: string;
-        };
+          author_id: string
+          constraints: string
+          context: string
+          created_at: string
+          examples: Json
+          goal: string | null
+          id: string
+          output_format: string
+          role: string
+          task: string
+          title: string | null
+          updated_at: string
+        }
         Insert: {
-          id?: string;
-          author_id: string;
-          title?: string | null;
-          goal?: string | null;
-          role?: string;
-          context?: string;
-          task?: string;
-          constraints?: string;
-          output_format?: string;
-          examples?: Json;
-          created_at?: string;
-          updated_at?: string;
-        };
+          author_id: string
+          constraints?: string
+          context?: string
+          created_at?: string
+          examples?: Json
+          goal?: string | null
+          id?: string
+          output_format?: string
+          role?: string
+          task?: string
+          title?: string | null
+          updated_at?: string
+        }
         Update: {
-          title?: string | null;
-          goal?: string | null;
-          role?: string;
-          context?: string;
-          task?: string;
-          constraints?: string;
-          output_format?: string;
-          examples?: Json;
-          updated_at?: string;
-        };
+          author_id?: string
+          constraints?: string
+          context?: string
+          created_at?: string
+          examples?: Json
+          goal?: string | null
+          id?: string
+          output_format?: string
+          role?: string
+          task?: string
+          title?: string | null
+          updated_at?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "prompt_drafts_author_id_fkey";
-            columns: ["author_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-    };
+            foreignKeyName: "prompt_drafts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_presets: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          prompt_id: string
+          updated_at: string
+          user_id: string
+          values: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          prompt_id: string
+          updated_at?: string
+          user_id: string
+          values?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          prompt_id?: string
+          updated_at?: string
+          user_id?: string
+          values?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_presets_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_presets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_runs: {
+        Row: {
+          created_at: string
+          id: string
+          prompt_id: string
+          user_id: string
+          values: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt_id: string
+          user_id: string
+          values?: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          user_id?: string
+          values?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_runs_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_runs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_saves: {
+        Row: {
+          created_at: string
+          id: string
+          prompt_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          prompt_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_saves_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompt_saves_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_versions: {
+        Row: {
+          body_snapshot: string | null
+          changelog: string | null
+          created_at: string
+          id: string
+          prompt_id: string
+          version: number
+        }
+        Insert: {
+          body_snapshot?: string | null
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          prompt_id: string
+          version: number
+        }
+        Update: {
+          body_snapshot?: string | null
+          changelog?: string | null
+          created_at?: string
+          id?: string
+          prompt_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_versions_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompts: {
+        Row: {
+          author_id: string
+          body: string
+          category_id: string | null
+          copies: number
+          created_at: string
+          description: string | null
+          downvotes: number
+          forked_from_id: string | null
+          id: string
+          model_tags: string[]
+          published_at: string | null
+          search_vector: unknown
+          slug: string
+          status: string
+          tags: string[]
+          title: string
+          trending_score: number
+          updated_at: string
+          upvotes: number
+          variables: Json
+          version: number
+          views: number
+        }
+        Insert: {
+          author_id: string
+          body: string
+          category_id?: string | null
+          copies?: number
+          created_at?: string
+          description?: string | null
+          downvotes?: number
+          forked_from_id?: string | null
+          id?: string
+          model_tags?: string[]
+          published_at?: string | null
+          search_vector?: unknown
+          slug: string
+          status?: string
+          tags?: string[]
+          title: string
+          trending_score?: number
+          updated_at?: string
+          upvotes?: number
+          variables?: Json
+          version?: number
+          views?: number
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          category_id?: string | null
+          copies?: number
+          created_at?: string
+          description?: string | null
+          downvotes?: number
+          forked_from_id?: string | null
+          id?: string
+          model_tags?: string[]
+          published_at?: string | null
+          search_vector?: unknown
+          slug?: string
+          status?: string
+          tags?: string[]
+          title?: string
+          trending_score?: number
+          updated_at?: string
+          upvotes?: number
+          variables?: Json
+          version?: number
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prompts_forked_from_id_fkey"
+            columns: ["forked_from_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rate_limit_vote_log: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
+          comment_id: string | null
+          created_at: string
+          id: string
+          prompt_id: string | null
+          reason: string
+          reporter_id: string
+          skill_id: string | null
+          status: string
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          prompt_id?: string | null
+          reason: string
+          reporter_id: string
+          skill_id?: string | null
+          status?: string
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string
+          id?: string
+          prompt_id?: string | null
+          reason?: string
+          reporter_id?: string
+          skill_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_votes: {
+        Row: {
+          created_at: string
+          skill_id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          skill_id: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          skill_id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_votes_skill_id_fkey"
+            columns: ["skill_id"]
+            isOneToOne: false
+            referencedRelation: "skills"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "skill_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skills: {
+        Row: {
+          author_id: string
+          category: string | null
+          copies: number
+          created_at: string
+          downvotes: number
+          featured_priority: number
+          hero_image_url: string | null
+          hero_loop_url: string | null
+          hero_poster_url: string | null
+          id: string
+          install_command: string | null
+          is_featured: boolean
+          name: string
+          published_at: string | null
+          readme: string | null
+          runtimes: string[]
+          search_vector: unknown
+          slug: string
+          source_url: string | null
+          status: string
+          summary: string
+          tags: string[]
+          theme_id: string | null
+          trending_score: number
+          updated_at: string
+          upvotes: number
+          views: number
+        }
+        Insert: {
+          author_id: string
+          category?: string | null
+          copies?: number
+          created_at?: string
+          downvotes?: number
+          featured_priority?: number
+          hero_image_url?: string | null
+          hero_loop_url?: string | null
+          hero_poster_url?: string | null
+          id?: string
+          install_command?: string | null
+          is_featured?: boolean
+          name: string
+          published_at?: string | null
+          readme?: string | null
+          runtimes?: string[]
+          search_vector?: unknown
+          slug: string
+          source_url?: string | null
+          status?: string
+          summary: string
+          tags?: string[]
+          theme_id?: string | null
+          trending_score?: number
+          updated_at?: string
+          upvotes?: number
+          views?: number
+        }
+        Update: {
+          author_id?: string
+          category?: string | null
+          copies?: number
+          created_at?: string
+          downvotes?: number
+          featured_priority?: number
+          hero_image_url?: string | null
+          hero_loop_url?: string | null
+          hero_poster_url?: string | null
+          id?: string
+          install_command?: string | null
+          is_featured?: boolean
+          name?: string
+          published_at?: string | null
+          readme?: string | null
+          runtimes?: string[]
+          search_vector?: unknown
+          slug?: string
+          source_url?: string | null
+          status?: string
+          summary?: string
+          tags?: string[]
+          theme_id?: string | null
+          trending_score?: number
+          updated_at?: string
+          upvotes?: number
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skills_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tools: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_free: boolean
+          logo_url: string | null
+          name: string
+          pricing_note: string | null
+          slug: string
+          status: string
+          submitted_by: string | null
+          url: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_free?: boolean
+          logo_url?: string | null
+          name: string
+          pricing_note?: string | null
+          slug: string
+          status?: string
+          submitted_by?: string | null
+          url: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_free?: boolean
+          logo_url?: string | null
+          name?: string
+          pricing_note?: string | null
+          slug?: string
+          status?: string
+          submitted_by?: string | null
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tools_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_attributes: {
+        Row: {
+          company_name: string | null
+          company_size: Database["public"]["Enums"]["company_size_enum"] | null
+          completed_at: string | null
+          goals: string[] | null
+          industry: Database["public"]["Enums"]["industry_enum"] | null
+          job_title: string | null
+          linkedin_url: string | null
+          need_text: string | null
+          role_category:
+            | Database["public"]["Enums"]["role_category_enum"]
+            | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          company_name?: string | null
+          company_size?: Database["public"]["Enums"]["company_size_enum"] | null
+          completed_at?: string | null
+          goals?: string[] | null
+          industry?: Database["public"]["Enums"]["industry_enum"] | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          need_text?: string | null
+          role_category?:
+            | Database["public"]["Enums"]["role_category_enum"]
+            | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          company_name?: string | null
+          company_size?: Database["public"]["Enums"]["company_size_enum"] | null
+          completed_at?: string | null
+          goals?: string[] | null
+          industry?: Database["public"]["Enums"]["industry_enum"] | null
+          job_title?: string | null
+          linkedin_url?: string | null
+          need_text?: string | null
+          role_category?:
+            | Database["public"]["Enums"]["role_category_enum"]
+            | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_attributes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_badges_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      votes: {
+        Row: {
+          created_at: string
+          prompt_id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          prompt_id: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          prompt_id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_prompt_id_fkey"
+            columns: ["prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prompts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
       calculate_trending_score: {
+        Args: { published: string; upvotes_count: number }
+        Returns: number
+      }
+      check_badges_for_user: { Args: { p_user_id: string }; Returns: undefined }
+      get_lead_detail: { Args: { p_user_id: string }; Returns: Json }
+      get_my_leads: {
+        Args: never
+        Returns: {
+          last_alerted_at: string
+          score: number
+          stage: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
+      lead_event_weight: {
+        Args: { p_event_type: string; p_meta: Json }
+        Returns: number
+      }
+      lead_score: {
+        Args: { p_creator_id: string; p_user_id: string }
+        Returns: number
+      }
+      lead_stage: { Args: { p_score: number }; Returns: string }
+      purge_old_rate_limit_logs: { Args: never; Returns: undefined }
+      record_lead_event: {
         Args: {
-          upvotes_count: number;
-          published: string;
-        };
-        Returns: number;
-      };
-    };
+          p_event_type: string
+          p_meta?: Json
+          p_pack_id?: string
+          p_prompt_id?: string
+        }
+        Returns: Json
+      }
+      record_prompt_copy: { Args: { p_prompt_id: string }; Returns: undefined }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      company_size_enum:
+        | "solo"
+        | "s2_10"
+        | "s11_50"
+        | "s51_200"
+        | "s201_1000"
+        | "s1000_plus"
+      industry_enum:
+        | "agency_consulting"
+        | "saas_tech"
+        | "ecommerce_retail"
+        | "coaching_education"
+        | "health_wellness"
+        | "finance_insurance"
+        | "real_estate"
+        | "legal"
+        | "marketing_media"
+        | "manufacturing_trades"
+        | "nonprofit"
+        | "other"
+      role_category_enum:
+        | "founder_owner"
+        | "executive"
+        | "marketing"
+        | "sales_bd"
+        | "consultant_coach"
+        | "engineering_data"
+        | "product_design"
+        | "operations"
+        | "hr_recruiting"
+        | "finance_legal"
+        | "content_creator"
+        | "student"
+        | "other"
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
+  public: {
+    Enums: {
+      company_size_enum: [
+        "solo",
+        "s2_10",
+        "s11_50",
+        "s51_200",
+        "s201_1000",
+        "s1000_plus",
+      ],
+      industry_enum: [
+        "agency_consulting",
+        "saas_tech",
+        "ecommerce_retail",
+        "coaching_education",
+        "health_wellness",
+        "finance_insurance",
+        "real_estate",
+        "legal",
+        "marketing_media",
+        "manufacturing_trades",
+        "nonprofit",
+        "other",
+      ],
+      role_category_enum: [
+        "founder_owner",
+        "executive",
+        "marketing",
+        "sales_bd",
+        "consultant_coach",
+        "engineering_data",
+        "product_design",
+        "operations",
+        "hr_recruiting",
+        "finance_legal",
+        "content_creator",
+        "student",
+        "other",
+      ],
+    },
+  },
+} as const
 
 // ─── v2 tables ───────────────────────────────────────────────
 export type Badge = {
