@@ -64,6 +64,7 @@ export function PackDetail({
             <Link href={`/u/${creator.username}`} className="text-sm font-medium hover:text-brand-600 dark:hover:text-brand-300 transition-colors">
               {creator.display_name ?? creator.username}
             </Link>
+            <FollowButton targetUserId={pack.creator_id} currentUserId={currentUserId} initiallyFollowing={initiallyFollowing} />
           </div>
 
           <p className="label-mono">
@@ -138,9 +139,6 @@ export function PackDetail({
             <span className="label-mono">{followerCount} follower{followerCount !== 1 ? "s" : ""}</span>
           </div>
           {creator.bio && <p className="text-sm text-foreground-muted leading-relaxed max-w-lg">{creator.bio}</p>}
-          <div className="pt-1">
-            <FollowButton targetUserId={pack.creator_id} currentUserId={currentUserId} initiallyFollowing={initiallyFollowing} />
-          </div>
         </div>
       </div>
 
