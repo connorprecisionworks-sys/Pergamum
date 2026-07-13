@@ -5,6 +5,7 @@ import { UserPlus, UserMinus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { useSharedFollowState } from "@/components/profile/follow-state";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -19,7 +20,10 @@ export function FollowButton({
   initiallyFollowing,
   onFollowerCountChange,
 }: FollowButtonProps) {
-  const [following, setFollowing] = useState(initiallyFollowing);
+  const shared = useSharedFollowState();
+  const [localFollowing, setLocalFollowing] = useState(initiallyFollowing);
+  const following = shared ? shared.following : localFollowing;
+  const setFollowing = shared ? shared.setFollowing : setLocalFollowing;
   const [isPending, startTransition] = useTransition();
   const supabase = createClient();
 

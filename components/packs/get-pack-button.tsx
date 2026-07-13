@@ -15,6 +15,7 @@ import { AuthForm } from "@/components/auth/auth-form";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { recordLeadEvent } from "@/lib/lead-events";
+import { useSharedFollowState } from "@/components/profile/follow-state";
 import type { PackGating } from "@/lib/types/database";
 
 /** Stashed just before a signed-out unlock sends the visitor through auth
@@ -50,7 +51,10 @@ export function GetPackButton({
   returnTo,
 }: GetPackButtonProps) {
   const [saved, setSaved] = useState(initiallySaved);
-  const [following, setFollowing] = useState(initiallyFollowing);
+  const shared = useSharedFollowState();
+  const [localFollowing, setLocalFollowing] = useState(initiallyFollowing);
+  const following = shared ? shared.following : localFollowing;
+  const setFollowing = shared ? shared.setFollowing : setLocalFollowing;
   const [authOpen, setAuthOpen] = useState(false);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -84,7 +88,7 @@ export function GetPackButton({
         setFollowing(true);
         router.refresh();
       });
-  }, [isFollowerGate, currentUserId, creatorId, following, router]);
+  }, [isFollowerGate, currentUserId, creatorId, following, router, setFollowing]);
 
   const handleClick = () => {
     if (gating === "paid") {
