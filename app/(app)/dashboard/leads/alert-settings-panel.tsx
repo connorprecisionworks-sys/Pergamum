@@ -111,14 +111,14 @@ export function AlertSettingsPanel({ initial }: AlertSettingsPanelProps) {
           </div>
           <input
             type="range"
-            min={30}
-            max={80}
+            min={5}
+            max={100}
             value={hotThreshold}
             onChange={(e) => setHotThreshold(Number(e.target.value))}
             className="w-full accent-primary"
           />
           <div className="mt-1.5 flex items-start justify-between gap-2 text-[11px] text-muted-foreground">
-            <span className="max-w-[48%]">As soon as someone really uses my prompt</span>
+            <span className="max-w-[48%]">As soon as anyone uses or copies my prompt</span>
             <span className="max-w-[48%] text-right">Only when someone keeps coming back</span>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">{describeHotThreshold(hotThreshold)}</p>

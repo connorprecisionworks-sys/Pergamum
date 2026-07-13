@@ -91,15 +91,15 @@ export function formatCount(n: number): string {
   return String(n);
 }
 
-/** Plain-English meaning of a creator_alert_settings.hot_threshold value (30-80) */
+/** Plain-English meaning of a creator_alert_settings.hot_threshold value (5-100) */
 export function describeHotThreshold(value: number): string {
-  if (value <= 41) {
-    return "You'll hear about a lead the moment they show real, one-session usage — no comeback required.";
+  if (value <= 24) {
+    return "You'll hear about a lead the moment they show any real activity — even a single copy or run.";
   }
-  if (value <= 54) {
-    return "You'll hear about a lead once their usage clearly adds up — several real runs, or a saved preset.";
+  if (value <= 49) {
+    return "You'll hear about a lead once they show real, one-session usage — no comeback required.";
   }
-  if (value <= 67) {
+  if (value <= 74) {
     return "You'll hear about a lead once they show real usage and come back on another day.";
   }
   return "You'll only hear about a lead once they've clearly kept coming back.";
