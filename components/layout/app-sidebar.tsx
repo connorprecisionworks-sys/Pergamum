@@ -13,6 +13,7 @@ import {
   Home,
   Layers,
   Library,
+  Megaphone,
   Menu,
   Sparkles,
   Upload,
@@ -61,7 +62,10 @@ const CREATE = [
   { href: "/collections", label: "Collections", icon: FolderOpen },
 ];
 
-const CREATOR = [{ href: "/dashboard/leads", label: "Leads", icon: Flame }];
+const CREATOR = [
+  { href: "/dashboard/leads", label: "Leads", icon: Flame },
+  { href: "/dashboard/offers", label: "Offers", icon: Megaphone },
+];
 
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");

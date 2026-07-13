@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -82,15 +83,20 @@ function eventLabel(
   }
 }
 
-function suggestedAction(stage: string, hasOfferClick: boolean, hasAnyOfferSlot: boolean): string | null {
-  if (hasOfferClick) return "They clicked your offer button. Follow up on the booking.";
+interface SuggestedAction {
+  text: string;
+  href?: string;
+}
+
+function suggestedAction(stage: string, hasOfferClick: boolean, hasAnyOfferSlot: boolean): SuggestedAction | null {
+  if (hasOfferClick) return { text: "They clicked your offer button. Follow up on the booking." };
   if (stage === "hot" && hasAnyOfferSlot) {
-    return "Hot and hasn't clicked your offer yet. Consider a direct nudge in your next post.";
+    return { text: "Hot and hasn't clicked your offer yet. Consider a direct nudge in your next post." };
   }
   if (stage === "hot" && !hasAnyOfferSlot) {
-    return "Add an offer slot. This lead has nowhere to say yes.";
+    return { text: "Add an offer slot. This lead has nowhere to say yes.", href: "/dashboard/offers" };
   }
-  if (stage === "warm") return "Watch. An alert fires if they return.";
+  if (stage === "warm") return { text: "Watch. An alert fires if they return." };
   return null;
 }
 
@@ -227,11 +233,19 @@ export default async function LeadsPage() {
                     </ul>
                   )}
 
-                  {row.suggestion && (
-                    <p className="mt-3 rounded-md bg-secondary/60 px-3 py-2 text-xs text-foreground">
-                      {row.suggestion}
-                    </p>
-                  )}
+                  {row.suggestion &&
+                    (row.suggestion.href ? (
+                      <Link
+                        href={row.suggestion.href}
+                        className="mt-3 block rounded-md bg-secondary/60 px-3 py-2 text-xs text-foreground underline-offset-2 hover:underline"
+                      >
+                        {row.suggestion.text}
+                      </Link>
+                    ) : (
+                      <p className="mt-3 rounded-md bg-secondary/60 px-3 py-2 text-xs text-foreground">
+                        {row.suggestion.text}
+                      </p>
+                    ))}
                 </div>
               </div>
             </div>
