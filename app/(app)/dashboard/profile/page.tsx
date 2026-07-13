@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Separator } from "@/components/ui/separator";
 import { ProProfileForm } from "@/components/profile/pro-profile-form";
 import { ProfileForm } from "./profile-form";
+import { BecomeCreatorButton } from "./become-creator-button";
 
 export const metadata: Metadata = { title: "Edit Profile" };
 
@@ -60,6 +61,19 @@ export default async function ProfileEditPage() {
         </p>
         <ProProfileForm initial={proAttributes ?? null} variant="settings" />
       </div>
+
+      {profile.account_type === "client" && (
+        <>
+          <Separator className="my-10" />
+          <div className="max-w-lg">
+            <h2 className="text-xl font-medium tracking-tight font-serif mb-1">Creator tools</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Ship prompts, drop packs, and get alerted the moment a lead goes hot.
+            </p>
+            <BecomeCreatorButton />
+          </div>
+        </>
+      )}
     </div>
   );
 }

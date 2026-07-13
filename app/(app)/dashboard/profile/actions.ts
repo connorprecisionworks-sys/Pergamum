@@ -28,6 +28,28 @@ export async function updateProfile(_prev: { error?: string; success?: boolean }
   return { success: true };
 }
 
+/**
+ * Settings-driven conversion (CREATOR-ONBOARDING-SPEC.md "Settings toggle"):
+ * a client can turn on creator tools any time. onboarding_complete (the
+ * client flow) is left untouched, so converting back to browsing later
+ * never re-triggers it — same gate, no special-casing.
+ */
+export async function becomeCreator(): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ account_type: "creator", creator_onboarding_complete: false })
+    .eq("id", user.id);
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/profile");
+  return {};
+}
+
 export async function uploadAvatar(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

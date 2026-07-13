@@ -21,12 +21,22 @@ export async function GET(request: Request) {
       if (user) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("onboarding_complete")
+          .select("account_type, creator_onboarding_complete, onboarding_complete")
           .eq("id", user.id)
           .single();
 
-        if (profile && !profile.onboarding_complete) {
-          return NextResponse.redirect(`${origin}/onboarding?next=${encodeURIComponent(next)}`);
+        const withNext = (path: string) => `${origin}${path}?next=${encodeURIComponent(next)}`;
+
+        if (profile) {
+          if (profile.account_type === null) {
+            return NextResponse.redirect(withNext("/welcome"));
+          }
+          if (profile.account_type === "creator" && !profile.creator_onboarding_complete) {
+            return NextResponse.redirect(withNext("/creator/onboarding"));
+          }
+          if (profile.account_type === "client" && !profile.onboarding_complete) {
+            return NextResponse.redirect(withNext("/onboarding"));
+          }
         }
       }
 

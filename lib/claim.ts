@@ -32,5 +32,9 @@ export async function claimPendingState(
     creatorId && creatorId !== user.id
       ? supabase.from("follows").insert({ follower_id: user.id, following_id: creatorId })
       : Promise.resolve(),
+    // Belt-and-suspenders with the /welcome short-circuit (CREATOR-ONBOARDING-
+    // SPEC.md): a claimer is a client by default and must never see the
+    // account-type picker, even if they somehow reach it before this runs.
+    supabase.from("profiles").update({ account_type: "client" }).eq("id", user.id),
   ]);
 }

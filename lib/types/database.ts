@@ -1911,3 +1911,6 @@ export type CommentWithAuthor = Comment & {
   profiles: Pick<Profile, "id" | "username" | "display_name" | "avatar_url">;
   replies?: CommentWithAuthor[];
 };
+
+// Must match the CHECK constraint on profiles.account_type in 0022_creator_accounts.sql.
+export type AccountType = "client" | "creator";
