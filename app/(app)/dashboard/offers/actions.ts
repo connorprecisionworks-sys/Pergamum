@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { normalizeUrl } from "@/lib/utils";
 
 /**
  * A per-prompt override. Same manual select-then-write shape as the default
@@ -20,9 +21,10 @@ export async function savePromptOfferSlot(
   if (!user) return { error: "Not authenticated" };
 
   const label = input.label.trim();
-  const url = input.url.trim();
   if (!label) return { error: "Give your button a label." };
-  if (!url) return { error: "Add a link for people to book or reach you." };
+  if (!input.url.trim()) return { error: "Add a link for people to book or reach you." };
+  const url = normalizeUrl(input.url);
+  if (!url) return { error: "That link doesn't look like a valid URL." };
 
   const { data: prompt } = await supabase
     .from("prompts")

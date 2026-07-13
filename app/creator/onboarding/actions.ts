@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeUrl } from "@/lib/utils";
 
 /** Step 1 — "What do you help people with?" Writes profiles.offer_headline. */
 export async function saveOfferHeadline(headline: string): Promise<{ error?: string }> {
@@ -41,9 +42,10 @@ export async function saveOfferSlot(input: {
   if (!user) return { error: "Not authenticated" };
 
   const label = input.label.trim();
-  const url = input.url.trim();
   if (!label) return { error: "Give your button a label." };
-  if (!url) return { error: "Add a link for people to book or reach you." };
+  if (!input.url.trim()) return { error: "Add a link for people to book or reach you." };
+  const url = normalizeUrl(input.url);
+  if (!url) return { error: "That link doesn't look like a valid URL." };
 
   const { data: existing } = await supabase
     .from("offer_slots")

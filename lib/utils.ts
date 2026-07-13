@@ -53,6 +53,25 @@ export function detectVariableNames(body: string): string[] {
   return names;
 }
 
+/**
+ * Normalize a user-submitted URL: add https:// when no scheme is present.
+ * Returns null if the result still isn't a well-formed absolute URL, so
+ * callers can reject it with an inline error instead of saving garbage.
+ */
+export function normalizeUrl(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(trimmed);
+  const candidate = hasScheme ? trimmed : `https://${trimmed}`;
+  try {
+    const url = new URL(candidate);
+    if (!url.hostname || !url.hostname.includes(".")) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
 /** Normalize comma-separated tags: lowercase, trimmed, deduped */
 export function normalizeTags(raw: string): string[] {
   return [

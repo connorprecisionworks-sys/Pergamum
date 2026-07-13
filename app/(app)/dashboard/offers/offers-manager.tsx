@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { saveOfferSlot } from "@/app/creator/onboarding/actions";
 import { savePromptOfferSlot, deleteOfferSlot, toggleOfferSlotActive } from "./actions";
 import type { OfferSlot } from "@/lib/types/database";
-import { cn } from "@/lib/utils";
+import { cn, normalizeUrl } from "@/lib/utils";
 
 interface OffersManagerProps {
   defaultSlot: OfferSlot | null;
@@ -67,8 +67,12 @@ function SlotForm({
 }) {
   const [label, setLabel] = useState(initial.label);
   const [url, setUrl] = useState(initial.url);
+  const [urlTouched, setUrlTouched] = useState(false);
   const [description, setDescription] = useState(initial.description ?? "");
   const [pending, startTransition] = useTransition();
+
+  const urlValid = !url.trim() || !!normalizeUrl(url);
+  const urlError = urlTouched && !urlValid ? "That link doesn't look like a valid URL." : null;
 
   const save = () => {
     startTransition(async () => {
@@ -89,13 +93,20 @@ function SlotForm({
       </div>
       <div>
         <Label className="text-xs">Link</Label>
-        <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://cal.com/you" />
+        <Input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onBlur={() => setUrlTouched(true)}
+          placeholder="https://cal.com/you"
+          aria-invalid={!!urlError}
+        />
+        {urlError && <p className="mt-1 text-xs text-destructive">{urlError}</p>}
       </div>
       <div>
         <Label className="text-xs">Description (optional)</Label>
         <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
       </div>
-      <Button onClick={save} disabled={pending || !label.trim() || !url.trim()} size="sm" className="gap-1.5">
+      <Button onClick={save} disabled={pending || !label.trim() || !url.trim() || !urlValid} size="sm" className="gap-1.5">
         {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
         {saveLabel}
       </Button>

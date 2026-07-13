@@ -12,7 +12,7 @@ import {
   saveAlertSettings,
   completeCreatorOnboarding,
 } from "@/app/creator/onboarding/actions";
-import { cn } from "@/lib/utils";
+import { cn, normalizeUrl } from "@/lib/utils";
 
 const OFFER_TYPES = [
   "1:1 consulting",
@@ -147,7 +147,10 @@ export function CreatorOnboardingForm({
 
   const [offerLabel, setOfferLabel] = useState(initialOfferSlot?.label ?? "Book a free strategy call");
   const [offerUrl, setOfferUrl] = useState(initialOfferSlot?.url ?? "");
+  const [offerUrlTouched, setOfferUrlTouched] = useState(false);
   const [offerDescription, setOfferDescription] = useState(initialOfferSlot?.description ?? "");
+  const offerUrlValid = !offerUrl.trim() || !!normalizeUrl(offerUrl);
+  const offerUrlError = offerUrlTouched && !offerUrlValid ? "That link doesn't look like a valid URL." : null;
 
   const [hotThreshold, setHotThreshold] = useState(initialAlertSettings?.hotThreshold ?? 50);
   const [inApp, setInApp] = useState(initialAlertSettings?.inApp ?? true);
@@ -342,9 +345,17 @@ export function CreatorOnboardingForm({
                   id="offer-url"
                   value={offerUrl}
                   onChange={(e) => setOfferUrl(e.target.value)}
+                  onBlur={() => setOfferUrlTouched(true)}
                   placeholder="https://cal.com/you"
+                  aria-invalid={!!offerUrlError}
+                  aria-describedby={offerUrlError ? "offer-url-error" : undefined}
                   className="h-12 w-full rounded-xl border border-border-strong bg-background px-4 text-[15px] outline-none transition-colors placeholder:text-foreground-subtle focus:border-primary focus:ring-4 focus:ring-primary/10"
                 />
+                {offerUrlError && (
+                  <p id="offer-url-error" className="mt-1.5 text-[13px] text-destructive">
+                    {offerUrlError}
+                  </p>
+                )}
               </div>
 
               <div className="mb-8">
@@ -364,7 +375,7 @@ export function CreatorOnboardingForm({
               <ContinueButton
                 onClick={handleOfferSlotSave}
                 pending={pending}
-                disabled={!offerLabel.trim() || !offerUrl.trim()}
+                disabled={!offerLabel.trim() || !offerUrl.trim() || !offerUrlValid}
               />
               <button
                 type="button"
