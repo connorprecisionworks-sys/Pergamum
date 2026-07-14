@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Separator } from "@/components/ui/separator";
 import { ProProfileForm } from "@/components/profile/pro-profile-form";
+import { MessagePreferencesToggle } from "@/components/profile/message-preferences-toggle";
 import { ProfileForm } from "./profile-form";
 import { BecomeCreatorButton } from "./become-creator-button";
 
@@ -60,6 +61,16 @@ export default async function ProfileEditPage() {
           Optional — helps your prompts show up tuned to you. Never shown on your public profile.
         </p>
         <ProProfileForm initial={proAttributes ?? null} variant="settings" />
+      </div>
+
+      <Separator className="my-10" />
+
+      <div className="max-w-lg">
+        <h2 className="text-xl font-medium tracking-tight font-serif mb-1">Messages</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Applies to any creator whose prompts you&apos;ve used.
+        </p>
+        <MessagePreferencesToggle initialOptOut={proAttributes?.creator_messages_opt_out ?? false} />
       </div>
 
       {profile.account_type === "client" && (

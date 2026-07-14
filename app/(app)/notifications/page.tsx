@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Bell, Flame } from "lucide-react";
+import { Bell, Flame, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { EmptyState } from "@/components/ui/empty-state";
 import { relativeTime } from "@/lib/utils";
 import type { Notification } from "@/lib/types/database";
+import { CreatorMessageOfferButton } from "./creator-message-offer-button";
 
 interface HotLeadPayload {
   score?: number;
   stage?: string;
   trigger_event_type?: string;
+}
+
+interface CreatorMessagePayload {
+  lead_message_id?: string;
+  creator_name?: string;
+  offer_label?: string;
+  offer_url?: string;
+  note?: string | null;
 }
 
 export const metadata: Metadata = {
@@ -98,6 +107,31 @@ export default async function NotificationsPage() {
                     <p className="text-xs text-muted-foreground mt-0.5">{relativeTime(n.created_at)}</p>
                   </div>
                 </Link>
+              );
+            }
+            if (n.type === "creator_message") {
+              const payload = (n.payload ?? {}) as CreatorMessagePayload;
+              return (
+                <div key={n.id} className="flex items-start gap-3 p-4 rounded-lg border">
+                  <Mail className="h-4 w-4 text-brand-600 dark:text-brand-300 shrink-0 mt-0.5" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm">
+                      <span className="font-medium">{payload.creator_name ?? "A creator"}</span> sent you
+                      something
+                    </p>
+                    {payload.offer_label && payload.offer_url && payload.lead_message_id && (
+                      <CreatorMessageOfferButton
+                        leadMessageId={payload.lead_message_id}
+                        label={payload.offer_label}
+                        url={payload.offer_url}
+                      />
+                    )}
+                    {payload.note && (
+                      <p className="text-sm text-muted-foreground mt-2">{payload.note}</p>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-2">{relativeTime(n.created_at)}</p>
+                  </div>
+                </div>
               );
             }
             if (n.prompts) {

@@ -50,6 +50,24 @@ export async function becomeCreator(): Promise<{ error?: string }> {
   return {};
 }
 
+/** LEAD-MESSAGING-SPEC.md's opt-out: independent upsert, touches only this
+ *  one column — never overwrites the rest of user_attributes on either the
+ *  insert or update path, same as saveProProfile's reverse case. */
+export async function updateMessagePreferences(optOut: boolean): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Not authenticated" };
+
+  const { error } = await supabase
+    .from("user_attributes")
+    .upsert({ user_id: user.id, creator_messages_opt_out: optOut }, { onConflict: "user_id" });
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/profile");
+  return {};
+}
+
 export async function uploadAvatar(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
