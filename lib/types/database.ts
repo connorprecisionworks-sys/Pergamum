@@ -442,6 +442,61 @@ export type Database = {
           },
         ]
       }
+      lead_messages: {
+        Row: {
+          body: string | null
+          clicked_at: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          lead_user_id: string
+          offer_slot_id: string | null
+          read_at: string | null
+        }
+        Insert: {
+          body?: string | null
+          clicked_at?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          lead_user_id: string
+          offer_slot_id?: string | null
+          read_at?: string | null
+        }
+        Update: {
+          body?: string | null
+          clicked_at?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          lead_user_id?: string
+          offer_slot_id?: string | null
+          read_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_messages_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_messages_lead_user_id_fkey"
+            columns: ["lead_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_messages_offer_slot_id_fkey"
+            columns: ["offer_slot_id"]
+            isOneToOne: false
+            referencedRelation: "offer_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -1393,6 +1448,7 @@ export type Database = {
           company_name: string | null
           company_size: Database["public"]["Enums"]["company_size_enum"] | null
           completed_at: string | null
+          creator_messages_opt_out: boolean
           goals: string[] | null
           industry: Database["public"]["Enums"]["industry_enum"] | null
           job_title: string | null
@@ -1408,6 +1464,7 @@ export type Database = {
           company_name?: string | null
           company_size?: Database["public"]["Enums"]["company_size_enum"] | null
           completed_at?: string | null
+          creator_messages_opt_out?: boolean
           goals?: string[] | null
           industry?: Database["public"]["Enums"]["industry_enum"] | null
           job_title?: string | null
@@ -1423,6 +1480,7 @@ export type Database = {
           company_name?: string | null
           company_size?: Database["public"]["Enums"]["company_size_enum"] | null
           completed_at?: string | null
+          creator_messages_opt_out?: boolean
           goals?: string[] | null
           industry?: Database["public"]["Enums"]["industry_enum"] | null
           job_title?: string | null
@@ -1555,6 +1613,14 @@ export type Database = {
         Returns: Json
       }
       record_prompt_copy: { Args: { p_prompt_id: string }; Returns: undefined }
+      send_lead_message: {
+        Args: {
+          p_body?: string
+          p_lead_user_id: string
+          p_offer_slot_id?: string
+        }
+        Returns: Json
+      }
       show_limit: { Args: never; Returns: number }
       show_trgm: { Args: { "": string }; Returns: string[] }
     }
@@ -1918,3 +1984,4 @@ export type AccountType = "client" | "creator";
 
 export type OfferSlot = Database["public"]["Tables"]["offer_slots"]["Row"];
 export type CreatorAlertSettings = Database["public"]["Tables"]["creator_alert_settings"]["Row"];
+export type LeadMessage = Database["public"]["Tables"]["lead_messages"]["Row"];

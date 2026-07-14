@@ -6,7 +6,10 @@ import { createClient } from "@/lib/supabase/server";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { AlertSettingsPanel } from "./alert-settings-panel";
+import { SendOfferButton } from "./send-offer-button";
 import { relativeTime } from "@/lib/utils";
+
+const COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
 export const metadata: Metadata = {
   title: "Leads",
@@ -116,17 +119,34 @@ export default async function LeadsPage() {
     .eq("creator_id", user.id)
     .maybeSingle();
 
-  const [{ data: offerSlots }, detailResults] = await Promise.all([
-    supabase.from("offer_slots").select("id").eq("creator_id", user.id).limit(1),
-    Promise.all(
-      leadList.map((l) => supabase.rpc("get_lead_detail", { p_user_id: l.user_id }))
-    ),
-  ]);
+  const [{ data: offerSlots }, { data: defaultOfferSlot }, { data: recentMessages }, detailResults] =
+    await Promise.all([
+      supabase.from("offer_slots").select("id").eq("creator_id", user.id).limit(1),
+      supabase
+        .from("offer_slots")
+        .select("id, label")
+        .eq("creator_id", user.id)
+        .is("prompt_id", null)
+        .maybeSingle(),
+      supabase
+        .from("lead_messages")
+        .select("lead_user_id, created_at")
+        .eq("creator_id", user.id)
+        .gte("created_at", new Date(Date.now() - COOLDOWN_MS).toISOString()),
+      Promise.all(leadList.map((l) => supabase.rpc("get_lead_detail", { p_user_id: l.user_id }))),
+    ]);
 
   const hasAnyOfferSlot = (offerSlots?.length ?? 0) > 0;
   const details = detailResults
     .map((r) => r.data as LeadDetail | null)
     .filter((d): d is LeadDetail => d !== null);
+
+  // At most one row per lead can exist in this 24h window — the RPC's own
+  // cooldown check rejects a second send before it, so no MAX() needed.
+  const cooldownByLead = new Map<string, string>();
+  for (const m of recentMessages ?? []) {
+    cooldownByLead.set(m.lead_user_id, new Date(new Date(m.created_at).getTime() + COOLDOWN_MS).toISOString());
+  }
 
   const promptIds = new Set<string>();
   const packIds = new Set<string>();
@@ -170,6 +190,7 @@ export default async function LeadsPage() {
         events,
         sourceTitle,
         suggestion: suggestedAction(l.stage, hasOfferClick, hasAnyOfferSlot),
+        cooldownUntil: cooldownByLead.get(l.user_id) ?? null,
       };
     })
     .sort((a, b) => b.score - a.score);
@@ -246,6 +267,12 @@ export default async function LeadsPage() {
                         {row.suggestion.text}
                       </p>
                     ))}
+
+                  <SendOfferButton
+                    leadUserId={row.userId}
+                    offerSlot={defaultOfferSlot}
+                    cooldownUntil={row.cooldownUntil}
+                  />
                 </div>
               </div>
             </div>
