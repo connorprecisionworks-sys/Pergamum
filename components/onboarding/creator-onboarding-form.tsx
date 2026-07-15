@@ -26,9 +26,11 @@ const OFFER_TYPES = [
 const STEPS = ["Offer", "First pack", "Offer slot", "Alerts", "Share"];
 
 interface OfferSlotInitial {
+  title: string | null;
   label: string;
   url: string;
   description: string | null;
+  imageUrl: string | null;
 }
 
 interface AlertSettingsInitial {
@@ -145,12 +147,18 @@ export function CreatorOnboardingForm({
   const [offerHeadline, setOfferHeadline] = useState(initialOfferHeadline ?? "");
   const [offerType, setOfferType] = useState<string | null>(null);
 
+  const [offerTitle, setOfferTitle] = useState(initialOfferSlot?.title ?? "");
   const [offerLabel, setOfferLabel] = useState(initialOfferSlot?.label ?? "Book a free strategy call");
   const [offerUrl, setOfferUrl] = useState(initialOfferSlot?.url ?? "");
   const [offerUrlTouched, setOfferUrlTouched] = useState(false);
   const [offerDescription, setOfferDescription] = useState(initialOfferSlot?.description ?? "");
+  const [offerImageUrl, setOfferImageUrl] = useState(initialOfferSlot?.imageUrl ?? "");
+  const [offerImageUrlTouched, setOfferImageUrlTouched] = useState(false);
   const offerUrlValid = !offerUrl.trim() || !!normalizeUrl(offerUrl);
   const offerUrlError = offerUrlTouched && !offerUrlValid ? "That link doesn't look like a valid URL." : null;
+  const offerImageUrlValid = !offerImageUrl.trim() || !!normalizeUrl(offerImageUrl);
+  const offerImageUrlError =
+    offerImageUrlTouched && !offerImageUrlValid ? "That image link doesn't look like a valid URL." : null;
 
   const [hotThreshold, setHotThreshold] = useState(initialAlertSettings?.hotThreshold ?? 50);
   const [inApp, setInApp] = useState(initialAlertSettings?.inApp ?? true);
@@ -199,9 +207,11 @@ export function CreatorOnboardingForm({
     setError(null);
     startTransition(async () => {
       const result = await saveOfferSlot({
+        title: offerTitle || null,
         label: offerLabel,
         url: offerUrl,
         description: offerDescription || null,
+        imageUrl: offerImageUrl || null,
       });
       if (result?.error) {
         setError(result.error);
@@ -325,6 +335,19 @@ export function CreatorOnboardingForm({
               </p>
 
               <div className="mb-4">
+                <label htmlFor="offer-title" className="mb-2 block text-[13px] text-foreground-muted">
+                  Headline (optional)
+                </label>
+                <input
+                  id="offer-title"
+                  value={offerTitle}
+                  onChange={(e) => setOfferTitle(e.target.value)}
+                  placeholder="Want help with this?"
+                  className="h-12 w-full rounded-xl border border-border-strong bg-background px-4 text-[15px] outline-none transition-colors placeholder:text-foreground-subtle focus:border-primary focus:ring-4 focus:ring-primary/10"
+                />
+              </div>
+
+              <div className="mb-4">
                 <label htmlFor="offer-label" className="mb-2 block text-[13px] text-foreground-muted">
                   Button text
                 </label>
@@ -358,7 +381,7 @@ export function CreatorOnboardingForm({
                 )}
               </div>
 
-              <div className="mb-8">
+              <div className="mb-4">
                 <label htmlFor="offer-description" className="mb-2 block text-[13px] text-foreground-muted">
                   Description (optional)
                 </label>
@@ -372,10 +395,31 @@ export function CreatorOnboardingForm({
                 />
               </div>
 
+              <div className="mb-8">
+                <label htmlFor="offer-image-url" className="mb-2 block text-[13px] text-foreground-muted">
+                  Image URL (optional)
+                </label>
+                <input
+                  id="offer-image-url"
+                  value={offerImageUrl}
+                  onChange={(e) => setOfferImageUrl(e.target.value)}
+                  onBlur={() => setOfferImageUrlTouched(true)}
+                  placeholder="https://…"
+                  aria-invalid={!!offerImageUrlError}
+                  aria-describedby={offerImageUrlError ? "offer-image-url-error" : undefined}
+                  className="h-12 w-full rounded-xl border border-border-strong bg-background px-4 text-[15px] outline-none transition-colors placeholder:text-foreground-subtle focus:border-primary focus:ring-4 focus:ring-primary/10"
+                />
+                {offerImageUrlError && (
+                  <p id="offer-image-url-error" className="mt-1.5 text-[13px] text-destructive">
+                    {offerImageUrlError}
+                  </p>
+                )}
+              </div>
+
               <ContinueButton
                 onClick={handleOfferSlotSave}
                 pending={pending}
-                disabled={!offerLabel.trim() || !offerUrl.trim() || !offerUrlValid}
+                disabled={!offerLabel.trim() || !offerUrl.trim() || !offerUrlValid || !offerImageUrlValid}
               />
               <button
                 type="button"

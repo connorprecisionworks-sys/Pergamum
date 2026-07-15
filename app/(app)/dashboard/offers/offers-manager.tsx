@@ -57,27 +57,46 @@ function ActiveToggle({
   );
 }
 
+interface SlotFormValue {
+  title: string | null;
+  label: string;
+  url: string;
+  description: string | null;
+  imageUrl: string | null;
+}
+
 function SlotForm({
   initial,
   onSave,
   saveLabel = "Save",
 }: {
-  initial: { label: string; url: string; description: string | null };
-  onSave: (input: { label: string; url: string; description: string | null }) => Promise<{ error?: string }>;
+  initial: SlotFormValue;
+  onSave: (input: SlotFormValue) => Promise<{ error?: string }>;
   saveLabel?: string;
 }) {
+  const [title, setTitle] = useState(initial.title ?? "");
   const [label, setLabel] = useState(initial.label);
   const [url, setUrl] = useState(initial.url);
   const [urlTouched, setUrlTouched] = useState(false);
   const [description, setDescription] = useState(initial.description ?? "");
+  const [imageUrl, setImageUrl] = useState(initial.imageUrl ?? "");
+  const [imageUrlTouched, setImageUrlTouched] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const urlValid = !url.trim() || !!normalizeUrl(url);
   const urlError = urlTouched && !urlValid ? "That link doesn't look like a valid URL." : null;
+  const imageUrlValid = !imageUrl.trim() || !!normalizeUrl(imageUrl);
+  const imageUrlError = imageUrlTouched && !imageUrlValid ? "That image link doesn't look like a valid URL." : null;
 
   const save = () => {
     startTransition(async () => {
-      const result = await onSave({ label, url, description: description || null });
+      const result = await onSave({
+        title: title || null,
+        label,
+        url,
+        description: description || null,
+        imageUrl: imageUrl || null,
+      });
       if (result?.error) {
         toast.error(result.error);
         return;
@@ -88,6 +107,25 @@ function SlotForm({
 
   return (
     <div className="space-y-3">
+      <div>
+        <Label className="text-xs">Headline (optional)</Label>
+        <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Want help with this?" />
+      </div>
+      <div>
+        <Label className="text-xs">Description (optional)</Label>
+        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
+      </div>
+      <div>
+        <Label className="text-xs">Image URL (optional)</Label>
+        <Input
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          onBlur={() => setImageUrlTouched(true)}
+          placeholder="https://…"
+          aria-invalid={!!imageUrlError}
+        />
+        {imageUrlError && <p className="mt-1 text-xs text-destructive">{imageUrlError}</p>}
+      </div>
       <div>
         <Label className="text-xs">Button text</Label>
         <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Book a free strategy call" />
@@ -103,11 +141,12 @@ function SlotForm({
         />
         {urlError && <p className="mt-1 text-xs text-destructive">{urlError}</p>}
       </div>
-      <div>
-        <Label className="text-xs">Description (optional)</Label>
-        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={2} />
-      </div>
-      <Button onClick={save} disabled={pending || !label.trim() || !url.trim() || !urlValid} size="sm" className="gap-1.5">
+      <Button
+        onClick={save}
+        disabled={pending || !label.trim() || !url.trim() || !urlValid || !imageUrlValid}
+        size="sm"
+        className="gap-1.5"
+      >
         {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
         {saveLabel}
       </Button>
@@ -161,9 +200,11 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
           )}
           <SlotForm
             initial={{
+              title: defaultSlot?.title ?? null,
               label: defaultSlot?.label ?? "Book a free strategy call",
               url: defaultSlot?.url ?? "",
               description: defaultSlot?.description ?? null,
+              imageUrl: defaultSlot?.image_url ?? null,
             }}
             onSave={saveOfferSlot}
           />
@@ -204,7 +245,13 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
                     </div>
                   </div>
                   <SlotForm
-                    initial={{ label: slot.label, url: slot.url, description: slot.description }}
+                    initial={{
+                      title: slot.title,
+                      label: slot.label,
+                      url: slot.url,
+                      description: slot.description,
+                      imageUrl: slot.image_url,
+                    }}
                     onSave={(input) => savePromptOfferSlot(slot.prompt_id as string, input)}
                   />
                 </div>
@@ -222,7 +269,7 @@ export function OffersManager({ defaultSlot, promptSlots, publishedPrompts }: Of
                   {eligiblePrompts.find((p) => p.id === addingForPromptId)?.title}
                 </div>
                 <SlotForm
-                  initial={{ label: "", url: "", description: null }}
+                  initial={{ title: null, label: "", url: "", description: null, imageUrl: null }}
                   saveLabel="Add override"
                   onSave={async (input) => {
                     const result = await savePromptOfferSlot(addingForPromptId, input);

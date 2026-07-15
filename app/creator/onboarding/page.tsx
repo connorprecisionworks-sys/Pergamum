@@ -91,7 +91,15 @@ export default async function CreatorOnboardingPage() {
       hasPublishedPack={hasPublishedPack}
       publishedPackSlug={publishedPackSlug}
       initialOfferSlot={
-        offerSlot ? { label: offerSlot.label, url: offerSlot.url, description: offerSlot.description } : null
+        offerSlot
+          ? {
+              title: offerSlot.title,
+              label: offerSlot.label,
+              url: offerSlot.url,
+              description: offerSlot.description,
+              imageUrl: offerSlot.image_url,
+            }
+          : null
       }
       initialAlertSettings={
         alertSettings

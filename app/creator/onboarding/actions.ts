@@ -31,9 +31,11 @@ export async function saveOfferHeadline(headline: string): Promise<{ error?: str
  * column-list upsert Supabase's client sends does not include it.
  */
 export async function saveOfferSlot(input: {
+  title: string | null;
   label: string;
   url: string;
   description: string | null;
+  imageUrl: string | null;
 }): Promise<{ error?: string }> {
   const supabase = await createClient();
   const {
@@ -46,6 +48,8 @@ export async function saveOfferSlot(input: {
   if (!input.url.trim()) return { error: "Add a link for people to book or reach you." };
   const url = normalizeUrl(input.url);
   if (!url) return { error: "That link doesn't look like a valid URL." };
+  const imageUrl = input.imageUrl?.trim() ? normalizeUrl(input.imageUrl) : null;
+  if (input.imageUrl?.trim() && !imageUrl) return { error: "That image link doesn't look like a valid URL." };
 
   const { data: existing } = await supabase
     .from("offer_slots")
@@ -54,16 +58,17 @@ export async function saveOfferSlot(input: {
     .is("prompt_id", null)
     .maybeSingle();
 
+  const title = input.title?.trim() || null;
   const description = input.description?.trim() || null;
 
   const { error } = existing
     ? await supabase
         .from("offer_slots")
-        .update({ label, url, description })
+        .update({ title, label, url, description, image_url: imageUrl })
         .eq("id", existing.id)
     : await supabase
         .from("offer_slots")
-        .insert({ creator_id: user.id, prompt_id: null, label, url, description });
+        .insert({ creator_id: user.id, prompt_id: null, title, label, url, description, image_url: imageUrl });
 
   if (error) return { error: "Couldn't save that. Try again." };
   return {};

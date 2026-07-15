@@ -559,8 +559,10 @@ export type Database = {
           creator_id: string
           description: string | null
           id: string
+          image_url: string | null
           label: string
           prompt_id: string | null
+          title: string | null
           updated_at: string
           url: string
         }
@@ -570,8 +572,10 @@ export type Database = {
           creator_id: string
           description?: string | null
           id?: string
+          image_url?: string | null
           label: string
           prompt_id?: string | null
+          title?: string | null
           updated_at?: string
           url: string
         }
@@ -581,8 +585,10 @@ export type Database = {
           creator_id?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           label?: string
           prompt_id?: string | null
+          title?: string | null
           updated_at?: string
           url?: string
         }

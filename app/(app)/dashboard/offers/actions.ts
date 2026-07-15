@@ -12,7 +12,7 @@ import { normalizeUrl } from "@/lib/utils";
  */
 export async function savePromptOfferSlot(
   promptId: string,
-  input: { label: string; url: string; description: string | null }
+  input: { title: string | null; label: string; url: string; description: string | null; imageUrl: string | null }
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
   const {
@@ -25,6 +25,8 @@ export async function savePromptOfferSlot(
   if (!input.url.trim()) return { error: "Add a link for people to book or reach you." };
   const url = normalizeUrl(input.url);
   if (!url) return { error: "That link doesn't look like a valid URL." };
+  const imageUrl = input.imageUrl?.trim() ? normalizeUrl(input.imageUrl) : null;
+  if (input.imageUrl?.trim() && !imageUrl) return { error: "That image link doesn't look like a valid URL." };
 
   const { data: prompt } = await supabase
     .from("prompts")
@@ -41,11 +43,17 @@ export async function savePromptOfferSlot(
     .eq("prompt_id", promptId)
     .maybeSingle();
 
+  const title = input.title?.trim() || null;
   const description = input.description?.trim() || null;
 
   const { error } = existing
-    ? await supabase.from("offer_slots").update({ label, url, description }).eq("id", existing.id)
-    : await supabase.from("offer_slots").insert({ creator_id: user.id, prompt_id: promptId, label, url, description });
+    ? await supabase
+        .from("offer_slots")
+        .update({ title, label, url, description, image_url: imageUrl })
+        .eq("id", existing.id)
+    : await supabase
+        .from("offer_slots")
+        .insert({ creator_id: user.id, prompt_id: promptId, title, label, url, description, image_url: imageUrl });
 
   if (error) return { error: "Couldn't save that. Try again." };
   revalidatePath("/dashboard/offers");
