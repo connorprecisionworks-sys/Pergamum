@@ -1,15 +1,15 @@
 interface LeadStats {
-  total_leads: number;
+  reached: number;
   hot_leads: number;
   offer_clicks: number;
-  new_this_week: number;
+  booked: number;
 }
 
 const TILES: { key: keyof LeadStats; label: string }[] = [
-  { key: "total_leads", label: "Total leads" },
+  { key: "reached", label: "Reached" },
   { key: "hot_leads", label: "Hot leads" },
   { key: "offer_clicks", label: "Offer clicks" },
-  { key: "new_this_week", label: "New this week" },
+  { key: "booked", label: "Booked" },
 ];
 
 export function LeadKpiRow({ stats }: { stats: LeadStats }) {

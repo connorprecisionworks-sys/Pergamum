@@ -41,11 +41,25 @@ export function AlertSettingsPanel({ initial }: AlertSettingsPanelProps) {
   const [emailMode, setEmailMode] = useState<"instant" | "daily_digest">(
     (initial?.email_mode as "instant" | "daily_digest") ?? "instant"
   );
+  const [dealValue, setDealValue] = useState(initial?.deal_value?.toString() ?? "");
   const [pending, startTransition] = useTransition();
 
   const save = () => {
     startTransition(async () => {
-      const result = await saveAlertSettings({ hotThreshold, inApp, email: emailOn, emailMode });
+      const trimmed = dealValue.trim();
+      const parsedDealValue = trimmed ? Number(trimmed) : null;
+      if (trimmed && !Number.isFinite(parsedDealValue)) {
+        toast.error("Deal value must be a number.");
+        return;
+      }
+
+      const result = await saveAlertSettings({
+        hotThreshold,
+        inApp,
+        email: emailOn,
+        emailMode,
+        dealValue: parsedDealValue,
+      });
       if (result?.error) {
         toast.error(result.error);
         return;
@@ -102,6 +116,29 @@ export function AlertSettingsPanel({ initial }: AlertSettingsPanelProps) {
         <div className="flex items-center justify-between rounded-md border border-dashed px-3 py-2 opacity-60">
           <span className="text-sm">Slack</span>
           <span className="text-[11px] uppercase tracking-[0.08em] text-muted-foreground">Coming soon</span>
+        </div>
+
+        <div>
+          <div className="mb-1.5 flex items-center justify-between text-xs text-muted-foreground">
+            <span>Deal value</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-sm text-muted-foreground">$</span>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              inputMode="decimal"
+              placeholder="3000"
+              value={dealValue}
+              onChange={(e) => setDealValue(e.target.value)}
+              disabled={pending}
+              className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
+            />
+          </div>
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            What a typical client is worth to you. Drives the potential pipeline number above.
+          </p>
         </div>
 
         <div>

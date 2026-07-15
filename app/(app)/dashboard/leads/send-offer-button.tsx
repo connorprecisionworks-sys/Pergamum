@@ -21,13 +21,20 @@ interface SendOfferButtonProps {
   offerSlot: { id: string; label: string } | null;
   /** ISO timestamp 24h after the last send to this lead, if still within cooldown. */
   cooldownUntil: string | null;
+  /** Defaults to a top margin for the list-row layout; pass "" inside a button row. */
+  className?: string;
 }
 
 function hoursRemaining(untilIso: string): number {
   return Math.max(1, Math.ceil((new Date(untilIso).getTime() - Date.now()) / (60 * 60 * 1000)));
 }
 
-export function SendOfferButton({ leadUserId, offerSlot, cooldownUntil }: SendOfferButtonProps) {
+export function SendOfferButton({
+  leadUserId,
+  offerSlot,
+  cooldownUntil,
+  className = "mt-3 gap-1.5",
+}: SendOfferButtonProps) {
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState("");
   const [sent, setSent] = useState(false);
@@ -37,7 +44,7 @@ export function SendOfferButton({ leadUserId, offerSlot, cooldownUntil }: SendOf
     return (
       <Link
         href="/dashboard/offers"
-        className="mt-3 block rounded-md bg-secondary/60 px-3 py-2 text-xs text-foreground underline-offset-2 hover:underline"
+        className={`${className} block rounded-md bg-secondary/60 px-3 py-2 text-xs text-foreground underline-offset-2 hover:underline`}
       >
         Set an offer slot to send this lead something.
       </Link>
@@ -65,7 +72,7 @@ export function SendOfferButton({ leadUserId, offerSlot, cooldownUntil }: SendOf
         type="button"
         variant="outline"
         size="sm"
-        className="mt-3 gap-1.5"
+        className={className}
         onClick={() => {
           setSent(false);
           setNote("");

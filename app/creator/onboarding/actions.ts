@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { normalizeUrl } from "@/lib/utils";
 
@@ -74,18 +75,32 @@ export async function saveOfferSlot(input: {
   return {};
 }
 
-/** Step 4 — alert preferences. creator_id is the primary key, so a plain upsert is safe. */
+/**
+ * Step 4 — alert preferences. creator_id is the primary key, so a plain
+ * upsert is safe. dealValue is optional — the onboarding flow doesn't
+ * collect it (that's a dashboard-only input), so omitting it leaves any
+ * existing deal_value untouched rather than upsert-nulling it out.
+ */
 export async function saveAlertSettings(input: {
   hotThreshold: number;
   inApp: boolean;
   email: boolean;
   emailMode: "instant" | "daily_digest";
+  dealValue?: number | null;
 }): Promise<{ error?: string }> {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Not authenticated" };
+
+  if (
+    input.dealValue !== undefined &&
+    input.dealValue !== null &&
+    (!Number.isFinite(input.dealValue) || input.dealValue < 0)
+  ) {
+    return { error: "Deal value must be a positive number." };
+  }
 
   const { error } = await supabase.from("creator_alert_settings").upsert(
     {
@@ -94,11 +109,13 @@ export async function saveAlertSettings(input: {
       in_app: input.inApp,
       email: input.email,
       email_mode: input.emailMode,
+      ...(input.dealValue !== undefined ? { deal_value: input.dealValue } : {}),
     },
     { onConflict: "creator_id" }
   );
 
   if (error) return { error: "Couldn't save that. Try again." };
+  revalidatePath("/dashboard/leads");
   return {};
 }
 

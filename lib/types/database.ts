@@ -263,6 +263,7 @@ export type Database = {
           cooldown_hours: number
           created_at: string
           creator_id: string
+          deal_value: number | null
           email: boolean
           email_mode: string
           hot_threshold: number
@@ -274,6 +275,7 @@ export type Database = {
           cooldown_hours?: number
           created_at?: string
           creator_id: string
+          deal_value?: number | null
           email?: boolean
           email_mode?: string
           hot_threshold?: number
@@ -285,6 +287,7 @@ export type Database = {
           cooldown_hours?: number
           created_at?: string
           creator_id?: string
+          deal_value?: number | null
           email?: boolean
           email_mode?: string
           hot_threshold?: number
@@ -337,6 +340,7 @@ export type Database = {
       }
       lead_alert_state: {
         Row: {
+          booked_at: string | null
           creator_id: string
           last_alerted_at: string | null
           last_score: number
@@ -345,6 +349,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          booked_at?: string | null
           creator_id: string
           last_alerted_at?: string | null
           last_score?: number
@@ -353,6 +358,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          booked_at?: string | null
           creator_id?: string
           last_alerted_at?: string | null
           last_score?: number
@@ -1589,16 +1595,26 @@ export type Database = {
       check_badges_for_user: { Args: { p_user_id: string }; Returns: undefined }
       get_engagement_series: {
         Args: { p_days?: number }
-        Returns: { count: number; day: string }[]
+        Returns: { clicks: number; copies: number; day: string; directed: number }[]
       }
       get_lead_detail: { Args: { p_user_id: string }; Returns: Json }
+      get_lead_funnel: {
+        Args: never
+        Returns: {
+          booked: number
+          clicked: number
+          hot: number
+          reached: number
+          used: number
+        }[]
+      }
       get_lead_stats: {
         Args: never
         Returns: {
+          booked: number
           hot_leads: number
-          new_this_week: number
           offer_clicks: number
-          total_leads: number
+          reached: number
         }[]
       }
       get_my_leads: {
@@ -1613,7 +1629,13 @@ export type Database = {
       }
       get_prompt_performance: {
         Args: never
-        Returns: { lead_count: number; prompt_id: string; title: string }[]
+        Returns: {
+          hot_count: number
+          lead_count: number
+          offer_click_count: number
+          prompt_id: string
+          title: string
+        }[]
       }
       lead_event_weight: {
         Args: { p_event_type: string; p_meta: Json }
@@ -1624,6 +1646,10 @@ export type Database = {
         Returns: number
       }
       lead_stage: { Args: { p_score: number }; Returns: string }
+      mark_lead_booked: {
+        Args: { p_booked: boolean; p_user_id: string }
+        Returns: boolean
+      }
       purge_old_rate_limit_logs: { Args: never; Returns: undefined }
       record_lead_event: {
         Args: {

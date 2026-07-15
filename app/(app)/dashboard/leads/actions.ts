@@ -86,3 +86,21 @@ async function notifyLeadByEmail(
 
   await sendLeadMessageEmail(email, creatorName, offerResult.data?.label, offerResult.data?.url, body);
 }
+
+export async function markLeadBooked(leadUserId: string, booked: boolean): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Sign in to do that." };
+
+  const { data, error } = await supabase.rpc("mark_lead_booked", {
+    p_user_id: leadUserId,
+    p_booked: booked,
+  });
+
+  if (error || !data) return { error: "Couldn't update that. Try again." };
+
+  revalidatePath("/dashboard/leads");
+  return {};
+}
