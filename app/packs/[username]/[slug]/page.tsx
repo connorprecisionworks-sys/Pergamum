@@ -83,7 +83,7 @@ export default async function PackPage({ params, searchParams }: PackPageProps) 
   // creator's default offer slot — never a per-prompt override.
   const { data: offerSlot } = await supabase
     .from("offer_slots")
-    .select("id, label, url, description")
+    .select("id, title, label, url, description, image_url")
     .eq("creator_id", owner.id)
     .eq("active", true)
     .is("prompt_id", null)

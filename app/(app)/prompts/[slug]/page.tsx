@@ -109,7 +109,7 @@ export default async function PromptPage({ params, searchParams }: PromptPagePro
   // section 6. .in() can't match a NULL prompt_id, hence .or().
   const { data: candidateSlots } = await supabase
     .from("offer_slots")
-    .select("id, prompt_id, label, url, description")
+    .select("id, prompt_id, title, label, url, description, image_url")
     .eq("creator_id", prompt.author_id)
     .eq("active", true)
     .or(`prompt_id.eq.${prompt.id},prompt_id.is.null`);

@@ -22,7 +22,14 @@ interface PackDetailProps {
   followerCount: number;
   funnelMode: boolean;
   /** Creator's default offer slot (prompt_id IS NULL), if one is active. */
-  offerSlot?: { id: string; label: string; url: string; description: string | null } | null;
+  offerSlot?: {
+    id: string;
+    title: string | null;
+    label: string;
+    url: string;
+    description: string | null;
+    image_url: string | null;
+  } | null;
   /** Builder's live preview: static "Get this pack" pill, no writes. */
   previewMode?: boolean;
 }
@@ -153,9 +160,17 @@ export function PackDetail({
           </div>
 
           {/* Offer slot — mirrors prompt-detail's peak-value moment, gated
-              on a pack-level hasRun (any track run this visit). */}
+              on a pack-level hasRun (any track run this visit). Renders as
+              a fixed-position popup, not inline in this flow. */}
           {offerSlot && (
-            <PackOfferSlot offerSlot={offerSlot} packId={pack.id} currentUserId={currentUserId} />
+            <PackOfferSlot
+              offerSlot={offerSlot}
+              packId={pack.id}
+              creatorId={pack.creator_id}
+              creatorName={creatorName}
+              creatorAvatarUrl={creator.avatar_url}
+              currentUserId={currentUserId}
+            />
           )}
 
           <Separator />

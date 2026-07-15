@@ -13,7 +13,7 @@ import { PresetPanel } from "./preset-panel";
 import { ClaimButton } from "./claim-button";
 import { SavePromptButton } from "./save-prompt-button";
 import { ModelBadge } from "./model-badge";
-import { OfferSlotCard } from "./offer-slot-card";
+import { OfferPopup } from "@/components/offers/offer-popup";
 import { formatCount, relativeTime, detectVariableNames, substituteVariables } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
 import { savePendingClaim } from "@/lib/anon-claim";
@@ -29,7 +29,14 @@ interface PromptDetailProps {
   /** Seeds the variable form — used by /library's "Run again" and preset "Load" deep-links. */
   initialValues?: Record<string, string>;
   /** Resolved per-prompt override or creator default — null if neither is active. */
-  offerSlot?: { id: string; label: string; url: string; description: string | null } | null;
+  offerSlot?: {
+    id: string;
+    title: string | null;
+    label: string;
+    url: string;
+    description: string | null;
+    image_url: string | null;
+  } | null;
 }
 
 export function PromptDetail({
@@ -211,19 +218,23 @@ export function PromptDetail({
       </div>
 
       {/* Offer slot — the peak-value moment right after a run, per
-          HOT-LEAD-HEAT-SPEC.md section 6. Anonymous visitors see it too. */}
+          HOT-LEAD-HEAT-SPEC.md section 6. Anonymous visitors see it too.
+          Renders as a fixed-position popup, not inline in this flow. */}
       {hasRun && offerSlot && (
-        <div className="border-t border-border px-8 py-6 md:px-[72px]">
-          <OfferSlotCard
-            offerSlotId={offerSlot.id}
-            promptId={prompt.id}
-            packId={null}
-            currentUserId={currentUserId}
-            label={offerSlot.label}
-            url={offerSlot.url}
-            description={offerSlot.description}
-          />
-        </div>
+        <OfferPopup
+          offerSlotId={offerSlot.id}
+          promptId={prompt.id}
+          packId={null}
+          creatorId={prompt.author_id}
+          currentUserId={currentUserId}
+          creatorName={author?.display_name ?? author?.username ?? "This creator"}
+          creatorAvatarUrl={author?.avatar_url ?? null}
+          title={offerSlot.title}
+          label={offerSlot.label}
+          url={offerSlot.url}
+          description={offerSlot.description}
+          imageUrl={offerSlot.image_url}
+        />
       )}
 
       {/* Secondary rail — everything the mockup's rail doesn't show but the
