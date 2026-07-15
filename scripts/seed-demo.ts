@@ -430,7 +430,7 @@ async function getOrCreateFakeLead(n: number): Promise<string> {
   if (!error && created.user) return created.user.id;
 
   // Already exists (re-running the seed) — look it up instead of failing.
-  if (error && /already registered|already exists/i.test(error.message)) {
+  if (error && /already.*registered|already exists/i.test(error.message)) {
     let page = 1;
     const perPage = 200;
     for (;;) {
