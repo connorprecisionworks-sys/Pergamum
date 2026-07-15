@@ -23,6 +23,20 @@ export function leadHandle(userId: string): string {
   return `Lead #${userId.replace(/-/g, "").slice(0, 6).toUpperCase()}`;
 }
 
+/** "Title · Company" — either half may be absent (business-identity-only consent has both, but not always a name). */
+export function identityLine(title: string | null, company: string | null): string | null {
+  if (title && company) return `${title} · ${company}`;
+  return title || company || null;
+}
+
+/** Initials from a real name, for the avatar fallback once identity is unlocked. */
+export function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const first = parts[0]?.[0] ?? "";
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : "";
+  return (first + last).toUpperCase();
+}
+
 /** Deterministic HSL from the user id — a stable "generated avatar" with no external service. */
 export function avatarColor(userId: string): string {
   let hash = 0;

@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Lock } from "lucide-react";
+import { Lock, Linkedin } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetBody } from "@/components/ui/sheet";
 import { relativeTime } from "@/lib/utils";
-import { STAGE_LABEL, STAGE_DOT, leadHandle, avatarColor, type SuggestedAction } from "./lead-format";
+import {
+  STAGE_LABEL,
+  STAGE_DOT,
+  leadHandle,
+  avatarColor,
+  identityLine,
+  initials,
+  type SuggestedAction,
+} from "./lead-format";
 import { SendOfferButton } from "./send-offer-button";
 import { MarkBookedButton } from "./mark-booked-button";
 
@@ -27,6 +35,10 @@ interface LeadRowProps {
   suggestion: SuggestedAction | null;
   offerSlot: { id: string; label: string } | null;
   cooldownUntil: string | null;
+  leadName: string | null;
+  leadTitle: string | null;
+  leadCompany: string | null;
+  leadLinkedin: string | null;
 }
 
 function BookedChip() {
@@ -49,9 +61,17 @@ export function LeadRow({
   suggestion,
   offerSlot,
   cooldownUntil,
+  leadName,
+  leadTitle,
+  leadCompany,
+  leadLinkedin,
 }: LeadRowProps) {
   const [open, setOpen] = useState(false);
   const handle = leadHandle(userId);
+  const hasIdentity = !!(leadName || leadTitle || leadCompany);
+  const displayName = leadName ?? handle;
+  const avatarInitials = leadName ? initials(leadName) : handle.slice(-2);
+  const subline = identityLine(leadTitle, leadCompany);
 
   return (
     <>
@@ -67,13 +87,13 @@ export function LeadRow({
         <div className="flex items-start gap-3">
           <Avatar className="h-9 w-9 shrink-0">
             <AvatarFallback style={{ backgroundColor: avatarColor(userId) }} className="text-[11px] font-medium">
-              {handle.slice(-2)}
+              {avatarInitials}
             </AvatarFallback>
           </Avatar>
 
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-medium">{handle}</span>
+              <span className="font-medium">{displayName}</span>
               <span className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs">
                 <span className={`h-1.5 w-1.5 rounded-full ${STAGE_DOT[stage] ?? "bg-foreground-subtle"}`} />
                 {STAGE_LABEL[stage] ?? stage}
@@ -82,6 +102,8 @@ export function LeadRow({
               {bookedAt && <BookedChip />}
               <span className="text-xs text-muted-foreground">· last active {relativeTime(updatedAt)}</span>
             </div>
+
+            {subline && <p className="mt-0.5 text-xs text-muted-foreground">{subline}</p>}
 
             {sourceTitle && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -129,11 +151,12 @@ export function LeadRow({
             <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10 shrink-0">
                 <AvatarFallback style={{ backgroundColor: avatarColor(userId) }} className="text-xs font-medium">
-                  {handle.slice(-2)}
+                  {avatarInitials}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <SheetTitle>{handle}</SheetTitle>
+                <SheetTitle>{displayName}</SheetTitle>
+                {subline && <p className="text-xs text-muted-foreground">{subline}</p>}
                 <div className="mt-1 flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs">
                     <span className={`h-1.5 w-1.5 rounded-full ${STAGE_DOT[stage] ?? "bg-foreground-subtle"}`} />
@@ -147,10 +170,24 @@ export function LeadRow({
           </SheetHeader>
 
           <SheetBody className="space-y-6">
-            <div className="flex items-center gap-2 rounded-md border border-dashed px-3 py-2.5 text-xs text-muted-foreground">
-              <Lock className="h-3.5 w-3.5 shrink-0" />
-              Identity unlocks on Business when this lead consents.
-            </div>
+            {hasIdentity ? (
+              leadLinkedin && (
+                <a
+                  href={leadLinkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                >
+                  <Linkedin className="h-3.5 w-3.5 shrink-0" />
+                  View LinkedIn
+                </a>
+              )
+            ) : (
+              <div className="flex items-center gap-2 rounded-md border border-dashed px-3 py-2.5 text-xs text-muted-foreground">
+                <Lock className="h-3.5 w-3.5 shrink-0" />
+                Identity unlocks on Business when this lead consents.
+              </div>
+            )}
 
             {sourceTitle && (
               <p className="text-sm text-muted-foreground">

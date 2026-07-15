@@ -342,6 +342,7 @@ export type Database = {
         Row: {
           booked_at: string | null
           creator_id: string
+          identity_consented: boolean
           last_alerted_at: string | null
           last_score: number
           stage: string
@@ -351,6 +352,7 @@ export type Database = {
         Insert: {
           booked_at?: string | null
           creator_id: string
+          identity_consented?: boolean
           last_alerted_at?: string | null
           last_score?: number
           stage?: string
@@ -360,6 +362,7 @@ export type Database = {
         Update: {
           booked_at?: string | null
           creator_id?: string
+          identity_consented?: boolean
           last_alerted_at?: string | null
           last_score?: number
           stage?: string
@@ -821,6 +824,7 @@ export type Database = {
           location: string | null
           offer_headline: string | null
           onboarding_complete: boolean
+          plan: string
           reputation: number
           twitter: string | null
           updated_at: string
@@ -844,6 +848,7 @@ export type Database = {
           location?: string | null
           offer_headline?: string | null
           onboarding_complete?: boolean
+          plan?: string
           reputation?: number
           twitter?: string | null
           updated_at?: string
@@ -867,6 +872,7 @@ export type Database = {
           location?: string | null
           offer_headline?: string | null
           onboarding_complete?: boolean
+          plan?: string
           reputation?: number
           twitter?: string | null
           updated_at?: string
@@ -1622,6 +1628,10 @@ export type Database = {
         Returns: {
           booked_at: string | null
           last_alerted_at: string
+          lead_company: string | null
+          lead_linkedin: string | null
+          lead_name: string | null
+          lead_title: string | null
           score: number
           stage: string
           updated_at: string

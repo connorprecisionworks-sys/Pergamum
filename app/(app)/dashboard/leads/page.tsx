@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Flame } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Badge } from "@/components/ui/badge";
 import { AlertSettingsPanel } from "./alert-settings-panel";
 import { LeadRow } from "./lead-row";
 import { LeadKpiRow } from "./lead-kpi-row";
@@ -23,6 +24,10 @@ interface LeadDetail {
   score: number;
   stage: string;
   last_alerted_at: string | null;
+  lead_name: string | null;
+  lead_title: string | null;
+  lead_company: string | null;
+  lead_linkedin: string | null;
   events: LeadEvent[];
 }
 
@@ -40,6 +45,7 @@ export default async function LeadsPage() {
     { data: funnelRows },
     { data: engagementRows },
     { data: promptRows },
+    { data: profile },
   ] = await Promise.all([
     supabase.rpc("get_my_leads"),
     supabase.from("creator_alert_settings").select("*").eq("creator_id", user.id).maybeSingle(),
@@ -47,8 +53,10 @@ export default async function LeadsPage() {
     supabase.rpc("get_lead_funnel"),
     supabase.rpc("get_engagement_series", { p_days: 14 }),
     supabase.rpc("get_prompt_performance"),
+    supabase.from("profiles").select("plan").eq("id", user.id).maybeSingle(),
   ]);
   const leadList = leads ?? [];
+  const isBusinessPlan = profile?.plan === "business";
   const stats = statsRows?.[0] ?? { reached: 0, hot_leads: 0, offer_clicks: 0, booked: 0 };
   const funnel = funnelRows?.[0] ?? { reached: 0, used: 0, hot: 0, clicked: 0, booked: 0 };
   const engagement = engagementRows ?? [];
@@ -128,6 +136,10 @@ export default async function LeadsPage() {
         sourceTitle,
         suggestion: suggestedAction(l.stage, hasOfferClick, hasAnyOfferSlot),
         cooldownUntil: cooldownByLead.get(l.user_id) ?? null,
+        leadName: detail?.lead_name ?? null,
+        leadTitle: detail?.lead_title ?? null,
+        leadCompany: detail?.lead_company ?? null,
+        leadLinkedin: detail?.lead_linkedin ?? null,
       };
     })
     .sort((a, b) => b.score - a.score);
@@ -135,7 +147,10 @@ export default async function LeadsPage() {
   return (
     <div className="container max-w-3xl py-10">
       <div className="mb-6">
-        <h1 className="text-3xl font-medium tracking-tight font-serif">Leads</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-3xl font-medium tracking-tight font-serif">Leads</h1>
+          {isBusinessPlan && <Badge variant="brand">Business</Badge>}
+        </div>
         <p className="mt-1 text-muted-foreground">
           Everyone who&rsquo;s used your prompts, ranked by how likely they are to hire you.
         </p>
@@ -190,6 +205,10 @@ export default async function LeadsPage() {
               suggestion={row.suggestion}
               offerSlot={defaultOfferSlot}
               cooldownUntil={row.cooldownUntil}
+              leadName={row.leadName}
+              leadTitle={row.leadTitle}
+              leadCompany={row.leadCompany}
+              leadLinkedin={row.leadLinkedin}
             />
           ))}
         </div>
