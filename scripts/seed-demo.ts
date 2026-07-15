@@ -29,11 +29,11 @@ const DEMO_EMAIL_DOMAIN = "prmpt-demo.test";
 const DEMO_EMAIL_PREFIX = "demoseed+";
 const TARGET_USERNAME = "user_20c5de1f";
 const TARGET_EMAIL = "torbs600@gmail.com";
-const DEAL_VALUE = 5000;
+const DEAL_VALUE = 2000;
 const TOTAL_LEADS = 34;
-const HOT_COUNT = 8;
-const WARM_CLICK_COUNT = 4;
-const BOOKED_COUNT = 3;
+const HOT_COUNT = 6;
+const WARM_CLICK_COUNT = 3;
+const BOOKED_COUNT = 2;
 const PROMPT_WEIGHTS = [0.55, 0.3, 0.15];
 
 type LeadEventType =
