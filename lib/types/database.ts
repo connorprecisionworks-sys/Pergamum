@@ -1587,7 +1587,20 @@ export type Database = {
         Returns: number
       }
       check_badges_for_user: { Args: { p_user_id: string }; Returns: undefined }
+      get_engagement_series: {
+        Args: { p_days?: number }
+        Returns: { count: number; day: string }[]
+      }
       get_lead_detail: { Args: { p_user_id: string }; Returns: Json }
+      get_lead_stats: {
+        Args: never
+        Returns: {
+          hot_leads: number
+          new_this_week: number
+          offer_clicks: number
+          total_leads: number
+        }[]
+      }
       get_my_leads: {
         Args: never
         Returns: {
@@ -1597,6 +1610,10 @@ export type Database = {
           updated_at: string
           user_id: string
         }[]
+      }
+      get_prompt_performance: {
+        Args: never
+        Returns: { lead_count: number; prompt_id: string; title: string }[]
       }
       lead_event_weight: {
         Args: { p_event_type: string; p_meta: Json }

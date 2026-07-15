@@ -7,6 +7,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { EmptyState } from "@/components/ui/empty-state";
 import { AlertSettingsPanel } from "./alert-settings-panel";
 import { SendOfferButton } from "./send-offer-button";
+import { LeadKpiRow } from "./lead-kpi-row";
+import { EngagementChart } from "./engagement-chart";
+import { PromptPerformance } from "./prompt-performance";
 import { relativeTime } from "@/lib/utils";
 
 const COOLDOWN_MS = 24 * 60 * 60 * 1000;
@@ -110,14 +113,23 @@ export default async function LeadsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login?next=/dashboard/leads");
 
-  const { data: leads } = await supabase.rpc("get_my_leads");
+  const [
+    { data: leads },
+    { data: alertSettings },
+    { data: statsRows },
+    { data: engagementRows },
+    { data: promptRows },
+  ] = await Promise.all([
+    supabase.rpc("get_my_leads"),
+    supabase.from("creator_alert_settings").select("*").eq("creator_id", user.id).maybeSingle(),
+    supabase.rpc("get_lead_stats"),
+    supabase.rpc("get_engagement_series", { p_days: 14 }),
+    supabase.rpc("get_prompt_performance"),
+  ]);
   const leadList = leads ?? [];
-
-  const { data: alertSettings } = await supabase
-    .from("creator_alert_settings")
-    .select("*")
-    .eq("creator_id", user.id)
-    .maybeSingle();
+  const stats = statsRows?.[0] ?? { total_leads: 0, hot_leads: 0, offer_clicks: 0, new_this_week: 0 };
+  const engagement = engagementRows ?? [];
+  const promptPerformance = promptRows ?? [];
 
   const [{ data: offerSlots }, { data: defaultOfferSlot }, { data: recentMessages }, detailResults] =
     await Promise.all([
@@ -202,6 +214,22 @@ export default async function LeadsPage() {
         <p className="mt-1 text-muted-foreground">
           Everyone who&rsquo;s used your prompts, ranked by how likely they are to hire you.
         </p>
+      </div>
+
+      <div className="mb-8 space-y-6">
+        <LeadKpiRow stats={stats} />
+
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h2 className="mb-3 text-sm font-medium text-foreground">Engagement over time</h2>
+          <EngagementChart data={engagement} />
+        </div>
+
+        {promptPerformance.length > 0 && (
+          <div className="rounded-lg border border-border bg-card p-4">
+            <h2 className="mb-4 text-sm font-medium text-foreground">Prompt performance</h2>
+            <PromptPerformance rows={promptPerformance} />
+          </div>
+        )}
       </div>
 
       <div className="mb-8">
