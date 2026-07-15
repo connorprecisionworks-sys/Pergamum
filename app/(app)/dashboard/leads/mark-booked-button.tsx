@@ -6,8 +6,14 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { markLeadBooked } from "./actions";
 
-export function MarkBookedButton({ leadUserId }: { leadUserId: string }) {
-  const [booked, setBooked] = useState(false);
+export function MarkBookedButton({
+  leadUserId,
+  initialBooked = false,
+}: {
+  leadUserId: string;
+  initialBooked?: boolean;
+}) {
+  const [booked, setBooked] = useState(initialBooked);
   const [isPending, startTransition] = useTransition();
 
   const toggle = () => {

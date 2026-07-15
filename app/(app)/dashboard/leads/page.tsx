@@ -123,6 +123,7 @@ export default async function LeadsPage() {
         score: l.score,
         stage: l.stage,
         updatedAt: l.updated_at,
+        bookedAt: l.booked_at,
         events: events.map((e) => ({ label: eventLabel(e, titles), weight: e.weight, createdAt: e.created_at })),
         sourceTitle,
         suggestion: suggestedAction(l.stage, hasOfferClick, hasAnyOfferSlot),
@@ -183,6 +184,7 @@ export default async function LeadsPage() {
               score={row.score}
               stage={row.stage}
               updatedAt={row.updatedAt}
+              bookedAt={row.bookedAt}
               sourceTitle={row.sourceTitle}
               events={row.events}
               suggestion={row.suggestion}

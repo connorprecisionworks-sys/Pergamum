@@ -1620,6 +1620,7 @@ export type Database = {
       get_my_leads: {
         Args: never
         Returns: {
+          booked_at: string | null
           last_alerted_at: string
           score: number
           stage: string

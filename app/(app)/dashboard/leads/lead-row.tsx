@@ -21,6 +21,7 @@ interface LeadRowProps {
   score: number;
   stage: string;
   updatedAt: string;
+  bookedAt: string | null;
   sourceTitle: string | null;
   events: TimelineEvent[];
   suggestion: SuggestedAction | null;
@@ -28,11 +29,21 @@ interface LeadRowProps {
   cooldownUntil: string | null;
 }
 
+function BookedChip() {
+  return (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-success/40 bg-success/10 px-2 py-0.5 text-xs text-success">
+      <span className="h-1.5 w-1.5 rounded-full bg-success" />
+      Booked
+    </span>
+  );
+}
+
 export function LeadRow({
   userId,
   score,
   stage,
   updatedAt,
+  bookedAt,
   sourceTitle,
   events,
   suggestion,
@@ -68,6 +79,7 @@ export function LeadRow({
                 {STAGE_LABEL[stage] ?? stage}
               </span>
               <span className="font-mono text-xs text-muted-foreground">{Math.round(score)}</span>
+              {bookedAt && <BookedChip />}
               <span className="text-xs text-muted-foreground">· last active {relativeTime(updatedAt)}</span>
             </div>
 
@@ -128,6 +140,7 @@ export function LeadRow({
                     {STAGE_LABEL[stage] ?? stage}
                   </span>
                   <span className="font-mono text-xs text-muted-foreground">Score {Math.round(score)}</span>
+                  {bookedAt && <BookedChip />}
                 </div>
               </div>
             </div>
@@ -186,7 +199,7 @@ export function LeadRow({
                 cooldownUntil={cooldownUntil}
                 className="gap-1.5"
               />
-              <MarkBookedButton leadUserId={userId} />
+              <MarkBookedButton leadUserId={userId} initialBooked={!!bookedAt} />
             </div>
           </SheetBody>
         </SheetContent>
