@@ -40,7 +40,7 @@ export default async function AdminImportSkillsPage() {
           Import skills from GitHub
         </h1>
         <p className="text-muted-foreground mt-1">
-          Paste a repo URL to pull every SKILL.md straight from the source.
+          Paste a GitHub repo URL to add it as a skill. One repo, one skill.
           Admin only. Imported skills publish immediately under your account.
         </p>
       </div>

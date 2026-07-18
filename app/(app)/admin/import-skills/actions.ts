@@ -9,40 +9,33 @@ type SkillInsert = Database["public"]["Tables"]["skills"]["Insert"];
 export interface SkillCandidate {
   name: string;
   summary: string;
-  install_command: string | null;
+  install_command: string;
   source_url: string;
+  readme: string;
   tags: string[];
-  path: string;
-  readme_chars: number;
+  repoLabel: string;
+  hasSkillMd: boolean;
 }
 
-export interface FetchSkillsResult {
+export interface FetchSkillResult {
   ok: boolean;
   error?: string;
-  repoLabel?: string;
-  owner?: string;
-  repo?: string;
-  branch?: string;
-  candidates: SkillCandidate[];
+  candidate?: SkillCandidate;
 }
 
-export interface ImportSkillsArgs {
-  owner: string;
-  repo: string;
-  branch: string;
-  paths: string[];
+export interface ImportSkillArgs {
+  candidate: SkillCandidate;
   category: string;
   runtimes: string[];
   authorId: string;
 }
 
 export interface ImportResult {
-  imported: number;
-  errors: { row: number; message: string }[];
+  ok: boolean;
+  error?: string;
+  slug?: string;
 }
 
-const BATCH_SIZE = 50;
-const MAX_SKILLS = 200;
 const README_MAX = 20000;
 const SUMMARY_MAX = 400;
 
@@ -135,6 +128,14 @@ async function ghFetchText(url: string): Promise<string> {
   return res.text();
 }
 
+async function tryFetchText(url: string): Promise<string | null> {
+  try {
+    return await ghFetchText(url);
+  } catch {
+    return null;
+  }
+}
+
 async function ghFetchJson(url: string): Promise<unknown> {
   const res = await fetch(url, { headers: ghHeaders(), cache: "no-store" });
   if (!res.ok) throw new Error(`GitHub returned ${res.status} for ${url}`);
@@ -182,235 +183,160 @@ async function resolveBranch(owner: string, repo: string): Promise<string> {
   }
 }
 
-async function listSkillPaths(
+async function fetchReadme(
   owner: string,
   repo: string,
   branch: string,
-  subpath?: string
-): Promise<string[]> {
-  const tree = (await ghFetchJson(
-    `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`
-  )) as { tree?: { path: string; type: string }[] };
-  let paths = (tree.tree ?? [])
-    .filter((n) => n.type === "blob" && /(^|\/)SKILL\.md$/i.test(n.path))
-    .map((n) => n.path);
-  if (subpath) {
-    const sp = subpath.replace(/\/+$/, "");
-    paths = paths.filter((p) => p === `${sp}/SKILL.md` || p.startsWith(`${sp}/`));
+  dir: string
+): Promise<string> {
+  const prefix = dir ? `${dir}/` : "";
+  const names = ["README.md", "readme.md", "Readme.md", "README.MD"];
+  for (const n of names) {
+    const text = await tryFetchText(
+      `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${prefix}${n}`
+    );
+    if (text) return text;
   }
-  return paths.slice(0, MAX_SKILLS);
+  return "";
 }
 
-interface BuiltSkill {
-  name: string;
-  summary: string;
-  install_command: string | null;
-  source_url: string;
-  tags: string[];
-  readme: string;
-  path: string;
-}
-
-async function buildSkill(
-  owner: string,
-  repo: string,
-  branch: string,
-  path: string
-): Promise<BuiltSkill> {
-  const raw = await ghFetchText(
-    `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`
-  );
-  const { data, body } = parseFrontmatter(raw);
-  const dir = path.replace(/\/?SKILL\.md$/i, "");
-  const folder = dir.split("/").filter(Boolean).pop() || repo;
-  const name = (asString(data.name) || asString(data.title) || folder).slice(0, 80);
-  const summary = (
-    asString(data.description) ||
-    asString(data.summary) ||
-    firstParagraph(body) ||
-    name
-  ).slice(0, SUMMARY_MAX);
-  const install_command =
-    asString(data.install) || asString(data.install_command) || null;
-  const source_url = dir
-    ? `https://github.com/${owner}/${repo}/tree/${branch}/${dir}`
-    : `https://github.com/${owner}/${repo}`;
-  const tags = asArray(data.tags)
-    .map((t) => t.toLowerCase().trim())
-    .filter(Boolean)
-    .slice(0, 10);
-  return {
-    name,
-    summary,
-    install_command,
-    source_url,
-    tags,
-    readme: raw.slice(0, README_MAX),
-    path,
-  };
-}
-
-async function mapPool<T, R>(
-  items: T[],
-  limit: number,
-  fn: (item: T) => Promise<R>
-): Promise<R[]> {
-  const out: R[] = new Array(items.length);
-  let cursor = 0;
-  const size = Math.max(1, Math.min(limit, items.length));
-  const workers = new Array(size).fill(0).map(async () => {
-    for (;;) {
-      const idx = cursor++;
-      if (idx >= items.length) break;
-      out[idx] = await fn(items[idx]);
-    }
-  });
-  await Promise.all(workers);
-  return out;
-}
-
-export async function fetchSkillsFromGithub(
+export async function fetchSkillFromGithub(
   url: string
-): Promise<FetchSkillsResult> {
+): Promise<FetchSkillResult> {
   const parsed = parseRepoUrl(url);
   if (!parsed) {
     return {
       ok: false,
       error:
         "That doesn't look like a GitHub URL. Paste a repo link like https://github.com/owner/repo.",
-      candidates: [],
     };
   }
-  const repoLabel = `${parsed.owner}/${parsed.repo}`;
+  const { owner, repo } = parsed;
+  const repoLabel = `${owner}/${repo}`;
   try {
-    const branch =
-      parsed.branch || (await resolveBranch(parsed.owner, parsed.repo));
-    const paths = await listSkillPaths(
-      parsed.owner,
-      parsed.repo,
-      branch,
-      parsed.subpath
+    const branch = parsed.branch || (await resolveBranch(owner, repo));
+    const dir = (parsed.subpath || "").replace(/\/+$/, "");
+    const cloneCmd = `git clone https://github.com/${owner}/${repo}.git`;
+    const sourceUrl = dir
+      ? `https://github.com/${owner}/${repo}/tree/${branch}/${dir}`
+      : `https://github.com/${owner}/${repo}`;
+
+    // Prefer a SKILL.md at the target path if one exists.
+    const skillMd = await tryFetchText(
+      `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${dir ? dir + "/" : ""}SKILL.md`
     );
-    if (paths.length === 0) {
+
+    if (skillMd) {
+      const { data, body } = parseFrontmatter(skillMd);
+      const folder = dir.split("/").filter(Boolean).pop() || repo;
+      const name = (asString(data.name) || asString(data.title) || folder).slice(0, 80);
+      const summary = (
+        asString(data.description) ||
+        asString(data.summary) ||
+        firstParagraph(body) ||
+        name
+      ).slice(0, SUMMARY_MAX);
+      const install = asString(data.install) || asString(data.install_command) || cloneCmd;
+      const tags = asArray(data.tags)
+        .map((t) => t.toLowerCase().trim())
+        .filter(Boolean)
+        .slice(0, 10);
       return {
-        ok: false,
-        error: "No SKILL.md files found in that repo or path.",
-        repoLabel,
-        candidates: [],
+        ok: true,
+        candidate: {
+          name,
+          summary,
+          install_command: install,
+          source_url: sourceUrl,
+          readme: skillMd.slice(0, README_MAX),
+          tags,
+          repoLabel,
+          hasSkillMd: true,
+        },
       };
     }
-    const built = await mapPool(paths, 10, async (p) => {
-      try {
-        return await buildSkill(parsed.owner, parsed.repo, branch, p);
-      } catch {
-        return null;
-      }
-    });
-    const candidates: SkillCandidate[] = built
-      .filter((b): b is BuiltSkill => b !== null)
-      .map((b) => ({
-        name: b.name,
-        summary: b.summary,
-        install_command: b.install_command,
-        source_url: b.source_url,
-        tags: b.tags,
-        path: b.path,
-        readme_chars: b.readme.length,
-      }));
-    if (candidates.length === 0) {
-      return {
-        ok: false,
-        error: "Found SKILL.md files but could not read any of them.",
-        repoLabel,
-        candidates: [],
-      };
+
+    // No SKILL.md — build one skill from the repo itself (description + README + topics).
+    let description = "";
+    let topics: string[] = [];
+    try {
+      const meta = (await ghFetchJson(
+        `https://api.github.com/repos/${owner}/${repo}`
+      )) as { description?: string; topics?: string[] };
+      description = meta.description || "";
+      topics = Array.isArray(meta.topics) ? meta.topics : [];
+    } catch {
+      /* description/topics are best-effort */
     }
+    const readme = await fetchReadme(owner, repo, branch, dir);
+    const name = (dir.split("/").filter(Boolean).pop() || repo).slice(0, 80);
+    const summary = (
+      description ||
+      firstParagraph(parseFrontmatter(readme).body) ||
+      name
+    ).slice(0, SUMMARY_MAX);
+    const tags = topics
+      .map((t) => t.toLowerCase().trim())
+      .filter(Boolean)
+      .slice(0, 10);
     return {
       ok: true,
-      repoLabel,
-      owner: parsed.owner,
-      repo: parsed.repo,
-      branch,
-      candidates,
+      candidate: {
+        name,
+        summary,
+        install_command: cloneCmd,
+        source_url: sourceUrl,
+        readme: (readme || `# ${name}\n\nSource: ${sourceUrl}`).slice(0, README_MAX),
+        tags,
+        repoLabel,
+        hasSkillMd: false,
+      },
     };
   } catch (e) {
     return {
       ok: false,
       error: e instanceof Error ? e.message : "Failed to fetch the repo.",
-      repoLabel,
-      candidates: [],
     };
   }
 }
 
-export async function importSkills(
-  args: ImportSkillsArgs
-): Promise<ImportResult> {
-  const { owner, repo, branch, paths, category, runtimes, authorId } = args;
+export async function importSkill(args: ImportSkillArgs): Promise<ImportResult> {
+  const { candidate, category, runtimes, authorId } = args;
   const serviceClient = await createServiceClient();
 
-  const { data: existingSlugs } = await serviceClient
+  const { data: existing } = await serviceClient.from("skills").select("slug");
+  const taken = new Set((existing ?? []).map((s) => s.slug as string));
+  const base = slugify(candidate.name) || "skill";
+  let slug = base;
+  if (taken.has(slug)) {
+    let i = 2;
+    while (taken.has(`${base}-${i}`)) i++;
+    slug = `${base}-${i}`;
+  }
+
+  const row: SkillInsert = {
+    author_id: authorId,
+    name: candidate.name,
+    slug,
+    summary: candidate.summary || candidate.name,
+    install_command: candidate.install_command || null,
+    source_url: candidate.source_url,
+    readme: candidate.readme || null,
+    category: category || null,
+    runtimes: runtimes.length > 0 ? runtimes : [],
+    tags: candidate.tags,
+    status: "published",
+    published_at: new Date().toISOString(),
+    hero_image_url: null,
+    hero_loop_url: null,
+    hero_poster_url: null,
+  };
+
+  const { error } = await serviceClient
     .from("skills")
-    .select("slug");
-  const taken = new Set((existingSlugs ?? []).map((s) => s.slug as string));
-  const publishedAt = new Date().toISOString();
-
-  const errors: { row: number; message: string }[] = [];
-  const rows: SkillInsert[] = [];
-
-  let index = 0;
-  for (const path of paths.slice(0, MAX_SKILLS)) {
-    index++;
-    try {
-      const skill = await buildSkill(owner, repo, branch, path);
-      const base = slugify(skill.name) || "skill";
-      let slug = base;
-      if (taken.has(slug)) {
-        let i = 2;
-        while (taken.has(`${base}-${i}`)) i++;
-        slug = `${base}-${i}`;
-      }
-      taken.add(slug);
-      rows.push({
-        author_id: authorId,
-        name: skill.name,
-        slug,
-        summary: skill.summary || skill.name,
-        install_command: skill.install_command,
-        source_url: skill.source_url,
-        readme: skill.readme,
-        category: category || null,
-        runtimes: runtimes.length > 0 ? runtimes : [],
-        tags: skill.tags,
-        status: "published",
-        published_at: publishedAt,
-        hero_image_url: null,
-        hero_loop_url: null,
-        hero_poster_url: null,
-      });
-    } catch (e) {
-      errors.push({
-        row: index,
-        message: e instanceof Error ? e.message : "Could not read skill.",
-      });
-    }
-  }
-
-  let imported = 0;
-  for (let i = 0; i < rows.length; i += BATCH_SIZE) {
-    const batch = rows.slice(i, i + BATCH_SIZE);
-    const { data, error } = await serviceClient
-      .from("skills")
-      .insert(batch)
-      .select("id");
-    if (error) {
-      batch.forEach((_, j) =>
-        errors.push({ row: i + j + 1, message: error.message })
-      );
-    } else {
-      imported += (data ?? []).length;
-    }
-  }
-
-  return { imported, errors };
+    .insert(row)
+    .select("id")
+    .single();
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, slug };
 }

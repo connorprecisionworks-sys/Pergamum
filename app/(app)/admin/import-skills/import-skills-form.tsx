@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import {
   Github,
   Loader2,
   ExternalLink,
   CheckCircle2,
   AlertCircle,
+  FileCode,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,8 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  fetchSkillsFromGithub,
-  importSkills,
+  fetchSkillFromGithub,
+  importSkill,
   type SkillCandidate,
 } from "./actions";
 
@@ -50,50 +52,25 @@ interface ImportSkillsFormProps {
 
 export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
   const [url, setUrl] = useState("");
-  const [repoLabel, setRepoLabel] = useState<string | null>(null);
-  const [repoInfo, setRepoInfo] = useState<{
-    owner: string;
-    repo: string;
-    branch: string;
-  } | null>(null);
-  const [candidates, setCandidates] = useState<SkillCandidate[] | null>(null);
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [candidate, setCandidate] = useState<SkillCandidate | null>(null);
   const [category, setCategory] = useState("coding");
   const [runtimes, setRuntimes] = useState<string[]>(["claude-code"]);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [done, setDone] = useState<{ imported: number; errors: number } | null>(
-    null
-  );
+  const [importedSlug, setImportedSlug] = useState<string | null>(null);
   const [fetching, startFetch] = useTransition();
   const [importing, startImport] = useTransition();
 
-  const canImport =
-    candidates !== null && selected.size > 0 && !importing && repoInfo !== null;
-
   const handleFetch = () => {
     setFetchError(null);
-    setCandidates(null);
-    setRepoInfo(null);
-    setDone(null);
+    setCandidate(null);
+    setImportedSlug(null);
     startFetch(async () => {
-      const res = await fetchSkillsFromGithub(url);
-      setRepoLabel(res.repoLabel ?? null);
-      if (!res.ok || !res.owner || !res.repo || !res.branch) {
+      const res = await fetchSkillFromGithub(url);
+      if (!res.ok || !res.candidate) {
         setFetchError(res.error ?? "Couldn't read that repo.");
         return;
       }
-      setRepoInfo({ owner: res.owner, repo: res.repo, branch: res.branch });
-      setCandidates(res.candidates);
-      setSelected(new Set(res.candidates.map((c) => c.path)));
-    });
-  };
-
-  const toggle = (path: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(path)) next.delete(path);
-      else next.add(path);
-      return next;
+      setCandidate(res.candidate);
     });
   };
 
@@ -106,38 +83,21 @@ export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
     });
   };
 
-  const selectAll = () => {
-    if (candidates) setSelected(new Set(candidates.map((c) => c.path)));
-  };
-  const selectNone = () => setSelected(new Set());
-
   const handleImport = () => {
-    if (!repoInfo || !candidates) return;
-    const paths = candidates
-      .filter((c) => selected.has(c.path))
-      .map((c) => c.path);
+    if (!candidate) return;
     startImport(async () => {
-      const res = await importSkills({
-        owner: repoInfo.owner,
-        repo: repoInfo.repo,
-        branch: repoInfo.branch,
-        paths,
+      const res = await importSkill({
+        candidate,
         category,
         runtimes,
         authorId: adminId,
       });
-      if (res.imported === 0 && res.errors.length > 0) {
-        toast.error(`Import failed. ${res.errors[0]?.message ?? ""}`);
-      } else if (res.errors.length > 0) {
-        toast.warning(
-          `${res.imported} imported, ${res.errors.length} failed. See below.`
-        );
-      } else {
-        toast.success(
-          `${res.imported} skill${res.imported !== 1 ? "s" : ""} imported.`
-        );
+      if (!res.ok || !res.slug) {
+        toast.error(`Import failed. ${res.error ?? ""}`);
+        return;
       }
-      setDone({ imported: res.imported, errors: res.errors.length });
+      setImportedSlug(res.slug);
+      toast.success(`"${candidate.name}" imported.`);
     });
   };
 
@@ -156,19 +116,19 @@ export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && url.trim() && !fetching) handleFetch();
               }}
-              placeholder="https://github.com/owner/repo (or /tree/main/skills)"
+              placeholder="https://github.com/owner/repo"
               className="pl-9"
             />
           </div>
           <Button onClick={handleFetch} disabled={!url.trim() || fetching}>
             {fetching && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-            Fetch skills
+            Fetch skill
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Reads every SKILL.md in the repo. Point at a subfolder with
-          /tree/&lt;branch&gt;/&lt;path&gt; to limit it. Nothing is generated —
-          only the real files are imported.
+          One repo, one skill. If the repo (or the folder you link) has a
+          SKILL.md, its details are used; otherwise the repo description and
+          README are pulled. The skill&apos;s download is the repo itself.
         </p>
         {fetchError && (
           <div className="flex items-start gap-2 text-sm text-destructive mt-2">
@@ -178,32 +138,56 @@ export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
         )}
       </div>
 
-      {/* Step 2: batch settings + preview */}
-      {candidates !== null && (
-        <div className="space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
-            <div className="text-sm">
-              <span className="font-medium">{candidates.length}</span> skill
-              {candidates.length !== 1 ? "s" : ""} found in{" "}
-              <span className="font-mono">{repoLabel}</span> ·{" "}
-              <span className="font-medium">{selected.size}</span> selected
+      {/* Step 2: preview + settings */}
+      {candidate && (
+        <div className="space-y-6 border-t border-border pt-6">
+          <div className="rounded-lg border border-border p-4 space-y-3">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-lg font-medium">{candidate.name}</span>
+              <Badge variant={candidate.hasSkillMd ? "brand" : "secondary"}>
+                {candidate.hasSkillMd ? (
+                  <>
+                    <FileCode className="h-3 w-3 mr-1" /> SKILL.md
+                  </>
+                ) : (
+                  "repo"
+                )}
+              </Badge>
+              <a
+                href={candidate.source_url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              >
+                {candidate.repoLabel} <ExternalLink className="h-3 w-3" />
+              </a>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={selectAll}>
-                Select all
-              </Button>
-              <Button variant="outline" size="sm" onClick={selectNone}>
-                None
-              </Button>
+            <p className="text-sm text-muted-foreground">{candidate.summary}</p>
+            <div>
+              <span className="text-[11px] uppercase tracking-wide text-foreground-subtle">
+                Download / install
+              </span>
+              <pre className="mt-1 font-mono text-xs bg-muted rounded-md p-2.5 whitespace-pre-wrap break-all">
+                {candidate.install_command}
+              </pre>
             </div>
+            {candidate.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {candidate.tags.map((t) => (
+                  <Badge key={t} variant="outline" className="text-[10px]">
+                    {t}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Batch category + runtime, applied to every imported skill */}
+          {/* Category + runtime */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="batch-category">Category for all</Label>
+              <Label htmlFor="skill-category">Category</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger id="batch-category">
+                <SelectTrigger id="skill-category">
                   <SelectValue placeholder="Pick a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -216,7 +200,7 @@ export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Runtime for all</Label>
+              <Label>Runtime</Label>
               <div className="flex flex-wrap gap-2">
                 {RUNTIME_OPTIONS.map((rt) => (
                   <button
@@ -237,69 +221,19 @@ export function ImportSkillsForm({ adminId }: ImportSkillsFormProps) {
             </div>
           </div>
 
-          {/* Preview list */}
-          <div className="divide-y divide-border border border-border rounded-lg overflow-hidden">
-            {candidates.map((c) => (
-              <label
-                key={c.path}
-                className="flex items-start gap-3 p-4 hover:bg-muted/40 transition-colors cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  checked={selected.has(c.path)}
-                  onChange={() => toggle(c.path)}
-                  className="mt-1 h-4 w-4 shrink-0 accent-foreground"
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-medium">{c.name}</span>
-                    <a
-                      href={c.source_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                    >
-                      source <ExternalLink className="h-3 w-3" />
-                    </a>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">
-                    {c.summary}
-                  </p>
-                  <div className="flex items-center gap-2 flex-wrap mt-1.5">
-                    <span className="font-mono text-[11px] text-foreground-subtle">
-                      {c.path}
-                    </span>
-                    {c.install_command && (
-                      <Badge variant="outline" className="text-[10px]">
-                        install cmd
-                      </Badge>
-                    )}
-                    {c.tags.slice(0, 4).map((t) => (
-                      <Badge key={t} variant="secondary" className="text-[10px]">
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
-
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={handleImport} disabled={!canImport}>
+            <Button onClick={handleImport} disabled={importing}>
               {importing && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              Import{" "}
-              {selected.size > 0
-                ? `${selected.size} skill${selected.size !== 1 ? "s" : ""}`
-                : ""}
+              Import skill
             </Button>
-            {done && (
-              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            {importedSlug && (
+              <Link
+                href={`/skills/${importedSlug}`}
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+              >
                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                {done.imported} imported
-                {done.errors > 0 ? `, ${done.errors} failed` : ""}
-              </span>
+                View imported skill
+              </Link>
             )}
           </div>
         </div>
