@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
-import { Upload } from "lucide-react";
+import { Upload, Github } from "lucide-react";
 import { createClient, createServiceClient } from "@/lib/supabase/server";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,12 +72,20 @@ export default async function AdminPage() {
             Review prompts, reports, and tool submissions.
           </p>
         </div>
-        <Button asChild variant="outline" size="sm">
-          <Link href="/admin/import">
-            <Upload className="h-4 w-4 mr-2" />
-            Bulk import
-          </Link>
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/admin/import">
+              <Upload className="h-4 w-4 mr-2" />
+              Import prompts
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm">
+            <Link href="/admin/import-skills">
+              <Github className="h-4 w-4 mr-2" />
+              Import skills
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
